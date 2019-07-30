@@ -3,7 +3,7 @@
 const sortArray = require('../sortArray.js');
 
 describe('sortArray test', () => {
-  it('simple', () => {
+  it('simple 3 elements array', () => {
     let result = sortArray([2, 1, 3]);
     expect(result).toStrictEqual({
       values: [1, 2, 3],
