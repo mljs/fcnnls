@@ -1,13 +1,16 @@
 'use strict';
 
-const { Matrix, inverse } = require('ml-matrix');
-
-const selection = require('./array-utils/selection');
-
-function setDifference(a, b) {
-  let c = [];
-  for (let i of a) {
-    if (!b.includes(i)) c.push(i);
+/**
+ * Computes the set difference A\B
+ * @param {A} set A as an array
+ * @param {B} set B as an array
+ */
+function setDifference(A, B) {
+  let C = [];
+  for (let i of A) {
+    if (!B.includes(i)) C.push(i);
   }
-  return c;
+  return C;
 }
+
+module.exports = setDifference;

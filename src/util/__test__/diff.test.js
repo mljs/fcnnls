@@ -1,5 +1,10 @@
 'use strict';
 
-const { Matrix, inverse } = require('ml-matrix');
+const diff = require('../diff.js');
 
-const selection = require('./array-utils/selection');
+describe('diff test', () => {
+  it('simple', () => {
+    let result = diff([1, 2, 3, 7, 36, -159, 0]);
+    expect(result).toStrictEqual([1, 1, 4, -195, 159]);
+  });
+});

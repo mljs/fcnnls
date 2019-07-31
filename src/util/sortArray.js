@@ -1,7 +1,7 @@
 'use strict';
 
 /**
- *
+ * Sorts an array and returns an object with the sorted array and the corresponding indices.
  * @param {Array<Number>} v
  */
 function sortArray(array) {

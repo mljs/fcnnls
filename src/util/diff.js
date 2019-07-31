@@ -1,11 +1,7 @@
 'use strict';
 
-const { Matrix, inverse } = require('ml-matrix');
-
-const selection = require('./array-utils/selection');
-
 /**
- *
+ * Computes an array containing the difference of consecutives numbers
  * @param {Array} v
  */
 function diff(v) {
@@ -15,3 +11,5 @@ function diff(v) {
   }
   return u;
 }
+
+module.exports = diff;

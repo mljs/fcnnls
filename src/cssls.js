@@ -2,9 +2,12 @@
 
 const { Matrix, inverse } = require('ml-matrix');
 
-const selection = require('/src/array-utils/selection');
+const selection = require('./util/selection');
+const sortArray = require('./util/sortArray');
+const diff = require('./util/diff');
+
 /**
- *
+ * (Combinatorial Subspace Least Squares) - subfunction for the FC-NNLS
  * @param {Matrix} XtX
  * @param {Matrix} XtY
  * @param {Array} Pset
@@ -56,3 +59,5 @@ function cssls(XtX, XtY, Pset) {
   }
   return K;
 }
+
+module.exports = cssls;
