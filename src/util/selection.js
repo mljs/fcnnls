@@ -1,7 +1,7 @@
 'use strict';
 
 /**
- * Returns a new array based on  extraction of specific indices of an array
+ * Returns a new array based on extraction of specific indices of an array
  * @param {Array} vector
  * @param {Array} indices
  */

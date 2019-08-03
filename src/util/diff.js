@@ -2,7 +2,7 @@
 
 /**
  * Computes an array containing the difference of consecutives numbers
- * @param {Array} v
+ * @param {Array} Array v from which it computes the difference
  */
 function diff(v) {
   let u = [];

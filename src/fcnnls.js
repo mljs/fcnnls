@@ -4,56 +4,30 @@
 // Would it be sensible to be able to extract a full row(s)/column(s) easily with matrix.selection ?
 // add errors...
 
-const { Matrix, inverse } = require('ml-matrix');
+const { Matrix } = require('ml-matrix');
 
-const selection = require('./array-utils/selection');
+const selection = require('./util/selection');
+const setDifference = require('./util/setDifference');
+const cssls = require('./cssls');
+const initialisation = require('./initialisation');
 
 module.exports = fcnnls;
 
 function fcnnls(X, Y) {
-  // check if input error
-  // error(nargchk(2,2....)) à traduire
-  let n = X.rows;
-  let l = X.columns;
-  let p = Y.columns;
-  let iter = 0;
-  let maxiter = 3 * l;
-
-  if (Y.rows !== n) return 'ERROR: matrix size not compatible'; // end function
-
-  let W = Matrix.zeros(l, p);
-
-  // precomputes part of pseudoinverse
-  let XtX = X.transpose().mmul(X);
-  let XtY = X.transpose().mmul(Y);
-
-  // Obtain the initial feasible solition and corresponding passive set
-  let K = cssls(XtX, XtY, null); // K is lxp
-  let Pset = new Array(p).fill([]);
-  for (let j = 0; j < p; j++) {
-    for (let i = 0; i < l; i++) {
-      if (K.get(i, j) > 0) {
-        if (Pset[j].length === 0) {
-          Pset[j][0] = i;
-        } else {
-          Pset[j].push(i);
-        }
-      } else {
-        K.set(i, j, 0);
-      } //If non-positive we set it to zero
-    }
-  } // A better way to find the Pset ? using a function like filter or equivalent ?
-  let D = Object.assign({}, K); // not sure but here we probably want to copy K without changing K when we modify D.
-  let Fset = [];
-  for (let j = 0; j < p; j++) {
-    if (Pset[j].length !== l) {
-      if (Fset.length === 0) {
-        Fset[0] = j;
-      } else {
-        Fset.push(j);
-      }
-    }
-  }
+  let {
+    n,
+    l,
+    p,
+    iter,
+    maxiter,
+    W,
+    XtX,
+    XtY,
+    K,
+    Pset,
+    Fset,
+    D,
+  } = initialisation(X, Y);
 
   // Active set algortihm for NNLS main loop
   while (Fset.length > 0) {
@@ -173,6 +147,7 @@ function fcnnls(X, Y) {
         Hset = selection(Fset, u);
       }
     }
+
     // Make sure the solution has converged
     if (iter === maxiter) return 'Maximum number of iterations exceeded';
     // Check solution for optimality
@@ -206,83 +181,4 @@ function fcnnls(X, Y) {
       }
     }
   }
-}
-
-function setDifference(a, b) {
-  let c = [];
-  for (let i of a) {
-    if (!b.includes(i)) c.push(i);
-  }
-  return c;
-}
-
-function cssls(XtX, XtY, Pset) {
-  // Solves the set of equation XtX*K = XtY for the variables in Pset
-  let K;
-  if (Pset === null) {
-    //add some error case
-    K = inverse(XtX).mmul(XtY);
-  } else {
-    let l = XtY.rows; //XtY is lxp matrix
-    let p = XtY.columns;
-    K = Matrix.zeros(l, p);
-    let v = new Array(l);
-    for (let i = 0; i < l; i++) {
-      v[i] = Math.pow(2, l - 1 - i);
-    }
-    let codedPset = new Array(p).fill(0);
-    for (let j = 0; j < p; j++) {
-      for (let i = 0; i < Pset[j].length; i++) {
-        codedPset[j] += v[Pset[j][i]];
-      }
-    } // multiplication v = [. . . . .]*Pset (Pset as logical matrix of non-negative elements of initial feasible solution)
-    let sortedPset = sortArray(codedPset)[0];
-    let sortedEset = sortArray(codedPset)[1];
-    let breaks = diff(sortedPset);
-    let w = []; // Here we don't know the size of w before, is there a better method to initialise w ? Filter returns the value not the index..!
-    for (let j = 0; j < breaks.length; j++) {
-      if (breaks[j] > 0) w.push(j);
-    }
-    let breakIdx = [-1].concat(w, p - 1); // Indexes start at -1 to be good with JavaScript
-    for (let k = 0; k < breakIdx.length - 1; k++) {
-      let breaksIdxVect = [];
-      for (let i = breakIdx[k] + 1; i <= breakIdx[k + 1]; i++) {
-        if (breaksIdxVect.length === 0) {
-          breaksIdxVect[0] = i;
-        } else {
-          breaksIdxVect.push(i);
-        }
-      } // As before, how to initialise a vector which we don't know the size a priori ?
-      let cols2Solve = selection(sortedEset, breaksIdxVect);
-      let vars = Pset[sortedEset[breakIdx[k] + 1]];
-      let L = inverse(XtX.selection(vars, vars)).mmul(
-        XtY.selection(vars, cols2Solve),
-      );
-      for (let i = 0; i < L.rows; i++) {
-        for (let j = 0; j < L.columns; j++) {
-          K.set(vars[i], cols2Solve[j], L.get(i, j));
-        }
-      }
-    }
-  }
-  return K;
-}
-
-function sortArray(v) {
-  v.sort((a, b) => {
-    if (a.value === b.value) return a.index - b.index;
-    return a.value - b.value;
-  });
-
-  let values = v.map((item) => item.value);
-  let indices = v.map((item) => item.index);
-  return [values, indices];
-}
-
-function diff(v) {
-  let u = [];
-  for (let i = 0; i < v.length - 1; i++) {
-    u.push(v[i + 1] - v[i]);
-  }
-  return u;
 }
