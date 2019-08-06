@@ -1,7 +1,7 @@
 'use strict';
 
 // Rounding problem in test case "6x3 full-rank, Y 6x7" but gives same results as matlab function, may be because big decimal
-// Maybe try with really big system of equation
+// Maybe try with really big system of equation ?
 const { Matrix } = require('ml-matrix');
 
 const cssls = require('../cssls');

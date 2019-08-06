@@ -7,9 +7,10 @@
 const { Matrix } = require('ml-matrix');
 
 const selection = require('./util/selection');
-const setDifference = require('./util/setDifference');
+const sortCollectionSet = require('./util/sortCollectionSet');
 const cssls = require('./cssls');
 const initialisation = require('./initialisation');
+const optimality = require('./optimality');
 
 module.exports = fcnnls;
 
@@ -32,7 +33,16 @@ function fcnnls(X, Y) {
   // Active set algortihm for NNLS main loop
   while (Fset.length > 0) {
     // Solves for the passive variables (uses subroutine below)
-    let L = cssls(XtX, XtY.subMatrixColumn(Fset), selection(Pset, Fset));
+    let sortedPset = sortCollectionSet(selection(Pset, Fset)).values;
+    let vars = sortedPset[0];
+    console.log(XtX.selection(vars, vars));
+    let L = cssls(
+      XtX,
+      XtY.subMatrixColumn(Fset),
+      selection(Pset, Fset),
+      l,
+      Fset.length,
+    );
     for (let i = 0; i < l; i++) {
       for (let j = 0; j < Fset.length; j++) {
         K.set(i, Fset[j], L.get(i, j));
@@ -94,8 +104,9 @@ function fcnnls(X, Y) {
             hRowColIdx[0][k],
             hRowColIdx[1][k],
             D.get(hRowColIdx[0][k], hRowColIdx[1][k]) /
-              (D.get(negRowColIdx[0][k], negRowColIdx[1][k]) -
-                D.get(negRowColIdx[0][k], negRowColIdx[1][k])),
+              D.get(negRowColIdx[0][k], negRowColIdx[1][k]).subtract(
+                D.get(negRowColIdx[0][k], negRowColIdx[1][k]),
+              ),
           );
         }
         let alphaMin = Float64Array(m);
@@ -108,7 +119,7 @@ function fcnnls(X, Y) {
           alpha.setRow(i, alphaMin);
         }
         let E = D.subMatrixColumn(Hset, 0, -1);
-        E = E - alpha.mul(E - K.subMatrixColumn(Hset, 0, -1));
+        E = E.sutract(alpha.mul(E - K.subMatrixColumn(Hset, 0, -1)));
         for (let j = 0; j < m; j++) {
           D.setColumn(j, E.subMatrixColumn(j, 0, -1));
         }
@@ -122,13 +133,9 @@ function fcnnls(X, Y) {
             1,
           );
         }
-        let L = cssls(
-          XtX,
-          XtY.subMatrixColumn(Hset, 0, -1),
-          selection(Pset, Hset),
-        );
+        let L = cssls(XtX, XtY.subMatrixColumn(Hset), selection(Pset, Hset));
         for (let j = 0; j < m; j++) {
-          K.setColumn(Hset[j], L.subMatrixColumn(j, 0, -1));
+          K.setColumn(Hset[j], L.subMatrixColumn([j]));
         }
         u = [];
         for (let j = 0; j < Fset.length; j++) {
@@ -147,38 +154,6 @@ function fcnnls(X, Y) {
         Hset = selection(Fset, u);
       }
     }
-
-    // Make sure the solution has converged
-    if (iter === maxiter) return 'Maximum number of iterations exceeded';
-    // Check solution for optimality
-    let V =
-      XtY.subMatrixColumn(Fset, 0, -1) -
-      XtX.mmul(K.subMatrixColumn(Fset, 0, -1));
-    for (let j = 0; j < Fset.length; j++) {
-      W.setColumn(Fset[j], V.subMatrixColumn(j, 0, -1));
-    }
-    let Jset = [];
-    for (let j = 0; j < Fset.length; j++) {
-      if (Pset[Fset[j]].length === 0 && W.maxColumn(Fset[j]) <= 0) {
-        if (Jset.length === 0) {
-          Jset[0] = Fset[j];
-        } else {
-          Jset.push(Fset[j]);
-        }
-      }
-    }
-    Fset = setDifference(Fset, Jset);
-    // For non-optimal solutions, add the appropriate variable to Pset
-    if (Fset.length !== 0) {
-      for (let j = 0; j < Fset.length; j++) {
-        for (let i = 0; i < l; i++) {
-          if (Pset[Fset[j]].includes(i)) W.set(i, Fset[j], -Infinity);
-        }
-        Pset[Fset[j]].push(W.subMatrixColumn(Fset, 0, -1).maxColumnIndex(j));
-      }
-      for (let j = 0; j < Fset.length; j++) {
-        D.setColumn(Fset[j], K.getColumn(Fset[j]));
-      }
-    }
+    optimality(iter, maxiter, XtX, XtY, Fset, Pset, W, K, l, D);
   }
 }

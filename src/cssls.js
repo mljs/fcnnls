@@ -24,7 +24,7 @@ function cssls(XtX, XtY, Pset, l, p) {
     for (let k = 0; k < sortedPset.length; k++) {
       let cols2Solve = sortedEset[k];
       let vars = sortedPset[k];
-      let L = inverse(XtX.selection(vars, vars)).mmul(
+      let L = inverse(XtX.selection(vars, vars), { useSVD: true }).mmul(
         XtY.selection(vars, cols2Solve),
       );
       for (let i = 0; i < L.rows; i++) {

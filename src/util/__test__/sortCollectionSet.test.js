@@ -3,6 +3,13 @@
 const sortCollectionSet = require('../sortCollectionSet');
 
 describe('sortCollectionSet test', () => {
+  it('collection of 1 set', () => {
+    let result = sortCollectionSet([[1, 2, 3]]);
+    expect(result).toStrictEqual({
+      values: [[1, 2, 3]],
+      indices: [[0]],
+    });
+  });
   it('collection of 4 set', () => {
     let result = sortCollectionSet([
       [1, 2, 3],

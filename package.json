@@ -47,7 +47,7 @@
     "prettier": "^1.18.2"
   },
   "dependencies": {
-    "ml-matrix": "^6.2.0",
+    "ml-matrix": "^6.2.0", 
     "big-integer":"^1.6.44"
   }
 }

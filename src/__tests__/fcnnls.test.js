@@ -8,22 +8,8 @@ describe('myModule test', () => {
   it('identity X, Y 4x1', () => {
     let X = Matrix.eye(4);
     let Y = new Matrix([[0], [1], [2], [3]]);
-    let {
-      n,
-      l,
-      p,
-      iter,
-      maxiter,
-      W,
-      XtX,
-      XtY,
-      K,
-      Pset,
-      Fset,
-      D,
-    } = initialisation(X, Y);
     let solution = new Matrix([[0], [1], [2], [3]]);
-    let result = cssls(XtX, XtY, Pset, l, p);
+    let result = fcnnls(X, Y);
     expect(result).toStrictEqual(solution);
   });
   it('identity X, Y 5x3', () => {
@@ -35,7 +21,6 @@ describe('myModule test', () => {
       [3, 8, 13],
       [4, 9, 14],
     ]);
-    let init = initialisation(X, Y);
     let solution = new Matrix([
       [0, 5, 10],
       [1, 6, 11],
@@ -43,7 +28,7 @@ describe('myModule test', () => {
       [3, 8, 13],
       [4, 9, 14],
     ]);
-    let result = cssls(init.XtX, init.XtY, init.Pset, init.l, init.p);
+    let result = fcnnls(X, Y);
     expect(result).toStrictEqual(solution);
   });
   it('non-singular square X, Y 3x1', () => {

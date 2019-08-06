@@ -41,7 +41,7 @@ function initialisation(X, Y) {
     }
   }
 
-  let D = Object.assign({}, K);
+  let D = K.clone();
 
   return { n, l, p, iter, maxiter, W, XtX, XtY, K, Pset, Fset, D };
 }

@@ -9,4 +9,7 @@ describe('selection test', () => {
       4,
     ]);
   });
+  it('very simple', () => {
+    expect(Array.from(selection([[1, 2, 3]], [0]))).toStrictEqual([[1, 2, 3]]);
+  });
 });
