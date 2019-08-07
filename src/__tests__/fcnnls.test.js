@@ -140,4 +140,21 @@ describe('myModule test', () => {
     let solution = answer;
     expect(result.to2DArray()).toBeDeepCloseTo(solution.to2DArray(), 0);
   });
+
+  it('example documentation', () => {
+    let X = new Matrix([[1, 1, 2], [10, 11, -9], [-1, 0, 0], [-5, 6, -7]]);
+    let Y = new Matrix([
+      [-1, 0, 0, 9],
+      [11, -20, 103, 5],
+      [0, 0, 0, 0],
+      [1, 2, 3, 4],
+    ]);
+    let solution = new Matrix([
+      [0.461, 0, 4.9714, 0],
+      [0.5611, 0, 4.7362, 2.2404],
+      [0, 1.2388, 0, 1.9136],
+    ]);
+    let result = fcnnls(X, Y);
+    expect(result.to2DArray()).toMatchCloseTo(solution.to2DArray(), 4);
+  });
 });
