@@ -2,8 +2,6 @@
 
 // added "eslint-plugin-babel" in json but does not work...
 
-let bigInt = require('big-integer');
-
 /**
  *
  * @param {Array of arrays} collection
@@ -12,8 +10,8 @@ let bigInt = require('big-integer');
 function sortCollectionSet(collection) {
   let objectCollection = collection
     .map((value, index) => {
-      let key = bigInt(0); // 0n
-      value.forEach((item) => (key |= bigInt(1) << bigInt(item))); // 1n BigInt(item)
+      let key =  0n;
+      value.forEach((item) => (key |= 1n << BigInt(item))); // 1n BigInt(item)
       return { value, index, key };
     })
     .sort((a, b) => {

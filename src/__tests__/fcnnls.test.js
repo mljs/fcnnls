@@ -34,43 +34,15 @@ describe('myModule test', () => {
   it('non-singular square X, Y 3x1', () => {
     let X = new Matrix([[0, 1, 1], [1, 0, 1], [1, 1, 0]]);
     let Y = new Matrix([[-1], [2], [-3]]);
-    let {
-      n,
-      l,
-      p,
-      iter,
-      maxiter,
-      W,
-      XtX,
-      XtY,
-      K,
-      Pset,
-      Fset,
-      D,
-    } = initialisation(X, Y);
-    let solution = new Matrix([[-1], [0], [1]]);
-    let result = cssls(XtX, XtY, Pset, l, p);
+    let solution = new Matrix([[0], [0], [0.5]]);
+    let result = fcnnls(X, Y);
     expect(result).toStrictEqual(solution);
   });
   it('singular square X rank 2, Y 3x1', () => {
     let X = new Matrix([[1, 2, 3], [4, 5, 6], [7, 8, 9]]);
     let Y = new Matrix([[-1], [0], [10]]);
-    let {
-      n,
-      l,
-      p,
-      iter,
-      maxiter,
-      W,
-      XtX,
-      XtY,
-      K,
-      Pset,
-      Fset,
-      D,
-    } = initialisation(X, Y);
     let solution = new Matrix([[1.0455], [0], [0]]);
-    let result = cssls(XtX, XtY, Pset, l, p);
+    let result = Matrix.round(fcnnls(X, Y).mul(10000)).mul(0.0001);
     expect(result).toStrictEqual(solution);
   });
   it('6x3 X full-rank, Y 6x7', () => {
@@ -90,26 +62,12 @@ describe('myModule test', () => {
       [1000, 2, 56, 40, 1, 1, 3],
       [7, 6, 5, 4, 3, 2, 1],
     ]);
-    let {
-      n,
-      l,
-      p,
-      iter,
-      maxiter,
-      W,
-      XtX,
-      XtY,
-      K,
-      Pset,
-      Fset,
-      D,
-    } = initialisation(X, Y);
     let solution = new Matrix([
-      [203.7567, 0, 0, 0, 0, 0, 0],
-      [-149.1338, 3.3309, 2.0243, 1.5134, 0, 0, 0],
+      [39.0418, 1.3439, 2.2776, 1.6925, 0, 0, 0],
+      [0, 2.121, 0, 0, 0, 0, 0],
       [0, 0, 0, 0, 1.0827, 0.3911, 0.4738],
     ]);
-    let result = cssls(XtX, XtY, Pset, l, p);
+    let result = Matrix.round(fcnnls(X, Y).mul(10000)).mul(0.0001);
     expect(result).toStrictEqual(solution);
   });
   it('Van Benthem - Keenan example', () => {
@@ -120,27 +78,12 @@ describe('myModule test', () => {
       [18, 41, 51],
       [41, 61, 39],
     ]);
-
-    let {
-      n,
-      l,
-      p,
-      iter,
-      maxiter,
-      W,
-      XtX,
-      XtY,
-      K,
-      Pset,
-      Fset,
-      D,
-    } = initialisation(X, Y);
     let solution = new Matrix([
       [0, 0.6873, 0.2836],
       [0.6272, 0, 0.2862],
       [0.3517, 0.2873, 0.335],
     ]);
-    let result = cssls(XtX, XtY, Pset, l, p);
+    let result = Matrix.round(fcnnls(X, Y).mul(10000)).mul(0.0001);
     expect(result).toStrictEqual(solution);
   });
 });

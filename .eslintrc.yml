@@ -1,1 +1,4 @@
 extends: 'cheminfo'
+parser: 'babel-eslint'
+globals:
+  BigInt: true
