@@ -10,8 +10,8 @@
 function sortCollectionSet(collection) {
   let objectCollection = collection
     .map((value, index) => {
-      let key =  0n;
-      value.forEach((item) => (key |= 1n << BigInt(item))); // 1n BigInt(item)
+      let key = BigInt(0);
+      value.forEach((item) => (key |= BigInt(1) << BigInt(item))); // 1n BigInt(item)
       return { value, index, key };
     })
     .sort((a, b) => {
@@ -24,8 +24,7 @@ function sortCollectionSet(collection) {
 
   let key;
   for (let set of objectCollection) {
-    if (JSON.stringify(set.key) !== JSON.stringify(key)) {
-      //set.key !== key
+    if (set.key !== key) {
       key = set.key;
       indices.push([]);
       sorted.push(set.value);

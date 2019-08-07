@@ -37,6 +37,7 @@
     "trailingComma": "all"
   },
   "devDependencies": {
+    "babel-eslint": "^10.0.2",
     "eslint": "^6.1.0",
     "eslint-config-cheminfo": "^2.0.3",
     "eslint-plugin-babel": "^5.3.0",
