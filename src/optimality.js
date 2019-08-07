@@ -1,7 +1,5 @@
 'use strict';
 
-const { Matrix } = require('ml-matrix');
-
 const setDifference = require('./util/setDifference');
 
 // Make sure the solution has converged
