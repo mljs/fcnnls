@@ -15,20 +15,10 @@ const optimality = require('./optimality');
 module.exports = fcnnls;
 
 function fcnnls(X, Y) {
-  let {
-    n,
-    l,
-    p,
-    iter,
-    maxiter,
-    W,
-    XtX,
-    XtY,
-    K,
-    Pset,
-    Fset,
-    D,
-  } = initialisation(X, Y);
+  let { l, p, iter, maxiter, W, XtX, XtY, K, Pset, Fset, D } = initialisation(
+    X,
+    Y,
+  );
 
   // Active set algortihm for NNLS main loop
   while (Fset.length > 0) {

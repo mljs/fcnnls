@@ -1,5 +1,10 @@
 'use strict';
 
+/*
+Can be executed using `node --inspect-brk benchmark/index.js`
+And debug from chrome using `chrome://inspect`
+*/
+
 const { readFileSync } = require('fs');
 const { join } = require('path');
 
@@ -31,6 +36,8 @@ for (let line of lines) {
 let target = new Matrix(b);
 target = target.transpose();
 
+console.profile('start');
+console.time('flag');
 let result = fcnnls(matrix, target);
-
-console.log(result);
+console.timeEnd('flag');
+console.profileEnd();
