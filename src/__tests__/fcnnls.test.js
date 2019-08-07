@@ -11,6 +11,40 @@ const { Matrix } = require('ml-matrix');
 
 const fcnnls = require('../fcnnls');
 
+const { readFileSync } = require('fs');
+const { join } = require('path');
+
+const concentration = readFileSync(join(__dirname, 'data/matrix.txt'), 'utf-8');
+let linesA = concentration.split(/[\r\n]+/);
+let A = [];
+for (let line of linesA) {
+  A.push(line.split(',').map((value) => Number(value)));
+}
+
+let matrix = new Matrix(A);
+
+matrix = matrix.transpose();
+
+const proportion = readFileSync(join(__dirname, 'data/x_fcnnls.txt'), 'utf-8');
+let linesk = proportion.split(/[\r\n]+/);
+let k = [];
+for (let line of linesk) {
+  k.push(line.split(',').map((value) => Number(value)));
+}
+delete k.splice(133, 1);
+let answer = new Matrix(k);
+
+const observation = readFileSync(join(__dirname, 'data/target.txt'), 'utf-8');
+let lines = observation.split(/[\r\n]+/);
+let b = [];
+for (let line of lines) {
+  b.push(line.split(',').map((value) => Number(value)));
+}
+
+let target = new Matrix(b);
+
+target = target.transpose();
+
 describe('myModule test', () => {
   it('identity X, Y 4x1', () => {
     let X = Matrix.eye(4);
@@ -97,5 +131,13 @@ describe('myModule test', () => {
     ]);
     let result = fcnnls(X, Y);
     expect(result.to2DArray()).toMatchCloseTo(solution.to2DArray(), 4);
+  });
+
+  it('matrix/target', () => {
+    let X = matrix;
+    let Y = target;
+    let result = fcnnls(X, Y);
+    let solution = answer;
+    expect(result.to2DArray()).toBeDeepCloseTo(solution.to2DArray(), 0);
   });
 });
