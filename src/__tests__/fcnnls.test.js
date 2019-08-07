@@ -1,5 +1,12 @@
 'use strict';
 
+const {
+  toBeDeepCloseTo,
+  toMatchCloseTo,
+} = require('jest-matcher-deep-close-to');
+
+expect.extend({ toBeDeepCloseTo, toMatchCloseTo });
+
 const { Matrix } = require('ml-matrix');
 
 const fcnnls = require('../fcnnls');
@@ -10,8 +17,9 @@ describe('myModule test', () => {
     let Y = new Matrix([[0], [1], [2], [3]]);
     let solution = new Matrix([[0], [1], [2], [3]]);
     let result = fcnnls(X, Y);
-    expect(result).toStrictEqual(solution);
+    expect(result.to2DArray()).toMatchCloseTo(solution.to2DArray(), 4);
   });
+
   it('identity X, Y 5x3', () => {
     let X = Matrix.eye(5);
     let Y = new Matrix([
@@ -29,22 +37,25 @@ describe('myModule test', () => {
       [4, 9, 14],
     ]);
     let result = fcnnls(X, Y);
-    expect(result).toStrictEqual(solution);
+    expect(result.to2DArray()).toMatchCloseTo(solution.to2DArray(), 4);
   });
+
   it('non-singular square X, Y 3x1', () => {
     let X = new Matrix([[0, 1, 1], [1, 0, 1], [1, 1, 0]]);
     let Y = new Matrix([[-1], [2], [-3]]);
     let solution = new Matrix([[0], [0], [0.5]]);
     let result = fcnnls(X, Y);
-    expect(result).toStrictEqual(solution);
+    expect(result.to2DArray()).toMatchCloseTo(solution.to2DArray(), 4);
   });
+
   it('singular square X rank 2, Y 3x1', () => {
     let X = new Matrix([[1, 2, 3], [4, 5, 6], [7, 8, 9]]);
     let Y = new Matrix([[-1], [0], [10]]);
     let solution = new Matrix([[1.0455], [0], [0]]);
     let result = Matrix.round(fcnnls(X, Y).mul(10000)).mul(0.0001);
-    expect(result).toStrictEqual(solution);
+    expect(result.to2DArray()).toMatchCloseTo(solution.to2DArray(), 4);
   });
+
   it('6x3 X full-rank, Y 6x7', () => {
     let X = new Matrix([
       [1, 2, 3],
@@ -68,8 +79,9 @@ describe('myModule test', () => {
       [0, 0, 0, 0, 1.0827, 0.3911, 0.4738],
     ]);
     let result = Matrix.round(fcnnls(X, Y).mul(10000)).mul(0.0001);
-    expect(result).toStrictEqual(solution);
+    expect(result.to2DArray()).toMatchCloseTo(solution.to2DArray(), 4);
   });
+
   it('Van Benthem - Keenan example', () => {
     let X = new Matrix([[95, 89, 82], [23, 76, 44], [61, 46, 62], [42, 2, 79]]);
     let Y = new Matrix([
@@ -83,7 +95,7 @@ describe('myModule test', () => {
       [0.6272, 0, 0.2862],
       [0.3517, 0.2873, 0.335],
     ]);
-    let result = Matrix.round(fcnnls(X, Y).mul(10000)).mul(0.0001);
-    expect(result).toStrictEqual(solution);
+    let result = fcnnls(X, Y);
+    expect(result.to2DArray()).toMatchCloseTo(solution.to2DArray(), 4);
   });
 });
