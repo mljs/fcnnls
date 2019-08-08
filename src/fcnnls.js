@@ -14,15 +14,21 @@ const optimality = require('./optimality');
  *
  * @param {Matrix} X
  * @param {Matrix} Y
- * @param {boolean} stop
+ * @param {object} [options={}]
+ * @param {boolean} [maxIterations]
  */
 
-function fcnnls(X, Y, stop) {
+function fcnnls(X, Y, options={}) {
+  X=Matrix.checkMatrix(X);
+  Y=Matrix.checkMatrix(Y);
   let { l, p, iter, maxiter, W, XtX, XtY, K, Pset, Fset, D } = initialisation(
     X,
     Y,
     stop,
   );
+  const {
+    maxIterations = X.columns * 3
+  } from options;
 
   // Active set algortihm for NNLS main loop
   while (Fset.length > 0) {
