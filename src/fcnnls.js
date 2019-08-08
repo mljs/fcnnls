@@ -1,7 +1,5 @@
 'use strict';
 
-// changer en typed array
-// Would it be sensible to be able to extract a full row(s)/column(s) easily with matrix.selection ?
 // add errors...
 
 const { Matrix } = require('ml-matrix');
@@ -12,12 +10,18 @@ const cssls = require('./cssls');
 const initialisation = require('./initialisation');
 const optimality = require('./optimality');
 
-module.exports = fcnnls;
+/**
+ *
+ * @param {Matrix} X
+ * @param {Matrix} Y
+ * @param {boolean} stop
+ */
 
-function fcnnls(X, Y) {
+function fcnnls(X, Y, stop) {
   let { l, p, iter, maxiter, W, XtX, XtY, K, Pset, Fset, D } = initialisation(
     X,
     Y,
+    stop,
   );
 
   // Active set algortihm for NNLS main loop
@@ -146,3 +150,5 @@ function fcnnls(X, Y) {
   }
   return K;
 }
+
+module.exports = fcnnls;
