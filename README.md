@@ -24,10 +24,16 @@ https://en.wikipedia.org/wiki/Non-negative_least_squares
 ## Example
 
 ```js
-const fcnnls = require('fcnnls');
 const { Matrix } = require('ml-matrix');
+const fcnnls = require('fcnnls');
+const fcnnlsVector = require('fcnnlsVector');
 
-let X = new Matrix([[1, 1, 2], [10, 11, -9], [-1, 0, 0], [-5, 6, -7]]);
+let X = new Matrix([
+  [1, 1, 2], 
+  [10, 11, -9], 
+  [-1, 0, 0], 
+  [-5, 6, -7],
+  ]);
 
 let Y = new Matrix([
   [-1, 0, 0, 9],
@@ -35,15 +41,27 @@ let Y = new Matrix([
   [0, 0, 0, 0],
   [1, 2, 3, 4],
 ]);
+
+let y = [-1, 11, 0, 1];
+
 let K = fcnnls(X, Y);
 
 /*
 K = new Matrix([
-      [0.461, 0, 4.9714, 0],
-      [0.5611, 0, 4.7362, 2.2404],
-      [0, 1.2388, 0, 1.9136],
+  [0.461, 0, 4.9714, 0],
+  [0.5611, 0, 4.7362, 2.2404],
+  [0, 1.2388, 0, 1.9136],
     ])
 */
+
+let k = fcnnlsVector(X, y);
+
+/*
+k = [0.461, 0.5611, 0]
+*/
+
+
+
 
 
 ## License

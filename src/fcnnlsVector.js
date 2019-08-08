@@ -10,8 +10,7 @@ function fcnnlsVector(X, y, options = {}) {
   }
   let Y = Matrix.columnVector(y);
   let K = fcnnls(X, Y, options);
-  let k = K.to1DArray;
-
+  let k = K.to1DArray();
   return k;
 }
 
