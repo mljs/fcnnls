@@ -18,17 +18,11 @@ const optimality = require('./optimality');
  * @param {boolean} [maxIterations]
  */
 
-function fcnnls(X, Y, options={}) {
-  X=Matrix.checkMatrix(X);
-  Y=Matrix.checkMatrix(Y);
-  let { l, p, iter, maxiter, W, XtX, XtY, K, Pset, Fset, D } = initialisation(
-    X,
-    Y,
-    stop,
-  );
-  const {
-    maxIterations = X.columns * 3
-  } from options;
+function fcnnls(X, Y, options = {}) {
+  X = Matrix.checkMatrix(X);
+  Y = Matrix.checkMatrix(Y);
+  let { l, p, iter, W, XtX, XtY, K, Pset, Fset, D } = initialisation(X, Y);
+  const { maxIterations = X.columns * 3 } = options;
 
   // Active set algortihm for NNLS main loop
   while (Fset.length > 0) {
@@ -60,7 +54,7 @@ function fcnnls(X, Y, options={}) {
     if (Hset.length > 0) {
       let m = Hset.length;
       let alpha = Matrix.zeros(l, m);
-      while (Hset.length > 0 && iter < maxiter) {
+      while (Hset.length > 0 && iter < maxIterations) {
         iter++;
         for (let j = 0; j < m; j++) {
           for (let i = 0; i < l; i++) {
@@ -139,7 +133,7 @@ function fcnnls(X, Y, options={}) {
 
     let newParam = optimality(
       iter,
-      maxiter,
+      maxIterations,
       XtX,
       XtY,
       Fset,
@@ -150,12 +144,10 @@ function fcnnls(X, Y, options={}) {
       p,
       D,
     );
-    console.log(newParam);
     Pset = newParam.Pset;
     Fset = newParam.Fset;
     W = newParam.W;
   }
-  console.log(K);
   return K;
 }
 

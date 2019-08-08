@@ -4,8 +4,8 @@ const setDifference = require('./util/setDifference');
 
 // Make sure the solution has converged
 
-function optimality(iter, maxiter, XtX, XtY, Fset, Pset, W, K, l, p, D) {
-  if (iter === maxiter) return 'Maximum number of iterations exceeded';
+function optimality(iter, maxIter, XtX, XtY, Fset, Pset, W, K, l, p, D) {
+  if (iter === maxIter) return 'Maximum number of iterations exceeded';
   // Check solution for optimality
   let V = XtY.subMatrixColumn(Fset).subtract(XtX.mmul(K.subMatrixColumn(Fset)));
   for (let j = 0; j < Fset.length; j++) {

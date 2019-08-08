@@ -74,7 +74,7 @@ describe('myModule test', () => {
     expect(result.to2DArray()).toMatchCloseTo(solution.to2DArray(), 4);
   });
 
-  it.only('non-singular square X, Y 3x1', () => {
+  it('non-singular square X, Y 3x1', () => {
     let X = new Matrix([[0, 1, 1], [1, 0, 1], [1, 1, 0]]);
     let Y = new Matrix([[-1], [2], [-3]]);
     let solution = new Matrix([[0], [0], [0.5]]);

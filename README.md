@@ -10,8 +10,8 @@ Fast Combinatorial Non-negative Least Squares
 
 Fast algorithm for the solution of large‐scale non‐negativity‐constrained least squares problems from Van Benthem and Keenan ([10.1002/cem.889](http://doi.org/10.1002/cem.889)), based on the active-set method algorithm published by Lawson and Hanson.
 
-It solves the following optimisation problem. 
-Given $$ X $$ an $ n \times l $ matrix and $ Y $ an $ n \times p $ matrix, find $ argmin_K\|XK - Y\|_{F}^{2} $ subject to $ K \geq 0 $, where $ K $ is an $ l \times p $ matrix and $ \| . \|_{F} $ is the Frobenius norm. 
+It solves the following optimisation problem.
+Given <img src='images/Im1.svg'> an <img src='images/Im2.svg'> matrix and <img src='images/Im3.svg'> an <img src='images/Im4.svg'> matrix, find <img src='images/Im5.svg'> subject to <img src='images/Im6.svg'>, where <img src='images/Im7.svg'> is an <img src='images/Im8.svg'> matrix and <img src='images/Im9.svg'> is the Frobenius norm. 
 
 https://en.wikipedia.org/wiki/Non-negative_least_squares
 
@@ -38,7 +38,11 @@ let Y = new Matrix([
 let K = fcnnls(X, Y);
 
 /*
-K=
+K = new Matrix([
+      [0.461, 0, 4.9714, 0],
+      [0.5611, 0, 4.7362, 2.2404],
+      [0, 1.2388, 0, 1.9136],
+    ])
 */
 
 
