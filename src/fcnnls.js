@@ -11,11 +11,12 @@ const initialisation = require('./initialisation');
 const optimality = require('./optimality');
 
 /**
- *
- * @param {Matrix} X
+ * Fast Combinatorial Non-negative Least Squares with multiple Right Hand Side
+ * @param {Matrix or 2D Array} X
  * @param {Matrix} Y
  * @param {object} [options={}]
- * @param {boolean} [maxIterations]
+ * @param {boolean} [maxIterations] if true maxIterations is set at 3 times the number of columns of X
+ * @returns {Matrix} K
  */
 
 function fcnnls(X, Y, options = {}) {
