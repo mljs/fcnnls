@@ -17,7 +17,7 @@ function initialisation(X, Y, stop) {
   } else if (stop === false || stop === undefined) {
     maxIter = Infinity;
   } else {
-    return 'ERROR: can only be true, false or undefined';
+    return 'ERROR: can only be true, false';
   }
 
   if (Y.rows !== n) return 'ERROR: matrix size not compatible'; // end function, ERROR to be handled

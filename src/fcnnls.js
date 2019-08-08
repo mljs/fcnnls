@@ -144,10 +144,12 @@ function fcnnls(X, Y, stop) {
       p,
       D,
     );
+    console.log(newParam);
     Pset = newParam.Pset;
     Fset = newParam.Fset;
     W = newParam.W;
   }
+  console.log(K);
   return K;
 }
 

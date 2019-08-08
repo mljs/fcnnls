@@ -36,7 +36,6 @@ function sortCollectionSet(collection) {
     values: sorted,
     indices: indices,
   };
-
   return result;
 }
 
