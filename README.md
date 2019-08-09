@@ -27,7 +27,7 @@ This first example
 
 ```js
 const { Matrix } = require('ml-matrix');
-const { fcnnls }  = require('fcnnls');
+const { fcnnls }  = require('index');
 
 // Example with multiple RHS 
 
@@ -56,9 +56,9 @@ K = Matrix([
     ])
 */
 
-<<<<<<< HEAD
 
 
+const { fcnnlsVector } = require('index');
 
 // Example with single RHS and same X
 // Should be giving a vector with the element of the first column of K in the previous example, since y is the first column of Y
@@ -72,27 +72,12 @@ let X = new Matrix([
 
 let y = [-1, 11, 0, 1];
 
-=======
-```
-
-
-
-```
-const {fcnnls}  = require('fcnnls');
-
-let y = [-1, 11, 0, 1];
-
-
->>>>>>> 302a5544f64f109109a1e42cc58b0595535ff9f4
 let k = fcnnlsVector(X, y);
-
-let K = fcnnls(X, Y);
-
 
 /*
 k = [0.461, 0.5611, 0]
 */
-
+```
 
 
 
