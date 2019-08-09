@@ -1,11 +1,8 @@
 'use strict';
 
-// add errors...
-
 const { Matrix } = require('ml-matrix');
 
 const selection = require('./util/selection');
-// const sortCollectionSet = require('./util/sortCollectionSet');
 const cssls = require('./cssls');
 const initialisation = require('./initialisation');
 const optimality = require('./optimality');
@@ -15,7 +12,7 @@ const optimality = require('./optimality');
  * @param {Matrix or 2D Array} X
  * @param {Matrix} Y
  * @param {object} [options={}]
- * @param {boolean} [maxIterations] if true maxIterations is set at 3 times the number of columns of X
+ * @param {boolean} [maxIterations] if true or empty maxIterations is set at 3 times the number of columns of X
  * @returns {Matrix} K
  */
 
@@ -24,7 +21,6 @@ function fcnnls(X, Y, options = {}) {
   Y = Matrix.checkMatrix(Y);
   let { l, p, iter, W, XtX, XtY, K, Pset, Fset, D } = initialisation(X, Y);
   const { maxIterations = X.columns * 3 } = options;
-
   // Active set algortihm for NNLS main loop
   while (Fset.length > 0) {
     // Solves for the passive variables (uses subroutine below)
@@ -41,16 +37,16 @@ function fcnnls(X, Y, options = {}) {
       }
     }
     // find any infeasible solutions
-    let u = [];
+    let infeasIndex = [];
     for (let j = 0; j < Fset.length; j++) {
       for (let i = 0; i < l; i++) {
         if (L.get(i, j) < 0) {
-          u.push(j);
+          infeasIndex.push(j);
           break;
         }
       }
     }
-    let Hset = selection(Fset, u);
+    let Hset = selection(Fset, infeasIndex);
     // Make infeasible solutions feasible (standard NNLS inner loop)
     if (Hset.length > 0) {
       let m = Hset.length;
@@ -86,7 +82,7 @@ function fcnnls(X, Y, options = {}) {
                 K.get(negRowColIdx[0][k], negRowColIdx[1][k])),
           );
         }
-        // console.log(alpha), pas tout à fait la même première composante, erreur numérique ? très proche de zéro !
+
         let alphaMin = [];
         let minIdx = [];
         for (let j = 0; j < m; j++) {
@@ -113,22 +109,22 @@ function fcnnls(X, Y, options = {}) {
             Pset[Hset[j]].findIndex((item) => item === minIdx[j]),
             1,
           );
-        } // à retester avec exemple plus complexe
+        }
 
         L = cssls(XtX, XtY.subMatrixColumn(Hset), selection(Pset, Hset), l, m);
         for (let j = 0; j < m; j++) {
           K.setColumn(Hset[j], L.subMatrixColumn([j]));
         }
-        u = [];
+        infeasIndex = [];
         for (let j = 0; j < Fset.length; j++) {
           for (let i = 0; i < l; i++) {
             if (L.get(i, j) < 0) {
-              u.push(j);
+              infeasIndex.push(j);
               break;
             }
           }
         }
-        Hset = selection(Fset, u);
+        Hset = selection(Fset, infeasIndex);
       }
     }
 
@@ -148,6 +144,8 @@ function fcnnls(X, Y, options = {}) {
     Pset = newParam.Pset;
     Fset = newParam.Fset;
     W = newParam.W;
+    //console.log(newParam);
+    //console.log(K);
   }
   return K;
 }

@@ -4,6 +4,7 @@
 // Maybe try with really big system of equation ?
 const { Matrix } = require('ml-matrix');
 
+const selection = require('../util/selection');
 const cssls = require('../cssls');
 const initialisation = require('../initialisation');
 
@@ -164,6 +165,28 @@ describe('cssls test', () => {
     ]);
     let result = Matrix.round(cssls(XtX, XtY, Pset, l, p).mul(10000)).mul(
       0.0001,
+    );
+    expect(result).toStrictEqual(solution);
+  });
+  it('negative identity X, positive Y', () => {
+    let X = Matrix.eye(3).mul(-1);
+    let Y = new Matrix([[1], [2], [3]]);
+    let init = initialisation(X, Y);
+    let solution = new Matrix([[-1], [-2], [-3]]);
+    let result = cssls(init.XtX, init.XtY, null, init.l, init.p);
+    expect(result).toStrictEqual(solution);
+  });
+  it('test', () => {
+    let X = Matrix.eye(3).mul(-1);
+    let Y = new Matrix([[1], [2], [3]]);
+    let init = initialisation(X, Y);
+    let solution = new Matrix([[0], [0], [0]]);
+    let result = cssls(
+      init.XtX,
+      init.XtY,
+      selection(init.Pset, init.Fset),
+      init.l,
+      init.p,
     );
     expect(result).toStrictEqual(solution);
   });

@@ -20,8 +20,8 @@ function initialisation(X, Y) {
   let XtX = X.transpose().mmul(X);
   let XtY = X.transpose().mmul(Y);
 
-  let K = cssls(XtX, XtY, null); // K is lxp
-  let Pset = []; // A better way to find the Pset ? using a function like filter or equivalent ?
+  let K = cssls(XtX, XtY, null, l, p); // K is lxp
+  let Pset = [];
   for (let j = 0; j < p; j++) {
     Pset[j] = [];
     for (let i = 0; i < l; i++) {

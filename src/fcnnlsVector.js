@@ -9,7 +9,7 @@ const fcnnls = require('./fcnnls');
  * @param {Matrix or 2D Array} X
  * @param {1D Array} y
  * @param {object} [options={}]
- * @param {boolean} [maxIterations] if true maxIterations is set at 3 times the number of columns of X
+ * @param {boolean} [maxIterations] if true or empty maxIterations is set at 3 times the number of columns of X
  * @returns {Array} k
  */
 function fcnnlsVector(X, y, options = {}) {

@@ -133,7 +133,7 @@ describe('myModule test', () => {
     expect(result.to2DArray()).toMatchCloseTo(solution.to2DArray(), 4);
   });
 
-  it('matrix/target', () => {
+  it.skip('matrix/target', () => {
     let X = matrix;
     let Y = target;
     let result = fcnnls(X, Y);

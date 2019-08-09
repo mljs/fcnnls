@@ -18,4 +18,12 @@ describe('myModule test', () => {
     let result = fcnnlsVector(X, y);
     expect(result).toBeDeepCloseTo(solution, 4);
   });
+
+  it('negative identity X and positive RHS', () => {
+    let X = Matrix.eye(3).mul(-1);
+    let y = [1, 2, 3];
+    let solution = [0, 0, 0];
+    let result = fcnnlsVector(X, y);
+    expect(result).toBeDeepCloseTo(solution, 4);
+  });
 });

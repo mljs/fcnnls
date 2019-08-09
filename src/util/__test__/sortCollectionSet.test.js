@@ -47,4 +47,11 @@ describe('sortCollectionSet test', () => {
       indices: [[4, 5, 6], [0], [3], [1], [2], [8], [7]],
     });
   });
+  it('collection of 1 empty set', () => {
+    let result = sortCollectionSet([[]]);
+    expect(result).toStrictEqual({
+      values: [[]],
+      indices: [[0]],
+    });
+  });
 });
