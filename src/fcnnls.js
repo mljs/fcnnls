@@ -8,7 +8,7 @@ const initialisation = require('./initialisation');
 const optimality = require('./optimality');
 
 /**
- * Fast Combinatorial Non-negative Least Squares with multiple Right Hand Side
+ * Fast Combinatorial Non-negative Least Squares with multiple Right Hand Side, works well with thin X (small # of column for X)
  * @param {Matrix or 2D Array} X
  * @param {Matrix} Y
  * @param {object} [options={}]
@@ -22,6 +22,7 @@ function fcnnls(X, Y, options = {}) {
   let { l, p, iter, W, XtX, XtY, K, Pset, Fset, D } = initialisation(X, Y);
   const { maxIterations = X.columns * 3 } = options;
   // Active set algortihm for NNLS main loop
+
   while (Fset.length > 0) {
     // Solves for the passive variables (uses subroutine below)
     let L = cssls(
@@ -36,6 +37,7 @@ function fcnnls(X, Y, options = {}) {
         K.set(i, Fset[j], L.get(i, j));
       }
     }
+
     // find any infeasible solutions
     let infeasIndex = [];
     for (let j = 0; j < Fset.length; j++) {
@@ -47,28 +49,28 @@ function fcnnls(X, Y, options = {}) {
       }
     }
     let Hset = selection(Fset, infeasIndex);
+
     // Make infeasible solutions feasible (standard NNLS inner loop)
     if (Hset.length > 0) {
       let m = Hset.length;
-      let alpha = Matrix.zeros(l, m);
-      while (Hset.length > 0 && iter < maxIterations) {
+      let alpha = Matrix.ones(l, m);
+
+      while (m > 0 && iter < maxIterations) {
         iter++;
-        for (let j = 0; j < m; j++) {
-          for (let i = 0; i < l; i++) {
-            alpha.set(i, j, Infinity);
-          }
-        }
+
+        alpha.mul(Infinity);
+
         // Find indices of negative variables in passive set
         let hRowColIdx = [[], []]; // Indexes work in pairs, each of them reprensents a single element, first array is row index, second array is column index
         let negRowColIdx = [[], []]; //same as before
         for (let j = 0; j < m; j++) {
           for (let i = 0; i < Pset[Hset[j]].length; i++) {
             if (K.get(Pset[Hset[j]][i], Hset[j]) < 0) {
-              hRowColIdx[0].push(i);
-              negRowColIdx[0].push(i);
+              hRowColIdx[0].push(Pset[Hset[j]][i]); // i
               hRowColIdx[1].push(j);
+              negRowColIdx[0].push(Pset[Hset[j]][i]); // i
               negRowColIdx[1].push(Hset[j]);
-            }
+            } // compared to matlab, here we keep the row/column indexing (we are not taking the linear indexing)
           }
         }
 
@@ -89,17 +91,24 @@ function fcnnls(X, Y, options = {}) {
           alphaMin[j] = alpha.minColumn(j);
           minIdx[j] = alpha.minColumnIndex(j)[0];
         }
+
+        alphaMin = Matrix.rowVector(alphaMin);
         for (let i = 0; i < l; i++) {
-          alpha.setRow(i, alphaMin);
+          alpha.setSubMatrix(alphaMin, i, 0);
         }
-        let E = D.subMatrixColumn(Hset);
+
+        let E = new Matrix(l, m);
         E = D.subMatrixColumn(Hset).subtract(
-          alpha.mul(D.subMatrixColumn(Hset).subtract(K.subMatrixColumn(Hset))),
+          alpha
+            .subMatrix(0, l - 1, 0, m - 1)
+            .mul(D.subMatrixColumn(Hset).subtract(K.subMatrixColumn(Hset))),
         );
         for (let j = 0; j < m; j++) {
-          D.setColumn(j, E.subMatrixColumn([j]));
+          D.setColumn(Hset[j], E.subMatrixColumn([j]));
         }
+
         let idx2zero = [minIdx, Hset];
+
         for (let k = 0; k < m; k++) {
           D.set(idx2zero[0][k], idx2zero[1][k], 0);
         }
@@ -115,16 +124,19 @@ function fcnnls(X, Y, options = {}) {
         for (let j = 0; j < m; j++) {
           K.setColumn(Hset[j], L.subMatrixColumn([j]));
         }
-        infeasIndex = [];
-        for (let j = 0; j < Fset.length; j++) {
+
+        Hset = [];
+        for (let j = 0; j < K.columns; j++) {
           for (let i = 0; i < l; i++) {
-            if (L.get(i, j) < 0) {
-              infeasIndex.push(j);
+            if (K.get(i, j) < 0) {
+              Hset.push(j);
+
               break;
             }
           }
         }
-        Hset = selection(Fset, infeasIndex);
+        m = Hset.length;
+        if (iter === 3) return 'stopped';
       }
     }
 
@@ -141,12 +153,23 @@ function fcnnls(X, Y, options = {}) {
       p,
       D,
     );
+    /*Could we rename the three variables with {Pset, Fset, W} = optimality(iter,
+     maxIterations,
+      XtX,
+      XtY,
+      Fset,
+      Pset,
+      W,
+      K,
+      l,
+      p,
+      D,
+    ); */
     Pset = newParam.Pset;
     Fset = newParam.Fset;
     W = newParam.W;
-    //console.log(newParam);
-    //console.log(K);
   }
+
   return K;
 }
 

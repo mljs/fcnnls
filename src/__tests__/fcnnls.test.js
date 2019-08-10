@@ -133,7 +133,7 @@ describe('myModule test', () => {
     expect(result.to2DArray()).toMatchCloseTo(solution.to2DArray(), 4);
   });
 
-  it.skip('matrix/target', () => {
+  it('matrix/target', () => {
     let X = matrix;
     let Y = target;
     let result = fcnnls(X, Y);
@@ -156,5 +156,52 @@ describe('myModule test', () => {
     ]);
     let result = fcnnls(X, Y);
     expect(result.to2DArray()).toMatchCloseTo(solution.to2DArray(), 4);
+  });
+
+  it.only('random  X, ramdom Y', () => {
+    let X = Matrix.randInt(10000, 20);
+    let Y = Matrix.randInt(10000, 200);
+    //console.log(X);
+    //console.log(Y);
+    let solution = new Matrix([[0], [1], [2], [3]]);
+    let result = fcnnls(X, Y, false);
+    expect(result.to2DArray()).toBeDeepCloseTo(solution.to2DArray(), 4);
+  });
+
+  it('debuggage random matrices', () => {
+    let X = new Matrix([
+      [269, 134, 116, 940, 530],
+      [899, 199, 207, 95, 533],
+      [474, 817, 100000, 743, 991],
+      [315, 389, -90, 950, 169],
+      [963, 742, 151, 501, 282],
+      [777, 618, 991, 738, 969],
+      [177, 460, 268, 210, 106],
+      [866, 802, 504, 665, 896],
+      [397, 832, 951, 242, 359],
+      [203, 763, 405, 179, 454],
+    ]);
+
+    let Y = new Matrix([
+      [123, 521],
+      [950, 21],
+      [825, 657],
+      [192, 151],
+      [280, 3089],
+      [424, 88],
+      [226, 748],
+      [997, 845],
+      [309, 163],
+      [902, 629],
+    ]);
+    let solution = new Matrix([
+      [0.2066, 0.7494],
+      [0.2479, 0.5763],
+      [0.0004, 0],
+      [0, 0],
+      [0.492, 0],
+    ]);
+    let result = fcnnls(X, Y);
+    expect(result.to2DArray()).toBeDeepCloseTo(solution.to2DArray(), 4);
   });
 });
