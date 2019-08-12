@@ -158,7 +158,7 @@ describe('myModule test', () => {
     expect(result.to2DArray()).toMatchCloseTo(solution.to2DArray(), 4);
   });
 
-  it.only('random  X, ramdom Y', () => {
+  it.skip('random  X, ramdom Y', () => {
     let X = Matrix.randInt(10000, 20);
     let Y = Matrix.randInt(10000, 200);
     //console.log(X);

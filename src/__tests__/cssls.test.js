@@ -1,10 +1,16 @@
 'use strict';
 
 const { Matrix } = require('ml-matrix');
+const {
+  toBeDeepCloseTo,
+  toMatchCloseTo,
+} = require('jest-matcher-deep-close-to');
 
 const selection = require('../util/selection');
 const cssls = require('../cssls');
 const initialisation = require('../initialisation');
+
+expect.extend({ toBeDeepCloseTo, toMatchCloseTo });
 
 describe('cssls test', () => {
   it('identity X, Y 4x1', () => {
@@ -26,7 +32,7 @@ describe('cssls test', () => {
     } = initialisation(X, Y);
     let solution = new Matrix([[0], [1], [2], [3]]);
     let result = cssls(XtX, XtY, Pset, l, p);
-    expect(result).toStrictEqual(solution);
+    expect(result.to2DArray()).toBeDeepCloseTo(solution.to2DArray(), 4);
   });
   it('identity X, Y 5x3', () => {
     let X = Matrix.eye(5);
@@ -46,7 +52,7 @@ describe('cssls test', () => {
       [4, 9, 14],
     ]);
     let result = cssls(init.XtX, init.XtY, init.Pset, init.l, init.p);
-    expect(result).toStrictEqual(solution);
+    expect(result.to2DArray()).toBeDeepCloseTo(solution.to2DArray(), 4);
   });
   it('non-singular square X, Y 3x1', () => {
     let X = new Matrix([[0, 1, 1], [1, 0, 1], [1, 1, 0]]);
@@ -67,7 +73,7 @@ describe('cssls test', () => {
     } = initialisation(X, Y);
     let solution = new Matrix([[-1], [0], [1]]);
     let result = cssls(XtX, XtY, Pset, l, p);
-    expect(result).toStrictEqual(solution);
+    expect(result.to2DArray()).toBeDeepCloseTo(solution.to2DArray(), 4);
   });
   it('singular square X rank 2, Y 3x1', () => {
     let X = new Matrix([[1, 2, 3], [4, 5, 6], [7, 8, 9]]);
@@ -90,7 +96,7 @@ describe('cssls test', () => {
     let result = Matrix.round(cssls(XtX, XtY, Pset, l, p).mul(10000)).mul(
       0.0001,
     );
-    expect(result).toStrictEqual(solution);
+    expect(result.to2DArray()).toBeDeepCloseTo(solution.to2DArray(), 4);
   });
   it('6x3 X full-rank, Y 6x7', () => {
     let X = new Matrix([
@@ -131,7 +137,7 @@ describe('cssls test', () => {
     let result = Matrix.round(cssls(XtX, XtY, Pset, l, p).mul(10000)).mul(
       0.0001,
     );
-    expect(result).toStrictEqual(solution);
+    expect(result.to2DArray()).toBeDeepCloseTo(solution.to2DArray(), 4);
   });
   it('Van Benthem - Keenan example', () => {
     let X = new Matrix([[95, 89, 82], [23, 76, 44], [61, 46, 62], [42, 2, 79]]);
@@ -164,7 +170,7 @@ describe('cssls test', () => {
     let result = Matrix.round(cssls(XtX, XtY, Pset, l, p).mul(10000)).mul(
       0.0001,
     );
-    expect(result).toStrictEqual(solution);
+    expect(result.to2DArray()).toBeDeepCloseTo(solution.to2DArray(), 4);
   });
   it('negative identity X, positive Y', () => {
     let X = Matrix.eye(3).mul(-1);
@@ -172,7 +178,7 @@ describe('cssls test', () => {
     let init = initialisation(X, Y);
     let solution = new Matrix([[-1], [-2], [-3]]);
     let result = cssls(init.XtX, init.XtY, null, init.l, init.p);
-    expect(result).toStrictEqual(solution);
+    expect(result.to2DArray()).toBeDeepCloseTo(solution.to2DArray(), 4);
   });
   it('test', () => {
     let X = Matrix.eye(3).mul(-1);
@@ -186,6 +192,6 @@ describe('cssls test', () => {
       init.l,
       init.p,
     );
-    expect(result).toStrictEqual(solution);
+    expect(result.to2DArray()).toBeDeepCloseTo(solution.to2DArray(), 4);
   });
 });

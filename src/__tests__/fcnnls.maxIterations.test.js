@@ -16,15 +16,6 @@ describe('myModule test', () => {
     let Y = new Matrix([[0], [1], [2], [3]]);
     let solution = new Matrix([[0], [1], [2], [3]]);
     let result = fcnnls(X, Y, false);
-    expect(result.to2DArray()).toMatchCloseTo(solution.to2DArray(), 4);
-  });
-
-  it.only('random big X, ramdome big Y', () => {
-    let X = Matrix.rand(120, 20);
-    let Y = Matrix.rand(120, 300);
-    console.log(X);
-    let solution = new Matrix([[0], [1], [2], [3]]);
-    let result = fcnnls(X, Y, false);
-    expect(result.to2DArray()).toMatchCloseTo(solution.to2DArray(), 4);
+    expect(result.to2DArray()).toBeDeepCloseTo(solution.to2DArray(), 4);
   });
 });
