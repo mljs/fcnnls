@@ -12,7 +12,7 @@ const optimality = require('./optimality');
  * @param {Matrix or 2D Array} X
  * @param {Matrix} Y
  * @param {object} [options={}]
- * @param {boolean} [options.maxIterations] if true or empty maxIterations is set at 3 times the number of columns of X
+ * @param {number} [options.maxIterations] if empty maxIterations is set at 3 times the number of columns of X
  * @returns {Matrix} K
  */
 
