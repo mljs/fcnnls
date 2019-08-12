@@ -1,18 +1,17 @@
 'use strict';
 
+const { readFileSync } = require('fs');
+const { join } = require('path');
+
 const {
   toBeDeepCloseTo,
   toMatchCloseTo,
 } = require('jest-matcher-deep-close-to');
-
-expect.extend({ toBeDeepCloseTo, toMatchCloseTo });
-
 const { Matrix } = require('ml-matrix');
 
 const fcnnls = require('../fcnnls');
 
-const { readFileSync } = require('fs');
-const { join } = require('path');
+expect.extend({ toBeDeepCloseTo, toMatchCloseTo });
 
 const concentration = readFileSync(join(__dirname, 'data/matrix.txt'), 'utf-8');
 let linesA = concentration.split(/[\r\n]+/);
@@ -156,16 +155,6 @@ describe('myModule test', () => {
     ]);
     let result = fcnnls(X, Y);
     expect(result.to2DArray()).toMatchCloseTo(solution.to2DArray(), 4);
-  });
-
-  it.skip('random  X, ramdom Y', () => {
-    let X = Matrix.randInt(10000, 20);
-    let Y = Matrix.randInt(10000, 200);
-    //console.log(X);
-    //console.log(Y);
-    let solution = new Matrix([[0], [1], [2], [3]]);
-    let result = fcnnls(X, Y, false);
-    expect(result.to2DArray()).toBeDeepCloseTo(solution.to2DArray(), 4);
   });
 
   it('debuggage random matrices', () => {

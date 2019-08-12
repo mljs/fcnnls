@@ -16,20 +16,7 @@ describe('cssls test', () => {
   it('identity X, Y 4x1', () => {
     let X = Matrix.eye(4);
     let Y = new Matrix([[0], [1], [2], [3]]);
-    let {
-      n,
-      l,
-      p,
-      iter,
-      maxiter,
-      W,
-      XtX,
-      XtY,
-      K,
-      Pset,
-      Fset,
-      D,
-    } = initialisation(X, Y);
+    let { l, p, XtX, XtY, Pset } = initialisation(X, Y);
     let solution = new Matrix([[0], [1], [2], [3]]);
     let result = cssls(XtX, XtY, Pset, l, p);
     expect(result.to2DArray()).toBeDeepCloseTo(solution.to2DArray(), 4);
@@ -57,20 +44,7 @@ describe('cssls test', () => {
   it('non-singular square X, Y 3x1', () => {
     let X = new Matrix([[0, 1, 1], [1, 0, 1], [1, 1, 0]]);
     let Y = new Matrix([[-1], [2], [-3]]);
-    let {
-      n,
-      l,
-      p,
-      iter,
-      maxiter,
-      W,
-      XtX,
-      XtY,
-      K,
-      Pset,
-      Fset,
-      D,
-    } = initialisation(X, Y);
+    let { l, p, XtX, XtY, Pset } = initialisation(X, Y);
     let solution = new Matrix([[-1], [0], [1]]);
     let result = cssls(XtX, XtY, Pset, l, p);
     expect(result.to2DArray()).toBeDeepCloseTo(solution.to2DArray(), 4);
@@ -78,20 +52,7 @@ describe('cssls test', () => {
   it('singular square X rank 2, Y 3x1', () => {
     let X = new Matrix([[1, 2, 3], [4, 5, 6], [7, 8, 9]]);
     let Y = new Matrix([[-1], [0], [10]]);
-    let {
-      n,
-      l,
-      p,
-      iter,
-      maxiter,
-      W,
-      XtX,
-      XtY,
-      K,
-      Pset,
-      Fset,
-      D,
-    } = initialisation(X, Y);
+    let { l, p, XtX, XtY, Pset } = initialisation(X, Y);
     let solution = new Matrix([[1.0455], [0], [0]]);
     let result = Matrix.round(cssls(XtX, XtY, Pset, l, p).mul(10000)).mul(
       0.0001,
@@ -115,20 +76,7 @@ describe('cssls test', () => {
       [1000, 2, 56, 40, 1, 1, 3],
       [7, 6, 5, 4, 3, 2, 1],
     ]);
-    let {
-      n,
-      l,
-      p,
-      iter,
-      maxiter,
-      W,
-      XtX,
-      XtY,
-      K,
-      Pset,
-      Fset,
-      D,
-    } = initialisation(X, Y);
+    let { l, p, XtX, XtY, Pset } = initialisation(X, Y);
     let solution = new Matrix([
       [203.7567, 0, 0, 0, 0, 0, 0],
       [-149.1338, 3.3309, 2.0243, 1.5134, 0, 0, 0],
@@ -148,20 +96,7 @@ describe('cssls test', () => {
       [41, 61, 39],
     ]);
 
-    let {
-      n,
-      l,
-      p,
-      iter,
-      maxiter,
-      W,
-      XtX,
-      XtY,
-      K,
-      Pset,
-      Fset,
-      D,
-    } = initialisation(X, Y);
+    let { l, p, XtX, XtY, Pset } = initialisation(X, Y);
     let solution = new Matrix([
       [0, 0.6873, 0.2836],
       [0.6272, 0, 0.2862],
