@@ -2,6 +2,7 @@
 
 /**
  * Computes the set difference A\B
+ * @private
  * @param {A} set A as an array
  * @param {B} set B as an array
  */

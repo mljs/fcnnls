@@ -2,6 +2,7 @@
 
 /**
  * Returns a new array based on extraction of specific indices of an array
+ * @private
  * @param {Array} vector
  * @param {Array} indices
  */

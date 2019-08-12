@@ -5,6 +5,7 @@ const { Matrix, inverse } = require('ml-matrix');
 const sortCollectionSet = require('./util/sortCollectionSet');
 /**
  * (Combinatorial Subspace Least Squares) - subfunction for the FC-NNLS
+ * @private
  * @param {Matrix} XtX
  * @param {Matrix} XtY
  * @param {Array} Pset

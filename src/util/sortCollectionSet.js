@@ -4,6 +4,7 @@
 
 /**
  *
+ * @private
  * @param {Array of arrays} collection
  */
 
