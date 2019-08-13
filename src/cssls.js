@@ -15,6 +15,8 @@ const sortCollectionSet = require('./util/sortCollectionSet');
 
 function cssls(XtX, XtY, Pset, l, p) {
   // Solves the set of equation XtX*K = XtY for the variables in Pset
+  // if XtX (or XtX(vars,vars)) is singular, performs the svd and find pseudoinverse, otherwise (even if ill-conditioned) finds inverse with LU decomposition and solves the set of equation
+  // it is consistent with matlab results for ill-conditioned matrices (at least consistent with test 'ill-conditionned square X rank 2, Y 3x1' in cssls.test)
   let K = Matrix.zeros(l, p);
   if (Pset === null) {
     let luXtX = new LuDecomposition(XtX);

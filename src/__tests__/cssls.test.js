@@ -1,6 +1,6 @@
 'use strict';
 
-const { Matrix, LuDecomposition } = require('ml-matrix');
+const { Matrix } = require('ml-matrix');
 const {
   toBeDeepCloseTo,
   toMatchCloseTo,
@@ -49,7 +49,7 @@ describe('cssls test', () => {
     let result = cssls(XtX, XtY, Pset, l, p);
     expect(result.to2DArray()).toBeDeepCloseTo(solution.to2DArray(), 4);
   });
-  it('singular square X rank 2, Y 3x1', () => {
+  it('ill-conditionned square X rank 2, Y 3x1', () => {
     let X = new Matrix([[1, 2, 3], [4, 5, 6], [7, 8, 9]]);
     let Y = new Matrix([[-1], [0], [10]]);
     let { l, p, XtX, XtY, Pset } = initialisation(X, Y);
