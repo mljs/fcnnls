@@ -12,6 +12,7 @@ const initialisation = require('../initialisation');
 
 expect.extend({ toBeDeepCloseTo, toMatchCloseTo });
 
+// to be added: test for svd inverse...
 describe('cssls test', () => {
   it('identity X, Y 4x1', () => {
     let X = Matrix.eye(4);
