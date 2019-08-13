@@ -193,4 +193,13 @@ describe('myModule test', () => {
     let result = fcnnls(X, Y);
     expect(result.to2DArray()).toBeDeepCloseTo(solution.to2DArray(), 4);
   });
+
+  it.skip('test matrices nmf', () => {
+    let X = Matrix.eye(3, 2);
+    let Y = new Matrix([[1, 2, 3], [4, 5, 6], [7, 8, 9]]);
+    let solution = new Matrix([[0.461, 0, 4.9714], [0.5611, 0, 4.7362]]);
+    let result = fcnnls(X, Y);
+    console.log(result);
+    expect(result.to2DArray()).toMatchCloseTo(solution.to2DArray(), 4);
+  });
 });

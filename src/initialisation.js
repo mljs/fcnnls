@@ -32,14 +32,12 @@ function initialisation(X, Y) {
       } //This is our initial solution, it's the solution found by overwriting the unconstrained least square solution
     }
   }
-  //console.log(Pset);
   let Fset = [];
   for (let j = 0; j < p; j++) {
     if (Pset[j].length !== l) {
       Fset.push(j);
     }
   }
-  //console.log(Fset);
 
   let D = K.clone();
 

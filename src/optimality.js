@@ -20,7 +20,9 @@ function optimality(iter, maxIter, XtX, XtY, Fset, Pset, W, K, l, p, D) {
   }
   for (let j = 0; j < Fset.length; j++) {
     let notPset = setDifference(fullSet, Pset[Fset[j]]);
-    if (W.selection(notPset, [Fset[j]]).max() <= 0) {
+    if (notPset.length === 0) {
+      Jset.push(Fset[j]);
+    } else if (W.selection(notPset, [Fset[j]]).max() <= 0) {
       Jset.push(Fset[j]);
     }
   }

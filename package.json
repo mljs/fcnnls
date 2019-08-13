@@ -48,6 +48,7 @@
     "prettier": "^1.18.2"
   },
   "dependencies": {
-    "ml-matrix": "^6.2.0"
+    "ml-matrix": "^6.2.0",
+    "ml-xsadd": "^2.0.0"
   }
 }
