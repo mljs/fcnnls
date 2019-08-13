@@ -1,6 +1,6 @@
 'use strict';
 
-const { Matrix, inverse } = require('ml-matrix');
+const { Matrix, LuDecomposition, solve } = require('ml-matrix');
 
 const sortCollectionSet = require('./util/sortCollectionSet');
 /**
@@ -15,13 +15,17 @@ const sortCollectionSet = require('./util/sortCollectionSet');
 
 function cssls(XtX, XtY, Pset, l, p) {
   // Solves the set of equation XtX*K = XtY for the variables in Pset
-  let K;
+  let K = Matrix.zeros(l, p);
   if (Pset === null) {
-    K = inverse(XtX).mmul(XtY);
+    let luXtX = new LuDecomposition(XtX);
+    if (luXtX.isSingular() === false) {
+      K = luXtX.solve(Matrix.eye(l)).mmul(XtY);
+    } else {
+      K = solve(XtX, XtY, { useSVD: true });
+    }
   } else {
     let sortedPset = sortCollectionSet(Pset).values;
     let sortedEset = sortCollectionSet(Pset).indices;
-    K = Matrix.zeros(l, p);
     if (
       sortedPset.length === 1 &&
       sortedPset[0].length === 0 &&
@@ -33,14 +37,38 @@ function cssls(XtX, XtY, Pset, l, p) {
       sortedPset[0].length === l &&
       sortedEset[0].length === p
     ) {
-      K = inverse(XtX).mmul(XtY);
+      let luXtX = new LuDecomposition(XtX);
+      if (luXtX.isSingular() === false) {
+        K = luXtX.solve(Matrix.eye(l)).mmul(XtY);
+      } else {
+        K = solve(XtX, XtY, { useSVD: true });
+      }
+      //K = solve(XtX, XtY);
     } else {
       for (let k = 0; k < sortedPset.length; k++) {
         let cols2Solve = sortedEset[k];
         let vars = sortedPset[k];
-        let L = inverse(XtX.selection(vars, vars), { useSVD: true }).mmul(
+        /*let L = inverse(XtX.selection(vars, vars)).mmul(
           XtY.selection(vars, cols2Solve),
-        );
+        );*/
+        let L;
+        let luXtX = new LuDecomposition(XtX.selection(vars, vars));
+        if (luXtX.isSingular() === false) {
+          L = luXtX
+            .solve(Matrix.eye(vars.length))
+            .mmul(XtY.selection(vars, cols2Solve));
+        } else {
+          L = solve(
+            XtX.selection(vars, vars),
+            XtY.selection(vars, cols2Solve),
+            { useSVD: true },
+          );
+        }
+        /*let L = solve(
+          XtX.selection(vars, vars),
+          XtY.selection(vars, cols2Solve),
+        ); */
+
         for (let i = 0; i < L.rows; i++) {
           for (let j = 0; j < L.columns; j++) {
             K.set(vars[i], cols2Solve[j], L.get(i, j));
