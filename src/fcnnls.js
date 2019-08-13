@@ -136,7 +136,6 @@ function fcnnls(X, Y, options = {}) {
           }
         }
         m = Hset.length;
-        if (iter === 3) return 'stopped';
       }
     }
 
