@@ -193,4 +193,20 @@ describe('myModule test', () => {
     let result = fcnnls(X, Y);
     expect(result.to2DArray()).toBeDeepCloseTo(solution.to2DArray(), 4);
   });
+
+  it('identity X, negative Y 3x1', () => {
+    let X = Matrix.eye(3);
+    let Y = new Matrix([[-1], [-2], [-3]]);
+    let solution = new Matrix([[0], [0], [0]]);
+    let result = fcnnls(X, Y);
+    expect(result.to2DArray()).toMatchCloseTo(solution.to2DArray(), 4);
+  });
+
+  it('another simple test', () => {
+    let X = new Matrix([[1, 1, 0], [0, 1, 1], [0, 0, 1]]);
+    let Y = new Matrix([[-2], [2], [0]]);
+    let solution = new Matrix([[0], [0], [1]]);
+    let result = fcnnls(X, Y);
+    expect(result.to2DArray()).toMatchCloseTo(solution.to2DArray(), 4);
+  });
 });

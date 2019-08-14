@@ -52,6 +52,7 @@ describe('cssls test', () => {
   });
   it('ill-conditionned square X rank 2, Y 3x1', () => {
     let X = new Matrix([[1, 2, 3], [4, 5, 6], [7, 8, 9]]);
+
     let Y = new Matrix([[-1], [0], [10]]);
     let { l, p, XtX, XtY, Pset } = initialisation(X, Y);
     let solution = new Matrix([[1.0455], [0], [0]]);

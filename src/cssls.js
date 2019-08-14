@@ -1,6 +1,11 @@
 'use strict';
 
-const { Matrix, LuDecomposition, solve } = require('ml-matrix');
+const {
+  Matrix,
+  LuDecomposition,
+  CholeskyDecomposition,
+  solve,
+} = require('ml-matrix');
 
 const sortCollectionSet = require('./util/sortCollectionSet');
 /**
@@ -13,10 +18,14 @@ const sortCollectionSet = require('./util/sortCollectionSet');
  * @param {Numbers} p
  */
 
+//To do: Another possibility to explore would be to use cholesky factorisation to inverse XtX since is automatically positive semi-definite
+//Look at books at epfl library, could reduce by a half the computation burden
+
 function cssls(XtX, XtY, Pset, l, p) {
   // Solves the set of equation XtX*K = XtY for the variables in Pset
   // if XtX (or XtX(vars,vars)) is singular, performs the svd and find pseudoinverse, otherwise (even if ill-conditioned) finds inverse with LU decomposition and solves the set of equation
   // it is consistent with matlab results for ill-conditioned matrices (at least consistent with test 'ill-conditionned square X rank 2, Y 3x1' in cssls.test)
+
   let K = Matrix.zeros(l, p);
   if (Pset === null) {
     let luXtX = new LuDecomposition(XtX);
@@ -25,6 +34,17 @@ function cssls(XtX, XtY, Pset, l, p) {
     } else {
       K = solve(XtX, XtY, { useSVD: true });
     }
+    /*let choXtX = new CholeskyDecomposition(XtX);
+    let L = choXtX.lowerTriangularMatrix;
+    let det = 1;
+    for (let i = 0; i < l; i++) {
+      det = det * L.get(i, i);
+    }
+    if (det > 0) {
+      K = choXtX.solve(XtY);
+    } else {
+      K = solve(XtX, XtY, { useSVD: true });
+    }*/
   } else {
     let sortedPset = sortCollectionSet(Pset).values;
     let sortedEset = sortCollectionSet(Pset).indices;
