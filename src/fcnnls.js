@@ -8,7 +8,7 @@ const initialisation = require('./initialisation');
 const optimality = require('./optimality');
 
 /**
- * Fast Combinatorial Non-negative Least Squares with multiple Right Hand Side, works well with thin X (small # of column for X)
+ * Fast Combinatorial Non-negative Least Squares with multiple Right Hand Side
  * @param {Matrix or 2D Array} X
  * @param {Matrix} Y
  * @param {object} [options={}]
@@ -38,7 +38,7 @@ function fcnnls(X, Y, options = {}) {
       }
     }
 
-    // find any infeasible solutions
+    // Finds any infeasible solutions
     let infeasIndex = [];
     for (let j = 0; j < Fset.length; j++) {
       for (let i = 0; i < l; i++) {
@@ -50,7 +50,7 @@ function fcnnls(X, Y, options = {}) {
     }
     let Hset = selection(Fset, infeasIndex);
 
-    // Make infeasible solutions feasible (standard NNLS inner loop)
+    // Makes infeasible solutions feasible (standard NNLS inner loop)
     if (Hset.length > 0) {
       let m = Hset.length;
       let alpha = Matrix.ones(l, m);
@@ -60,9 +60,9 @@ function fcnnls(X, Y, options = {}) {
 
         alpha.mul(Infinity);
 
-        // Find indices of negative variables in passive set
-        let hRowColIdx = [[], []]; // Indexes work in pairs, each of them reprensents a single element, first array is row index, second array is column index
-        let negRowColIdx = [[], []]; //same as before
+        // Finds indices of negative variables in passive set
+        let hRowColIdx = [[], []]; // Indexes work in pairs, each pair reprensents a single element, first array is row index, second array is column index
+        let negRowColIdx = [[], []]; // Same as before
         for (let j = 0; j < m; j++) {
           for (let i = 0; i < Pset[Hset[j]].length; i++) {
             if (K.get(Pset[Hset[j]][i], Hset[j]) < 0) {
@@ -70,7 +70,7 @@ function fcnnls(X, Y, options = {}) {
               hRowColIdx[1].push(j);
               negRowColIdx[0].push(Pset[Hset[j]][i]); // i
               negRowColIdx[1].push(Hset[j]);
-            } // compared to matlab, here we keep the row/column indexing (we are not taking the linear indexing)
+            } // Compared to matlab, here we keep the row/column indexing (we are not taking the linear indexing)
           }
         }
 
@@ -108,7 +108,6 @@ function fcnnls(X, Y, options = {}) {
         }
 
         let idx2zero = [minIdx, Hset];
-
         for (let k = 0; k < m; k++) {
           D.set(idx2zero[0][k], idx2zero[1][k], 0);
         }
@@ -152,18 +151,6 @@ function fcnnls(X, Y, options = {}) {
       p,
       D,
     );
-    /*Could we rename the three variables with {Pset, Fset, W} = optimality(iter,
-     maxIterations,
-      XtX,
-      XtY,
-      Fset,
-      Pset,
-      W,
-      K,
-      l,
-      p,
-      D,
-    ); */
     Pset = newParam.Pset;
     Fset = newParam.Fset;
     W = newParam.W;

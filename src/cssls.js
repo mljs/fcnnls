@@ -1,11 +1,6 @@
 'use strict';
 
-const {
-  Matrix,
-  LuDecomposition,
-  CholeskyDecomposition,
-  solve,
-} = require('ml-matrix');
+const { Matrix, LuDecomposition, solve } = require('ml-matrix');
 
 const sortCollectionSet = require('./util/sortCollectionSet');
 /**
@@ -17,9 +12,6 @@ const sortCollectionSet = require('./util/sortCollectionSet');
  * @param {Numbers} l
  * @param {Numbers} p
  */
-
-//To do: Another possibility to explore would be to use cholesky factorisation to inverse XtX since is automatically positive semi-definite
-//Look at books at epfl library, could reduce by a half the computation burden
 
 function cssls(XtX, XtY, Pset, l, p) {
   // Solves the set of equation XtX*K = XtY for the variables in Pset
@@ -34,17 +26,6 @@ function cssls(XtX, XtY, Pset, l, p) {
     } else {
       K = solve(XtX, XtY, { useSVD: true });
     }
-    /*let choXtX = new CholeskyDecomposition(XtX);
-    let L = choXtX.lowerTriangularMatrix;
-    let det = 1;
-    for (let i = 0; i < l; i++) {
-      det = det * L.get(i, i);
-    }
-    if (det > 0) {
-      K = choXtX.solve(XtY);
-    } else {
-      K = solve(XtX, XtY, { useSVD: true });
-    }*/
   } else {
     let sortedPset = sortCollectionSet(Pset).values;
     let sortedEset = sortCollectionSet(Pset).indices;
@@ -65,14 +46,10 @@ function cssls(XtX, XtY, Pset, l, p) {
       } else {
         K = solve(XtX, XtY, { useSVD: true });
       }
-      //K = solve(XtX, XtY);
     } else {
       for (let k = 0; k < sortedPset.length; k++) {
         let cols2Solve = sortedEset[k];
         let vars = sortedPset[k];
-        /*let L = inverse(XtX.selection(vars, vars)).mmul(
-          XtY.selection(vars, cols2Solve),
-        );*/
         let L;
         let luXtX = new LuDecomposition(XtX.selection(vars, vars));
         if (luXtX.isSingular() === false) {
@@ -86,11 +63,6 @@ function cssls(XtX, XtY, Pset, l, p) {
             { useSVD: true },
           );
         }
-        /*let L = solve(
-          XtX.selection(vars, vars),
-          XtY.selection(vars, cols2Solve),
-        ); */
-
         for (let i = 0; i < L.rows; i++) {
           for (let j = 0; j < L.columns; j++) {
             K.set(vars[i], cols2Solve[j], L.get(i, j));

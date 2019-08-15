@@ -5,14 +5,12 @@ const { Matrix } = require('ml-matrix');
 const cssls = require('./cssls');
 
 function initialisation(X, Y) {
-  // check if input error
-  // error(nargchk(2,2....)) à traduire
   let n = X.rows;
   let l = X.columns;
   let p = Y.columns;
   let iter = 0;
 
-  if (Y.rows !== n) return 'ERROR: matrix size not compatible'; // end function, ERROR to be handled
+  if (Y.rows !== n) throw new Error('ERROR: matrix size not compatible');
 
   let W = Matrix.zeros(l, p);
 

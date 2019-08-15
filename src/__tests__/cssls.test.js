@@ -6,13 +6,11 @@ const {
   toMatchCloseTo,
 } = require('jest-matcher-deep-close-to');
 
-const selection = require('../util/selection');
 const cssls = require('../cssls');
 const initialisation = require('../initialisation');
 
 expect.extend({ toBeDeepCloseTo, toMatchCloseTo });
 
-// to be added: test for svd inverse...
 describe('cssls test', () => {
   it('identity X, Y 4x1', () => {
     let X = Matrix.eye(4);
@@ -113,20 +111,6 @@ describe('cssls test', () => {
     let init = initialisation(X, Y);
     let solution = new Matrix([[-1], [-2], [-3]]);
     let result = cssls(init.XtX, init.XtY, null, init.l, init.p);
-    expect(result.to2DArray()).toBeDeepCloseTo(solution.to2DArray(), 4);
-  });
-  it('test', () => {
-    let X = Matrix.eye(3).mul(-1);
-    let Y = new Matrix([[1], [2], [3]]);
-    let init = initialisation(X, Y);
-    let solution = new Matrix([[0], [0], [0]]);
-    let result = cssls(
-      init.XtX,
-      init.XtY,
-      selection(init.Pset, init.Fset),
-      init.l,
-      init.p,
-    );
     expect(result.to2DArray()).toBeDeepCloseTo(solution.to2DArray(), 4);
   });
 });
