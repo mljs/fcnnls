@@ -1,5 +1,8 @@
 import sortCollectionSet from '../sortCollectionSet';
 
+// Node.js 10 doesn't have a stable sort, so some results differ with later versions.
+const isNode10 = process.version.startsWith('v10');
+
 describe('sortCollectionSet test', () => {
   it('collection of 1 set', () => {
     let result = sortCollectionSet([[1, 2, 3]]);
@@ -17,7 +20,7 @@ describe('sortCollectionSet test', () => {
     ]);
     expect(result).toStrictEqual({
       values: [[1, 2, 3], [2, 4, 5], [1, 6, 8, 10]],
-      indices: [[0, 3], [1], [2]],
+      indices: [isNode10 ? [3, 0] : [0, 3], [1], [2]],
     });
   });
   it('collection of 10 set', () => {
@@ -42,7 +45,7 @@ describe('sortCollectionSet test', () => {
         [1, 2, 3, 4, 5, 56, 8, 90],
         [120],
       ],
-      indices: [[4, 5, 6], [0], [3], [1], [2], [8], [7]],
+      indices: [isNode10 ? [6, 5, 4] : [4, 5, 6], [0], [3], [1], [2], [8], [7]],
     });
   });
   it('collection of 1 empty set', () => {

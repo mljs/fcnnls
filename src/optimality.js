@@ -51,7 +51,7 @@ export default function optimality(
     }
   }
   for (let j = 0; j < p; j++) {
-    Pset[j].sort();
+    Pset[j].sort((a, b) => a - b);
   }
   return { Pset, Fset, W };
 }
