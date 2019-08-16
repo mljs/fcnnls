@@ -1,4 +1,6 @@
 extends: 'cheminfo'
 parser: 'babel-eslint'
+parserOptions:
+  sourceType: module
 globals:
   BigInt: true

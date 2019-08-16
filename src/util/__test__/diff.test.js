@@ -1,6 +1,4 @@
-'use strict';
-
-const diff = require('../diff.js');
+import diff from '../diff';
 
 describe('diff test', () => {
   it('simple', () => {

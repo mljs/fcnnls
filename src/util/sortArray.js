@@ -1,10 +1,8 @@
-'use strict';
-
 /**
  * Sorts an array and returns an object with the sorted array and the corresponding indices.
  * @param {Array<Number>} v
  */
-function sortArray(array) {
+export default function sortArray(array) {
   const v = array.map((value, index) => {
     return { value, index };
   });
@@ -18,5 +16,3 @@ function sortArray(array) {
   let indices = v.map((item) => item.index);
   return { values, indices };
 }
-
-module.exports = sortArray;

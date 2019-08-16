@@ -1,18 +1,13 @@
-'use strict';
-
-// added "eslint-plugin-babel" in json but does not work...
-
 /**
  *
  * @private
  * @param {Array of arrays} collection
  */
-
-function sortCollectionSet(collection) {
+export default function sortCollectionSet(collection) {
   let objectCollection = collection
     .map((value, index) => {
       let key = BigInt(0);
-      value.forEach((item) => (key |= BigInt(1) << BigInt(item))); // 1n BigInt(item)
+      value.forEach((item) => (key |= BigInt(1) << BigInt(item)));
       return { value, index, key };
     })
     .sort((a, b) => {
@@ -39,5 +34,3 @@ function sortCollectionSet(collection) {
   };
   return result;
 }
-
-module.exports = sortCollectionSet;

@@ -1,6 +1,4 @@
-'use strict';
-
-const selection = require('../selection.js');
+import selection from '../selection.js';
 
 describe('selection test', () => {
   it('simple', () => {

@@ -1,6 +1,4 @@
-'use strict';
-
-const sortCollectionSet = require('../sortCollectionSet');
+import sortCollectionSet from '../sortCollectionSet';
 
 describe('sortCollectionSet test', () => {
   it('collection of 1 set', () => {

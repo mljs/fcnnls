@@ -1,10 +1,19 @@
-'use strict';
-
-const setDifference = require('./util/setDifference');
+import setDifference from './util/setDifference';
 
 // Makes sure the solution has converged
-
-function optimality(iter, maxIter, XtX, XtY, Fset, Pset, W, K, l, p, D) {
+export default function optimality(
+  iter,
+  maxIter,
+  XtX,
+  XtY,
+  Fset,
+  Pset,
+  W,
+  K,
+  l,
+  p,
+  D,
+) {
   if (iter === maxIter) {
     throw new Error('Maximum number of iterations exceeded');
   }
@@ -46,5 +55,3 @@ function optimality(iter, maxIter, XtX, XtY, Fset, Pset, W, K, l, p, D) {
   }
   return { Pset, Fset, W };
 }
-
-module.exports = optimality;

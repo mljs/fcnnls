@@ -1,15 +1,10 @@
-'use strict';
+import { readFileSync } from 'fs';
+import { join } from 'path';
 
-const { readFileSync } = require('fs');
-const { join } = require('path');
+import { toBeDeepCloseTo, toMatchCloseTo } from 'jest-matcher-deep-close-to';
+import { Matrix } from 'ml-matrix';
 
-const {
-  toBeDeepCloseTo,
-  toMatchCloseTo,
-} = require('jest-matcher-deep-close-to');
-const { Matrix } = require('ml-matrix');
-
-const fcnnls = require('../fcnnls');
+import fcnnls from '../fcnnls';
 
 expect.extend({ toBeDeepCloseTo, toMatchCloseTo });
 

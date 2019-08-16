@@ -1,13 +1,8 @@
-'use strict';
+import { Matrix } from 'ml-matrix';
+import { toBeDeepCloseTo, toMatchCloseTo } from 'jest-matcher-deep-close-to';
 
-const { Matrix } = require('ml-matrix');
-const {
-  toBeDeepCloseTo,
-  toMatchCloseTo,
-} = require('jest-matcher-deep-close-to');
-
-const initialisation = require('../initialisation');
-const optimality = require('../optimality');
+import initialisation from '../initialisation';
+import optimality from '../optimality';
 
 expect.extend({ toBeDeepCloseTo, toMatchCloseTo });
 

@@ -1,6 +1,4 @@
-'use strict';
-
-const sortArray = require('../sortArray.js');
+import sortArray from '../sortArray.js';
 
 describe('sortArray test', () => {
   it('simple 3 elements array', () => {

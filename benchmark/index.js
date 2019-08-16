@@ -1,16 +1,14 @@
-'use strict';
-
 /*
-Can be executed using `node --inspect-brk benchmark/index.js`
+Can be executed using `node -r esm --inspect-brk benchmark/index.js`
 And debug from chrome using `chrome://inspect`
 */
 
-const { readFileSync } = require('fs');
-const { join } = require('path');
+import { readFileSync } from 'fs';
+import { join } from 'path';
 
-const { Matrix } = require('ml-matrix');
+import { Matrix } from 'ml-matrix';
 
-const fcnnls = require('../src/fcnnls');
+import fcnnls from '../src/fcnnls';
 
 const concentration = readFileSync(
   join(__dirname, '../src/__tests__/data/matrix.txt'),

@@ -1,28 +1,25 @@
-'use strict';
+import { Matrix } from 'ml-matrix';
 
-const { Matrix } = require('ml-matrix');
-
-const selection = require('./util/selection');
-const cssls = require('./cssls');
-const initialisation = require('./initialisation');
-const optimality = require('./optimality');
+import selection from './util/selection';
+import cssls from './cssls';
+import initialisation from './initialisation';
+import optimality from './optimality';
 
 /**
  * Fast Combinatorial Non-negative Least Squares with multiple Right Hand Side
- * @param {Matrix or 2D Array} X
- * @param {Matrix} Y
+ * @param {Matrix|number[][]} X
+ * @param {Matrix|number[][]} Y
  * @param {object} [options={}]
  * @param {number} [options.maxIterations] if empty maxIterations is set at 3 times the number of columns of X
  * @returns {Matrix} K
  */
-
-function fcnnls(X, Y, options = {}) {
+export default function fcnnls(X, Y, options = {}) {
   X = Matrix.checkMatrix(X);
   Y = Matrix.checkMatrix(Y);
   let { l, p, iter, W, XtX, XtY, K, Pset, Fset, D } = initialisation(X, Y);
   const { maxIterations = X.columns * 3 } = options;
-  // Active set algortihm for NNLS main loop
 
+  // Active set algorithm for NNLS main loop
   while (Fset.length > 0) {
     // Solves for the passive variables (uses subroutine below)
     let L = cssls(
@@ -158,5 +155,3 @@ function fcnnls(X, Y, options = {}) {
 
   return K;
 }
-
-module.exports = fcnnls;

@@ -1,12 +1,7 @@
-'use strict';
+import { Matrix } from 'ml-matrix';
+import { toBeDeepCloseTo, toMatchCloseTo } from 'jest-matcher-deep-close-to';
 
-const { Matrix } = require('ml-matrix');
-const {
-  toBeDeepCloseTo,
-  toMatchCloseTo,
-} = require('jest-matcher-deep-close-to');
-
-const fcnnls = require('../fcnnls');
+import fcnnls from '../fcnnls';
 
 expect.extend({ toBeDeepCloseTo, toMatchCloseTo });
 

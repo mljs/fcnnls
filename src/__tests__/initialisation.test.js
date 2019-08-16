@@ -1,8 +1,6 @@
-'use strict';
+import { Matrix } from 'ml-matrix';
 
-const { Matrix } = require('ml-matrix');
-
-const initialisation = require('../initialisation');
+import initialisation from '../initialisation';
 
 describe('initialisation test', () => {
   it('identity X, Y 1-dimension', () => {

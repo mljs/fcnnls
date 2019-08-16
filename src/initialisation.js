@@ -1,10 +1,8 @@
-'use strict';
+import { Matrix } from 'ml-matrix';
 
-const { Matrix } = require('ml-matrix');
+import cssls from './cssls';
 
-const cssls = require('./cssls');
-
-function initialisation(X, Y) {
+export default function initialisation(X, Y) {
   let n = X.rows;
   let l = X.columns;
   let p = Y.columns;
@@ -41,5 +39,3 @@ function initialisation(X, Y) {
 
   return { n, l, p, iter, W, XtX, XtY, K, Pset, Fset, D };
 }
-
-module.exports = initialisation;

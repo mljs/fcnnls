@@ -1,8 +1,7 @@
-'use strict';
+import { Matrix, LuDecomposition, solve } from 'ml-matrix';
 
-const { Matrix, LuDecomposition, solve } = require('ml-matrix');
+import sortCollectionSet from './util/sortCollectionSet';
 
-const sortCollectionSet = require('./util/sortCollectionSet');
 /**
  * (Combinatorial Subspace Least Squares) - subfunction for the FC-NNLS
  * @private
@@ -12,8 +11,7 @@ const sortCollectionSet = require('./util/sortCollectionSet');
  * @param {Numbers} l
  * @param {Numbers} p
  */
-
-function cssls(XtX, XtY, Pset, l, p) {
+export default function cssls(XtX, XtY, Pset, l, p) {
   // Solves the set of equation XtX*K = XtY for the variables in Pset
   // if XtX (or XtX(vars,vars)) is singular, performs the svd and find pseudoinverse, otherwise (even if ill-conditioned) finds inverse with LU decomposition and solves the set of equation
   // it is consistent with matlab results for ill-conditioned matrices (at least consistent with test 'ill-conditionned square X rank 2, Y 3x1' in cssls.test)
@@ -73,5 +71,3 @@ function cssls(XtX, XtY, Pset, l, p) {
   }
   return K;
 }
-
-module.exports = cssls;

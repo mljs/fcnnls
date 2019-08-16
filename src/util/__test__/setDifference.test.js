@@ -1,6 +1,4 @@
-'use strict';
-
-const setDifference = require('../setDifference.js');
+import setDifference from '../setDifference.js';
 
 describe('setDifference test', () => {
   it('simple', () => {

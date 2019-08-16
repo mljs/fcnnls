@@ -1,6 +1,2 @@
-'use strict';
-
-module.exports = {
-  fcnnls: require('./fcnnls'),
-  fcnnlsVector: require('./fcnnlsVector'),
-};
+export { default as fcnnls } from './fcnnls';
+export { default as fcnnlsVector } from './fcnnlsVector';
