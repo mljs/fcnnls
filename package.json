@@ -1,6 +1,6 @@
 {
   "name": "ml-fcnnls",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "Fast Combinatorial Non-negative Least Squares",
   "main": "fcnnls.js",
   "module": "src/index.js",
