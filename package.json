@@ -44,7 +44,6 @@
   },
   "devDependencies": {
     "@babel/plugin-transform-modules-commonjs": "^7.5.0",
-    "babel-eslint": "^10.0.2",
     "eslint": "^6.2.0",
     "eslint-config-cheminfo": "^2.0.3",
     "eslint-plugin-import": "^2.18.2",
