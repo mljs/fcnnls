@@ -108,4 +108,52 @@ describe('cssls test', () => {
     let result = cssls(init.XtX, init.XtY, null, init.l, init.p);
     expect(result.to2DArray()).toBeDeepCloseTo(solution.to2DArray(), 4);
   });
+
+  it('non positive-definite matrix', () => {
+    let X = new Matrix([[1, 1, 1, 0], [0, 1, 1, 1], [1, 2, 2, 1]]);
+    let Y = new Matrix([[-2], [2], [0]]);
+    let init = initialisation(X, Y);
+    let solution = new Matrix([[-2], [0], [0], [2]]);
+    let result = cssls(init.XtX, init.XtY, null, init.l, init.p);
+    expect(result.to2DArray()).toMatchCloseTo(solution.to2DArray(), 4);
+  });
+
+  it('non positive-definite matrix with Pset', () => {
+    let X = new Matrix([[1, 1, 1, 0], [0, 1, 1, 1], [1, 2, 2, 1]]);
+    let Y = new Matrix([[-2], [2], [0]]);
+    let init = initialisation(X, Y);
+    let solution = new Matrix([[0], [0], [0], [1]]);
+    let result = cssls(init.XtX, init.XtY, init.Pset, init.l, init.p);
+    expect(result.to2DArray()).toMatchCloseTo(solution.to2DArray(), 4);
+  });
+
+  it('big low-rank matrix 10x9 X', () => {
+    let X = new Matrix([
+      [1, 1, 1, 0, 1, 1, 1, 1, 0],
+      [0, 1, 1, 1, 0, 0, 0, 1, 1],
+      [1, 1, 1, 1, 0, 0, 1, 0, 0],
+      [1, 1, 1, 1, 0, 0, 1, 0, 0],
+      [2, 2, 2, 0, 2, 2, 2, 2, 0],
+      [1, 2, 2, 1, 1, 1, 1, 2, 0],
+      [0, 5, 5, 5, 0, 0, 0, 5, 5],
+      [2, 2, 2, 0, 2, 2, 2, 2, 0],
+      [11, 11, 11, 0, 11, 11, 11, 11, 0],
+      [0, 23, 23, 23, 0, 0, 0, 23, 23],
+    ]);
+    let Y = new Matrix([[1], [2], [3], [4], [5], [6], [7], [8], [9], [10]]);
+    let init = initialisation(X, Y);
+    let solution = new Matrix([
+      [-3.62e-1],
+      [1.16712],
+      [1.16712],
+      [1.89038],
+      [-7.23e-1],
+      [-7.23e-1],
+      [-3.62e-1],
+      [0.806154],
+      [-4.54969],
+    ]);
+    let result = cssls(init.XtX, init.XtY, null, init.l, init.p);
+    expect(result.to2DArray()).toMatchCloseTo(solution.to2DArray(), 3);
+  });
 });

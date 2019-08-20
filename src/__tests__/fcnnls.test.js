@@ -204,4 +204,12 @@ describe('myModule test', () => {
     let result = fcnnls(X, Y);
     expect(result.to2DArray()).toMatchCloseTo(solution.to2DArray(), 4);
   });
+
+  it('non positive-definite matrix', () => {
+    let X = new Matrix([[1, 1, 1, 0], [0, 1, 1, 1], [1, 2, 2, 1]]);
+    let Y = new Matrix([[-2], [2], [0]]);
+    let solution = new Matrix([[0], [0], [0], [1]]);
+    let result = fcnnls(X, Y);
+    expect(result.to2DArray()).toMatchCloseTo(solution.to2DArray(), 4);
+  });
 });
