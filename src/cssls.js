@@ -1,4 +1,9 @@
-import { Matrix, LuDecomposition, solve } from 'ml-matrix';
+import {
+  Matrix,
+  LuDecomposition,
+  solve,
+  CholeskyDecomposition,
+} from 'ml-matrix';
 
 import sortCollectionSet from './util/sortCollectionSet';
 
@@ -18,11 +23,16 @@ export default function cssls(XtX, XtY, Pset, l, p) {
 
   let K = Matrix.zeros(l, p);
   if (Pset === null) {
-    let luXtX = new LuDecomposition(XtX);
-    if (luXtX.isSingular() === false) {
-      K = luXtX.solve(Matrix.eye(l)).mmul(XtY);
+    let choXtX = new CholeskyDecomposition(XtX);
+    if (choXtX.isPositiveDefinite() === true) {
+      K = choXtX.solve(XtY);
     } else {
-      K = solve(XtX, XtY, { useSVD: true });
+      let luXtX = new LuDecomposition(XtX);
+      if (luXtX.isSingular() === false) {
+        K = luXtX.solve(Matrix.eye(l)).mmul(XtY);
+      } else {
+        K = solve(XtX, XtY, { useSVD: true });
+      }
     }
   } else {
     let sortedPset = sortCollectionSet(Pset).values;
@@ -38,28 +48,38 @@ export default function cssls(XtX, XtY, Pset, l, p) {
       sortedPset[0].length === l &&
       sortedEset[0].length === p
     ) {
-      let luXtX = new LuDecomposition(XtX);
-      if (luXtX.isSingular() === false) {
-        K = luXtX.solve(Matrix.eye(l)).mmul(XtY);
+      let choXtX = new CholeskyDecomposition(XtX);
+      if (choXtX.isPositiveDefinite() === true) {
+        K = choXtX.solve(XtY);
       } else {
-        K = solve(XtX, XtY, { useSVD: true });
+        let luXtX = new LuDecomposition(XtX);
+        if (luXtX.isSingular() === false) {
+          K = luXtX.solve(Matrix.eye(l)).mmul(XtY);
+        } else {
+          K = solve(XtX, XtY, { useSVD: true });
+        }
       }
     } else {
       for (let k = 0; k < sortedPset.length; k++) {
         let cols2Solve = sortedEset[k];
         let vars = sortedPset[k];
         let L;
-        let luXtX = new LuDecomposition(XtX.selection(vars, vars));
-        if (luXtX.isSingular() === false) {
-          L = luXtX
-            .solve(Matrix.eye(vars.length))
-            .mmul(XtY.selection(vars, cols2Solve));
+        let choXtX = new CholeskyDecomposition(XtX.selection(vars, vars));
+        if (choXtX.isPositiveDefinite() === true) {
+          L = choXtX.solve(XtY.selection(vars, cols2Solve));
         } else {
-          L = solve(
-            XtX.selection(vars, vars),
-            XtY.selection(vars, cols2Solve),
-            { useSVD: true },
-          );
+          let luXtX = new LuDecomposition(XtX.selection(vars, vars));
+          if (luXtX.isSingular() === false) {
+            L = luXtX
+              .solve(Matrix.eye(vars.length))
+              .mmul(XtY.selection(vars, cols2Solve));
+          } else {
+            L = solve(
+              XtX.selection(vars, vars),
+              XtY.selection(vars, cols2Solve),
+              { useSVD: true },
+            );
+          }
         }
         for (let i = 0; i < L.rows; i++) {
           for (let j = 0; j < L.columns; j++) {
