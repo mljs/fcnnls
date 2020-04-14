@@ -33,8 +33,8 @@ export default function optimality(
     if (notPset.length === 0) {
       Jset.push(Fset[j]);
     } else if (
-      Math.round(W.selection(notPset, [Fset[j]]).max() * 1000000000000) /
-        1000000000000 <=
+      Math.round(W.selection(notPset, [Fset[j]]).max() * 10000000000) /
+        10000000000 <=
       0
     ) {
       Jset.push(Fset[j]);
