@@ -1,9 +1,9 @@
 import { Matrix } from 'ml-matrix';
 
-import selection from './util/selection';
 import cssls from './cssls';
 import initialisation from './initialisation';
 import optimality from './optimality';
+import selection from './util/selection';
 
 /**
  * Fast Combinatorial Non-negative Least Squares with multiple Right Hand Side

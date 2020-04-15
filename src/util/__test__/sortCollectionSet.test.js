@@ -19,7 +19,11 @@ describe('sortCollectionSet test', () => {
       [1, 2, 3],
     ]);
     expect(result).toStrictEqual({
-      values: [[1, 2, 3], [2, 4, 5], [1, 6, 8, 10]],
+      values: [
+        [1, 2, 3],
+        [2, 4, 5],
+        [1, 6, 8, 10],
+      ],
       indices: [isNode10 ? [3, 0] : [0, 3], [1], [2]],
     });
   });

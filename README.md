@@ -1,7 +1,7 @@
 # fcnnls
 
 [![NPM version][npm-image]][npm-url]
-[![build status][travis-image]][travis-url]
+[![build status][ci-image]][ci-url]
 [![Test coverage][codecov-image]][codecov-url]
 [![npm download][download-image]][download-url]
 
@@ -68,11 +68,11 @@ k = [0.461, 0.5611, 0]
 
 [MIT](./LICENSE)
 
-[npm-image]: https://img.shields.io/npm/v/ml-fcnnls.svg?style=flat-square
+[npm-image]: https://img.shields.io/npm/v/ml-fcnnls.svg
 [npm-url]: https://www.npmjs.com/package/ml-fcnnls
-[travis-image]: https://img.shields.io/travis/com/mljs/fcnnls/master.svg?style=flat-square
-[travis-url]: https://travis-ci.com/mljs/fcnnls
-[codecov-image]: https://img.shields.io/codecov/c/github/mljs/fcnnls.svg?style=flat-square
+[ci-image]: https://github.com/mljs/fcnnls/workflows/Node.js%20CI/badge.svg?branch=master
+[ci-url]: https://github.com/mljs/fcnnls/actions?query=workflow%3A%22Node.js+CI%22
+[codecov-image]: https://img.shields.io/codecov/c/github/mljs/fcnnls.svg
 [codecov-url]: https://codecov.io/gh/mljs/fcnnls
-[download-image]: https://img.shields.io/npm/dm/ml-fcnnls.svg?style=flat-square
+[download-image]: https://img.shields.io/npm/dm/ml-fcnnls.svg
 [download-url]: https://www.npmjs.com/package/ml-fcnnls

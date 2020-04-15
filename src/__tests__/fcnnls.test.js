@@ -69,7 +69,11 @@ describe('myModule test', () => {
   });
 
   it('non-singular square X, Y 3x1', () => {
-    let X = new Matrix([[0, 1, 1], [1, 0, 1], [1, 1, 0]]);
+    let X = new Matrix([
+      [0, 1, 1],
+      [1, 0, 1],
+      [1, 1, 0],
+    ]);
     let Y = new Matrix([[-1], [2], [-3]]);
     let solution = new Matrix([[0], [0], [0.5]]);
     let result = fcnnls(X, Y);
@@ -77,7 +81,11 @@ describe('myModule test', () => {
   });
 
   it('singular square X rank 2, Y 3x1', () => {
-    let X = new Matrix([[1, 2, 3], [4, 5, 6], [7, 8, 9]]);
+    let X = new Matrix([
+      [1, 2, 3],
+      [4, 5, 6],
+      [7, 8, 9],
+    ]);
     let Y = new Matrix([[-1], [0], [10]]);
     let solution = new Matrix([[1.0455], [0], [0]]);
     let result = Matrix.round(fcnnls(X, Y).mul(10000)).mul(0.0001);
@@ -111,7 +119,12 @@ describe('myModule test', () => {
   });
 
   it('Van Benthem - Keenan example', () => {
-    let X = new Matrix([[95, 89, 82], [23, 76, 44], [61, 46, 62], [42, 2, 79]]);
+    let X = new Matrix([
+      [95, 89, 82],
+      [23, 76, 44],
+      [61, 46, 62],
+      [42, 2, 79],
+    ]);
     let Y = new Matrix([
       [92, 99, 80],
       [74, 19, 43],
@@ -136,7 +149,12 @@ describe('myModule test', () => {
   });
 
   it('example documentation', () => {
-    let X = new Matrix([[1, 1, 2], [10, 11, -9], [-1, 0, 0], [-5, 6, -7]]);
+    let X = new Matrix([
+      [1, 1, 2],
+      [10, 11, -9],
+      [-1, 0, 0],
+      [-5, 6, -7],
+    ]);
     let Y = new Matrix([
       [-1, 0, 0, 9],
       [11, -20, 103, 5],
@@ -198,7 +216,11 @@ describe('myModule test', () => {
   });
 
   it('another simple test', () => {
-    let X = new Matrix([[1, 1, 0], [0, 1, 1], [0, 0, 1]]);
+    let X = new Matrix([
+      [1, 1, 0],
+      [0, 1, 1],
+      [0, 0, 1],
+    ]);
     let Y = new Matrix([[-2], [2], [0]]);
     let solution = new Matrix([[0], [0], [1]]);
     let result = fcnnls(X, Y);
@@ -206,7 +228,11 @@ describe('myModule test', () => {
   });
 
   it('non positive-definite matrix', () => {
-    let X = new Matrix([[1, 1, 1, 0], [0, 1, 1, 1], [1, 2, 2, 1]]);
+    let X = new Matrix([
+      [1, 1, 1, 0],
+      [0, 1, 1, 1],
+      [1, 2, 2, 1],
+    ]);
     let Y = new Matrix([[-2], [2], [0]]);
     let solution = new Matrix([[0], [0], [0], [1]]);
     let result = fcnnls(X, Y);

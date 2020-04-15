@@ -1,5 +1,5 @@
-import { Matrix } from 'ml-matrix';
 import { toBeDeepCloseTo, toMatchCloseTo } from 'jest-matcher-deep-close-to';
+import { Matrix } from 'ml-matrix';
 
 import initialisation from '../initialisation';
 import optimality from '../optimality';

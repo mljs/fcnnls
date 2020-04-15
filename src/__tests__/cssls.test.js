@@ -1,5 +1,5 @@
-import { Matrix } from 'ml-matrix';
 import { toBeDeepCloseTo, toMatchCloseTo } from 'jest-matcher-deep-close-to';
+import { Matrix } from 'ml-matrix';
 
 import cssls from '../cssls';
 import initialisation from '../initialisation';
@@ -36,7 +36,11 @@ describe('cssls test', () => {
     expect(result.to2DArray()).toBeDeepCloseTo(solution.to2DArray(), 4);
   });
   it('non-singular square X, Y 3x1', () => {
-    let X = new Matrix([[0, 1, 1], [1, 0, 1], [1, 1, 0]]);
+    let X = new Matrix([
+      [0, 1, 1],
+      [1, 0, 1],
+      [1, 1, 0],
+    ]);
     let Y = new Matrix([[-1], [2], [-3]]);
     let { l, p, XtX, XtY, Pset } = initialisation(X, Y);
     let solution = new Matrix([[-1], [0], [1]]);
@@ -44,7 +48,11 @@ describe('cssls test', () => {
     expect(result.to2DArray()).toBeDeepCloseTo(solution.to2DArray(), 4);
   });
   it('ill-conditionned square X rank 2, Y 3x1', () => {
-    let X = new Matrix([[1, 2, 3], [4, 5, 6], [7, 8, 9]]);
+    let X = new Matrix([
+      [1, 2, 3],
+      [4, 5, 6],
+      [7, 8, 9],
+    ]);
 
     let Y = new Matrix([[-1], [0], [10]]);
     let { l, p, XtX, XtY, Pset } = initialisation(X, Y);
@@ -81,7 +89,12 @@ describe('cssls test', () => {
     expect(result.to2DArray()).toBeDeepCloseTo(solution.to2DArray(), 4);
   });
   it('Van Benthem - Keenan example', () => {
-    let X = new Matrix([[95, 89, 82], [23, 76, 44], [61, 46, 62], [42, 2, 79]]);
+    let X = new Matrix([
+      [95, 89, 82],
+      [23, 76, 44],
+      [61, 46, 62],
+      [42, 2, 79],
+    ]);
     let Y = new Matrix([
       [92, 99, 80],
       [74, 19, 43],
@@ -110,7 +123,11 @@ describe('cssls test', () => {
   });
 
   it('non positive-definite matrix', () => {
-    let X = new Matrix([[1, 1, 1, 0], [0, 1, 1, 1], [1, 2, 2, 1]]);
+    let X = new Matrix([
+      [1, 1, 1, 0],
+      [0, 1, 1, 1],
+      [1, 2, 2, 1],
+    ]);
     let Y = new Matrix([[-2], [2], [0]]);
     let init = initialisation(X, Y);
     let solution = new Matrix([[-2], [0], [0], [2]]);
@@ -119,7 +136,11 @@ describe('cssls test', () => {
   });
 
   it('non positive-definite matrix with Pset', () => {
-    let X = new Matrix([[1, 1, 1, 0], [0, 1, 1, 1], [1, 2, 2, 1]]);
+    let X = new Matrix([
+      [1, 1, 1, 0],
+      [0, 1, 1, 1],
+      [1, 2, 2, 1],
+    ]);
     let Y = new Matrix([[-2], [2], [0]]);
     let init = initialisation(X, Y);
     let solution = new Matrix([[0], [0], [0], [1]]);
