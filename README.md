@@ -28,7 +28,12 @@ import { fcnnls } from 'ml-fcnnls';
 
 // Example with multiple RHS
 
-let X = new Matrix([[1, 1, 2], [10, 11, -9], [-1, 0, 0], [-5, 6, -7]]);
+let X = new Matrix([
+  [1, 1, 2],
+  [10, 11, -9],
+  [-1, 0, 0],
+  [-5, 6, -7],
+]);
 
 // Y can either be a Matrix of an array of array
 let Y = new Matrix([
@@ -53,7 +58,12 @@ import { fcnnlsVector } from 'ml-fcnnls';
 // Example with single RHS and same X
 // Should be giving a vector with the element of the first column of K in the previous example, since y is the first column of Y
 
-let X = new Matrix([[1, 1, 2], [10, 11, -9], [-1, 0, 0], [-5, 6, -7]]);
+let X = new Matrix([
+  [1, 1, 2],
+  [10, 11, -9],
+  [-1, 0, 0],
+  [-5, 6, -7],
+]);
 
 let y = [-1, 11, 0, 1];
 
