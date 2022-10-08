@@ -24,15 +24,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/cheminfo/fcnnls.git"
+    "url": "git+https://github.com/mljs/fcnnls.git"
   },
   "keywords": [],
   "author": "Jeremy Weymann",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/cheminfo/fcnnls/issues"
+    "url": "https://github.com/mljs/fcnnls/issues"
   },
-  "homepage": "https://github.com/cheminfo/fcnnls#readme",
+  "homepage": "https://github.com/mljs/fcnnls#readme",
   "devDependencies": {
     "@babel/plugin-transform-modules-commonjs": "^7.16.8",
     "eslint": "^8.10.0",
