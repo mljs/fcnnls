@@ -30,7 +30,7 @@ export default function sortCollectionSet(collection) {
 
   let result = {
     values: sorted,
-    indices: indices,
+    indices,
   };
   return result;
 }
