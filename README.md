@@ -80,7 +80,7 @@ k = [0.461, 0.5611, 0]
 
 [npm-image]: https://img.shields.io/npm/v/ml-fcnnls.svg
 [npm-url]: https://www.npmjs.com/package/ml-fcnnls
-[ci-image]: https://github.com/mljs/fcnnls/workflows/Node.js%20CI/badge.svg?branch=master
+[ci-image]: https://github.com/mljs/fcnnls/workflows/Node.js%20CI/badge.svg?branch=main
 [ci-url]: https://github.com/mljs/fcnnls/actions?query=workflow%3A%22Node.js+CI%22
 [codecov-image]: https://img.shields.io/codecov/c/github/mljs/fcnnls.svg
 [codecov-url]: https://codecov.io/gh/mljs/fcnnls
