@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.4](https://github.com/mljs/fcnnls/compare/v1.1.3...v1.1.4) (2023-07-27)
+
+
+### Bug Fixes
+
+* rollup config ([c2ca074](https://github.com/mljs/fcnnls/commit/c2ca074462b1f15d8574a98cce87601a842d665c))
+
 ## [1.1.3](https://github.com/mljs/fcnnls/compare/v1.1.2...v1.1.3) (2023-07-27)
 
 
