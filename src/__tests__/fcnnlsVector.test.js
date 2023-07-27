@@ -3,6 +3,8 @@ import { Matrix } from 'ml-matrix';
 
 import fcnnlsVector from '../fcnnlsVector';
 
+import { data } from './data/convergence';
+
 expect.extend({ toBeDeepCloseTo, toMatchCloseTo });
 
 describe('myModule test', () => {
@@ -25,5 +27,14 @@ describe('myModule test', () => {
     let solution = [0, 0, 0];
     let result = fcnnlsVector(X, y);
     expect(result).toBeDeepCloseTo(solution, 4);
+  });
+  it('Convergence for tricky case', () => {
+    const result = fcnnlsVector(Matrix.checkMatrix(data.mC), data.bf, {
+      gradientTolerance: 1e-5,
+    });
+    const solution = [0, 50, 10];
+    for (let i = 0; i < result.length; i++) {
+      expect(result[i]).toBeDeepCloseTo(solution[i], 8);
+    }
   });
 });

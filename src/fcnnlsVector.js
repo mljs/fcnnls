@@ -7,7 +7,8 @@ import fcnnls from './fcnnls';
  * @param {Matrix|number[][]} X
  * @param {number[]} y
  * @param {object} [options={}]
- * @param {boolean} [maxIterations] if true or empty maxIterations is set at 3 times the number of columns of X
+ * @param {number} [options.maxIterations] if true or empty maxIterations is set at 3 times the number of columns of X
+ * @param {number} [options.gradientTolerance] Control over the optimality of the solution; applied over the largest gradient value of all.
  * @returns {Array} k
  */
 export default function fcnnlsVector(X, y, options = {}) {

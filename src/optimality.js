@@ -13,6 +13,7 @@ export default function optimality(
   l,
   p,
   D,
+  gradientTolerance = 1e-5,
 ) {
   if (iter === maxIter) {
     throw new Error('Maximum number of iterations exceeded');
@@ -32,7 +33,8 @@ export default function optimality(
     let notPset = setDifference(fullSet, Pset[Fset[j]]);
     if (notPset.length === 0) {
       Jset.push(Fset[j]);
-    } else if (W.selection(notPset, [Fset[j]]).max() <= 0) {
+    } else if (W.selection(notPset, [Fset[j]]).max() <= gradientTolerance) {
+      // previously gradient tolerance was 0 and this leads to convergence problems
       Jset.push(Fset[j]);
     }
   }

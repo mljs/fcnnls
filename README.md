@@ -1,4 +1,4 @@
-# fcnnls
+cnnls
 
 [![NPM version][npm-image]][npm-url]
 [![build status][ci-image]][ci-url]
@@ -10,7 +10,7 @@ Fast Combinatorial Non-negative Least Squares.
 Fast algorithm for the solution of large‐scale non‐negativity‐constrained least squares problems from Van Benthem and Keenan ([10.1002/cem.889](http://doi.org/10.1002/cem.889)), based on the active-set method algorithm published by Lawson and Hanson.
 
 It solves the following optimisation problem.
-Given <img src='images/Im1.svg'> an <img src='images/Im2.svg'> matrix and <img src='images/Im3.svg'> an <img src='images/Im4.svg'> matrix, find <img src='images/Im5.svg'> subject to <img src='images/Im6.svg'>, where <img src='images/Im7.svg'> is an <img src='images/Im8.svg'> matrix and <img src='images/Im9.svg'> is the Frobenius norm. In fact, <img src='images/Im7.svg'> is the best solution to the equation: <img src='images/Im11.svg'>, where <img src='images/Im6.svg'>. Note that if <img src='images/Im3.svg'> is a column vector, it performs the regular Non-negative Least Squares algorithm and finds a vector as a solution to the problem. Also, performing this algorithm when <img src='images/Im3.svg'> is a matrix is like running the algorithm on each column of <img src='images/Im3.svg'>, it will give the same result but in a much more efficient way.
+Given $\mathbf{X}$ an $n \times l$ matrix and $\mathbf{Y}$ an $n\times p$, find $$\mathrm{argmin}_K ||\mathbf{XK} -\mathbf{Y}||^2_F$$ subject to $\mathbf{K}\geq 0$, where $\mathbf{K}$ is an $l \times p$ matrix and $||\ldots||_F$ is the Frobenius norm. In fact, $\mathbf{K}$ is the best solution to the equation: $\mathbf{XK}=\mathbf{Y}$, where $\mathbf{K} \geq 0$, it performs the regular Non-negative Least Squares algorithm and finds a vector as a solution to the problem. Also, performing this algorithm when $\mathbf{Y}$ is a matrix is like running the algorithm on each column of $\mathbf{Y}$, it will give the same result but in a much more efficient way.
 
 https://en.wikipedia.org/wiki/Non-negative_least_squares
 
