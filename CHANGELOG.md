@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.3](https://github.com/mljs/fcnnls/compare/v1.1.2...v1.1.3) (2023-07-27)
+
+
+### Bug Fixes
+
+* convergence and add gradientTolerance ([#11](https://github.com/mljs/fcnnls/issues/11)) ([d29163c](https://github.com/mljs/fcnnls/commit/d29163c14186fb8b9803d5dfe12e81631a9fd5ed))
+
 ## [1.1.2](https://github.com/mljs/fcnnls/compare/v1.1.1...v1.1.2) (2022-10-08)
 
 
