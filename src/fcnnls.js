@@ -11,13 +11,14 @@ import selection from './util/selection';
  * @param {Matrix|number[][]} Y
  * @param {object} [options={}]
  * @param {number} [options.maxIterations] if empty maxIterations is set at 3 times the number of columns of X
+ * @param {number} [options.gradientTolerance] Control over the optimality of the solution; applied over the largest gradient value of all.
  * @returns {Matrix} K
  */
 export default function fcnnls(X, Y, options = {}) {
   X = Matrix.checkMatrix(X);
   Y = Matrix.checkMatrix(Y);
   let { l, p, iter, W, XtX, XtY, K, Pset, Fset, D } = initialisation(X, Y);
-  const { maxIterations = X.columns * 3 } = options;
+  const { maxIterations = X.columns * 3, gradientTolerance = 1e-5 } = options;
 
   // Active set algorithm for NNLS main loop
   while (Fset.length > 0) {
@@ -147,6 +148,7 @@ export default function fcnnls(X, Y, options = {}) {
       l,
       p,
       D,
+      gradientTolerance,
     );
     Pset = newParam.Pset;
     Fset = newParam.Fset;

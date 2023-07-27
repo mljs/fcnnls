@@ -31,12 +31,11 @@ export default function cssls(XtX, XtY, Pset, l, p) {
       if (luXtX.isSingular() === false) {
         K = luXtX.solve(Matrix.eye(l)).mmul(XtY);
       } else {
-        K = solve(XtX, XtY, { useSVD: true });
+        K = solve(XtX, XtY, true);
       }
     }
   } else {
-    let sortedPset = sortCollectionSet(Pset).values;
-    let sortedEset = sortCollectionSet(Pset).indices;
+    let { values: sortedPset, indices: sortedEset } = sortCollectionSet(Pset);
     if (
       sortedPset.length === 1 &&
       sortedPset[0].length === 0 &&
@@ -56,7 +55,7 @@ export default function cssls(XtX, XtY, Pset, l, p) {
         if (luXtX.isSingular() === false) {
           K = luXtX.solve(Matrix.eye(l)).mmul(XtY);
         } else {
-          K = solve(XtX, XtY, { useSVD: true });
+          K = solve(XtX, XtY, true);
         }
       }
     } else {
@@ -77,7 +76,7 @@ export default function cssls(XtX, XtY, Pset, l, p) {
             L = solve(
               XtX.selection(vars, vars),
               XtY.selection(vars, cols2Solve),
-              { useSVD: true },
+              true,
             );
           }
         }
