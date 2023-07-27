@@ -7,35 +7,41 @@ import {
 
 import sortCollectionSet from './util/sortCollectionSet';
 
+type Cssls = (
+  XtX: Matrix,
+  XtY: Matrix,
+  Pset: number[][] | null,
+  l: number,
+  p: number,
+) => Matrix;
 /**
  * (Combinatorial Subspace Least Squares) - subfunction for the FC-NNLS
- * @private
- * @param {Matrix} XtX
- * @param {Matrix} XtY
- * @param {Array} Pset
- * @param {Numbers} l
- * @param {Numbers} p
+ * Solves XtX*K = XtY for the variables in Pset
+ * if XtX (or XtX(vars,vars)) is singular, performs the svd and find pseudoinverse, otherwise (even if ill-conditioned) finds inverse with LU decomposition and solves the set of equation
+ * it is consistent with matlab results for ill-conditioned matrices (at least consistent with test 'ill-conditionned square X rank 2, Y 3x1' in cssls.test)
+ * @param XtX - Gram matrix
+ * @param XtY
+ * @param Pset - Subset of matrix K with positive values (indices)
+ * @param l - number of rows of X
+ * @param p - number of columns of Y
  */
-export default function cssls(XtX, XtY, Pset, l, p) {
-  // Solves the set of equation XtX*K = XtY for the variables in Pset
-  // if XtX (or XtX(vars,vars)) is singular, performs the svd and find pseudoinverse, otherwise (even if ill-conditioned) finds inverse with LU decomposition and solves the set of equation
-  // it is consistent with matlab results for ill-conditioned matrices (at least consistent with test 'ill-conditionned square X rank 2, Y 3x1' in cssls.test)
-
+export const cssls: Cssls = function cssls(XtX, XtY, Pset, l, p) {
   let K = Matrix.zeros(l, p);
   if (Pset === null) {
-    let choXtX = new CholeskyDecomposition(XtX);
-    if (choXtX.isPositiveDefinite() === true) {
+    // used for initialisation where OLS is solved.
+    const choXtX = new CholeskyDecomposition(XtX);
+    if (choXtX.isPositiveDefinite()) {
       K = choXtX.solve(XtY);
     } else {
-      let luXtX = new LuDecomposition(XtX);
-      if (luXtX.isSingular() === false) {
+      const luXtX = new LuDecomposition(XtX);
+      if (!luXtX.isSingular()) {
         K = luXtX.solve(Matrix.eye(l)).mmul(XtY);
       } else {
         K = solve(XtX, XtY, true);
       }
     }
   } else {
-    let { values: sortedPset, indices: sortedEset } = sortCollectionSet(Pset);
+    const { values: sortedPset, indices: sortedEset } = sortCollectionSet(Pset);
     if (
       sortedPset.length === 1 &&
       sortedPset[0].length === 0 &&
@@ -47,12 +53,12 @@ export default function cssls(XtX, XtY, Pset, l, p) {
       sortedPset[0].length === l &&
       sortedEset[0].length === p
     ) {
-      let choXtX = new CholeskyDecomposition(XtX);
-      if (choXtX.isPositiveDefinite() === true) {
+      const choXtX = new CholeskyDecomposition(XtX);
+      if (choXtX.isPositiveDefinite()) {
         K = choXtX.solve(XtY);
       } else {
-        let luXtX = new LuDecomposition(XtX);
-        if (luXtX.isSingular() === false) {
+        const luXtX = new LuDecomposition(XtX);
+        if (!luXtX.isSingular()) {
           K = luXtX.solve(Matrix.eye(l)).mmul(XtY);
         } else {
           K = solve(XtX, XtY, true);
@@ -60,15 +66,15 @@ export default function cssls(XtX, XtY, Pset, l, p) {
       }
     } else {
       for (let k = 0; k < sortedPset.length; k++) {
-        let cols2Solve = sortedEset[k];
-        let vars = sortedPset[k];
+        const cols2Solve = sortedEset[k];
+        const vars = sortedPset[k];
         let L;
-        let choXtX = new CholeskyDecomposition(XtX.selection(vars, vars));
-        if (choXtX.isPositiveDefinite() === true) {
+        const choXtX = new CholeskyDecomposition(XtX.selection(vars, vars));
+        if (choXtX.isPositiveDefinite()) {
           L = choXtX.solve(XtY.selection(vars, cols2Solve));
         } else {
-          let luXtX = new LuDecomposition(XtX.selection(vars, vars));
-          if (luXtX.isSingular() === false) {
+          const luXtX = new LuDecomposition(XtX.selection(vars, vars));
+          if (!luXtX.isSingular()) {
             L = luXtX
               .solve(Matrix.eye(vars.length))
               .mmul(XtY.selection(vars, cols2Solve));
@@ -89,4 +95,4 @@ export default function cssls(XtX, XtY, Pset, l, p) {
     }
   }
   return K;
-}
+};

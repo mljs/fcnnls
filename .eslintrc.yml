@@ -1,8 +1,4 @@
-extends: 'cheminfo'
-parserOptions:
-  sourceType: module
+extends: cheminfo-typescript
 env:
-  node: true
-  jest: true
-globals:
-  BigInt: true
+  jest/globals: true
+plugins: ['jest']

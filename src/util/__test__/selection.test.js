@@ -1,4 +1,4 @@
-import selection from '../selection.js';
+import selection from '../selection';
 
 describe('selection test', () => {
   it('simple', () => {

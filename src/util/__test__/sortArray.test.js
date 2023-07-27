@@ -1,4 +1,4 @@
-import sortArray from '../sortArray.js';
+import sortArray from '../sortArray';
 
 describe('sortArray test', () => {
   it('simple 3 elements array', () => {

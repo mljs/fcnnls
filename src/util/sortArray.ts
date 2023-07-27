@@ -1,8 +1,9 @@
 /**
  * Sorts an array and returns an object with the sorted array and the corresponding indices.
- * @param {Array<Number>} v
+ * @param array
+ * @returns {values, indices}
  */
-export default function sortArray(array) {
+export default function sortArray(array: number[]) {
   const v = array.map((value, index) => {
     return { value, index };
   });
@@ -11,8 +12,11 @@ export default function sortArray(array) {
     if (a.value === b.value) return a.index - b.index;
     return a.value - b.value;
   });
-
-  let values = v.map((item) => item.value);
-  let indices = v.map((item) => item.index);
+  const values: number[] = [];
+  const indices: number[] = [];
+  for (const item of v) {
+    values.push(item.value);
+    indices.push(item.index);
+  }
   return { values, indices };
 }

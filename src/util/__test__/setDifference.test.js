@@ -1,4 +1,4 @@
-import setDifference from '../setDifference.js';
+import setDifference from '../setDifference';
 
 describe('setDifference test', () => {
   it('simple', () => {
