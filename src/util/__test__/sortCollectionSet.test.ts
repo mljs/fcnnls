@@ -2,14 +2,14 @@ import sortCollectionSet from '../sortCollectionSet';
 
 describe('sortCollectionSet test', () => {
   it('collection of 1 set', () => {
-    let result = sortCollectionSet([[1, 2, 3]]);
+    const result = sortCollectionSet([[1, 2, 3]]);
     expect(result).toStrictEqual({
       values: [[1, 2, 3]],
       indices: [[0]],
     });
   });
   it('collection of 4 set', () => {
-    let result = sortCollectionSet([
+    const result = sortCollectionSet([
       [1, 2, 3],
       [2, 4, 5],
       [1, 6, 8, 10],
@@ -25,7 +25,7 @@ describe('sortCollectionSet test', () => {
     });
   });
   it('collection of 10 set', () => {
-    let result = sortCollectionSet([
+    const result = sortCollectionSet([
       [1, 2],
       [2, 4, 5],
       [1, 6, 8, 10],
@@ -50,7 +50,7 @@ describe('sortCollectionSet test', () => {
     });
   });
   it('collection of 1 empty set', () => {
-    let result = sortCollectionSet([[]]);
+    const result = sortCollectionSet([[]]);
     expect(result).toStrictEqual({
       values: [[]],
       indices: [[0]],
