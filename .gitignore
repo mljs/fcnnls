@@ -6,8 +6,6 @@ npm-debug.log*
 coverage
 .DS_Store
 .vscode
-/fcnnls.js
-
 lib
 lib-esm
 docs

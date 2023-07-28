@@ -1,4 +1,1 @@
 extends: cheminfo-typescript
-env:
-  jest/globals: true
-plugins: ['jest']
