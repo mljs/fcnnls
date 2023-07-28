@@ -1,23 +1,34 @@
 import { Matrix } from 'ml-matrix';
 
-import cssls from './cssls';
+import { cssls } from './cssls';
 import initialisation from './initialisation';
-import optimality from './optimality';
+import { optimality } from './optimality';
 import selection from './util/selection';
+
+interface Options {
+  maxIterations?: number;
+  gradientTolerance?: number;
+}
 
 /**
  * Fast Combinatorial Non-negative Least Squares with multiple Right Hand Side
- * @param {Matrix|number[][]} X
- * @param {Matrix|number[][]} Y
- * @param {object} [options={}]
- * @param {number} [options.maxIterations] if empty maxIterations is set at 3 times the number of columns of X
- * @param {number} [options.gradientTolerance] Control over the optimality of the solution; applied over the largest gradient value of all.
- * @returns {Matrix} K
+ * @param X
+ * @param Y
+ * @param options.maxIterations - if empty maxIterations is set at 3 times the number of columns of X
+ * @returns K
  */
-export default function fcnnls(X, Y, options = {}) {
+
+export default function fcnnls(
+  X: Matrix | number[][],
+  Y: Matrix | number[] | number[][],
+  options: Options = {},
+) {
   X = Matrix.checkMatrix(X);
   Y = Matrix.checkMatrix(Y);
-  let { l, p, iter, W, XtX, XtY, K, Pset, Fset, D } = initialisation(X, Y);
+  const init = initialisation(X, Y);
+  const { l, p, XtX, XtY, K, D } = init;
+  let { iter, W, Pset, Fset } = init;
+
   const { maxIterations = X.columns * 3, gradientTolerance = 1e-5 } = options;
 
   // Active set algorithm for NNLS main loop
@@ -37,7 +48,7 @@ export default function fcnnls(X, Y, options = {}) {
     }
 
     // Finds any infeasible solutions
-    let infeasIndex = [];
+    const infeasIndex: number[] = [];
     for (let j = 0; j < Fset.length; j++) {
       for (let i = 0; i < l; i++) {
         if (L.get(i, j) < 0) {
@@ -51,7 +62,7 @@ export default function fcnnls(X, Y, options = {}) {
     // Makes infeasible solutions feasible (standard NNLS inner loop)
     if (Hset.length > 0) {
       let m = Hset.length;
-      let alpha = Matrix.ones(l, m);
+      const alpha = Matrix.ones(l, m);
 
       while (m > 0 && iter < maxIterations) {
         iter++;
@@ -59,14 +70,14 @@ export default function fcnnls(X, Y, options = {}) {
         alpha.mul(Infinity);
 
         // Finds indices of negative variables in passive set
-        let hRowColIdx = [[], []]; // Indexes work in pairs, each pair reprensents a single element, first array is row index, second array is column index
-        let negRowColIdx = [[], []]; // Same as before
+        const hRowColIdx: [number[], number[]] = [[], []]; // Indexes work in pairs, each pair reprensents a single element, first array is row index, second array is column index
+        const negRowColIdx: [number[], number[]] = [[], []]; // Same as before
         for (let j = 0; j < m; j++) {
-          for (let i = 0; i < Pset[Hset[j]].length; i++) {
-            if (K.get(Pset[Hset[j]][i], Hset[j]) < 0) {
-              hRowColIdx[0].push(Pset[Hset[j]][i]); // i
+          for (const item of Pset[Hset[j]]) {
+            if (K.get(item, Hset[j]) < 0) {
+              hRowColIdx[0].push(item); // i
               hRowColIdx[1].push(j);
-              negRowColIdx[0].push(Pset[Hset[j]][i]); // i
+              negRowColIdx[0].push(item); // i
               negRowColIdx[1].push(Hset[j]);
             } // Compared to matlab, here we keep the row/column indexing (we are not taking the linear indexing)
           }
@@ -83,8 +94,8 @@ export default function fcnnls(X, Y, options = {}) {
           );
         }
 
-        let alphaMin = [];
-        let minIdx = [];
+        let alphaMin: number[] | Matrix = [];
+        const minIdx: number[] = [];
         for (let j = 0; j < m; j++) {
           alphaMin[j] = alpha.minColumn(j);
           minIdx[j] = alpha.minColumnIndex(j)[0];
@@ -105,7 +116,7 @@ export default function fcnnls(X, Y, options = {}) {
           D.setColumn(Hset[j], E.subMatrixColumn([j]));
         }
 
-        let idx2zero = [minIdx, Hset];
+        const idx2zero = [minIdx, Hset];
         for (let k = 0; k < m; k++) {
           D.set(idx2zero[0][k], idx2zero[1][k], 0);
         }
@@ -136,7 +147,7 @@ export default function fcnnls(X, Y, options = {}) {
       }
     }
 
-    let newParam = optimality(
+    const newParam = optimality(
       iter,
       maxIterations,
       XtX,

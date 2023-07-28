@@ -1,17 +1,14 @@
 import { readFileSync } from 'fs';
 import { join } from 'path';
 
-import { toBeDeepCloseTo, toMatchCloseTo } from 'jest-matcher-deep-close-to';
 import { Matrix } from 'ml-matrix';
 
 import fcnnls from '../fcnnls';
 
-expect.extend({ toBeDeepCloseTo, toMatchCloseTo });
-
 const concentration = readFileSync(join(__dirname, 'data/matrix.txt'), 'utf-8');
-let linesA = concentration.split(/[\r\n]+/);
-let A = [];
-for (let line of linesA) {
+const linesA = concentration.split(/[\r\n]+/);
+const A: number[][] = [];
+for (const line of linesA) {
   A.push(line.split(',').map((value) => Number(value)));
 }
 
@@ -20,80 +17,90 @@ let matrix = new Matrix(A);
 matrix = matrix.transpose();
 
 const proportion = readFileSync(join(__dirname, 'data/x_fcnnls.txt'), 'utf-8');
-let linesk = proportion.split(/[\r\n]+/);
-let k = [];
-for (let line of linesk) {
+const linesk = proportion.split(/[\r\n]+/);
+const k: number[][] = [];
+for (const line of linesk) {
   k.push(line.split(',').map((value) => Number(value)));
 }
-delete k.splice(133, 1);
-let answer = new Matrix(k);
+k.splice(133, 1);
+const answer = new Matrix(k);
 
 const observation = readFileSync(join(__dirname, 'data/target.txt'), 'utf-8');
-let lines = observation.split(/[\r\n]+/);
-let b = [];
-for (let line of lines) {
+const lines = observation.split(/[\r\n]+/);
+const b: number[][] = [];
+for (const line of lines) {
   b.push(line.split(',').map((value) => Number(value)));
 }
 
 let target = new Matrix(b);
 
 target = target.transpose();
+let solution: Matrix;
+let result: Matrix;
 
+afterEach(() => {
+  for (let i = 0; i < result.rows; i++) {
+    for (let j = 0; j < result.columns; j++) {
+      let nDigits = 4;
+      const sol = solution.get(i, j);
+      if (sol > 10e2) {
+        nDigits = 0;
+      }
+      expect(result.get(i, j)).toBeCloseTo(sol, nDigits);
+    }
+  }
+});
 describe('myModule test', () => {
   it('identity X, Y 4x1', () => {
-    let X = Matrix.eye(4);
-    let Y = new Matrix([[0], [1], [2], [3]]);
-    let solution = new Matrix([[0], [1], [2], [3]]);
-    let result = fcnnls(X, Y);
-    expect(result.to2DArray()).toMatchCloseTo(solution.to2DArray(), 4);
+    const X = Matrix.eye(4);
+    const Y = new Matrix([[0], [1], [2], [3]]);
+    solution = new Matrix([[0], [1], [2], [3]]);
+    result = fcnnls(X, Y);
   });
 
   it('identity X, Y 5x3', () => {
-    let X = Matrix.eye(5);
-    let Y = new Matrix([
+    const X = Matrix.eye(5);
+    const Y = new Matrix([
       [0, 5, 10],
       [1, 6, 11],
       [2, 7, 12],
       [3, 8, 13],
       [4, 9, 14],
     ]);
-    let solution = new Matrix([
+    solution = new Matrix([
       [0, 5, 10],
       [1, 6, 11],
       [2, 7, 12],
       [3, 8, 13],
       [4, 9, 14],
     ]);
-    let result = fcnnls(X, Y);
-    expect(result.to2DArray()).toMatchCloseTo(solution.to2DArray(), 4);
+    result = fcnnls(X, Y);
   });
 
   it('non-singular square X, Y 3x1', () => {
-    let X = new Matrix([
+    const X = new Matrix([
       [0, 1, 1],
       [1, 0, 1],
       [1, 1, 0],
     ]);
-    let Y = new Matrix([[-1], [2], [-3]]);
-    let solution = new Matrix([[0], [0], [0.5]]);
-    let result = fcnnls(X, Y);
-    expect(result.to2DArray()).toMatchCloseTo(solution.to2DArray(), 4);
+    const Y = new Matrix([[-1], [2], [-3]]);
+    solution = new Matrix([[0], [0], [0.5]]);
+    result = fcnnls(X, Y);
   });
 
   it('singular square X rank 2, Y 3x1', () => {
-    let X = new Matrix([
+    const X = new Matrix([
       [1, 2, 3],
       [4, 5, 6],
       [7, 8, 9],
     ]);
-    let Y = new Matrix([[-1], [0], [10]]);
-    let solution = new Matrix([[1.0455], [0], [0]]);
-    let result = Matrix.round(fcnnls(X, Y).mul(10000)).mul(0.0001);
-    expect(result.to2DArray()).toMatchCloseTo(solution.to2DArray(), 4);
+    const Y = new Matrix([[-1], [0], [10]]);
+    solution = new Matrix([[1.0455], [0], [0]]);
+    result = Matrix.round(fcnnls(X, Y).mul(10000)).mul(0.0001);
   });
 
   it('6x3 X full-rank, Y 6x7', () => {
-    let X = new Matrix([
+    const X = new Matrix([
       [1, 2, 3],
       [4, 5, 6],
       [7, 8, 9],
@@ -101,7 +108,7 @@ describe('myModule test', () => {
       [13, 14, 15],
       [0, 1, 1],
     ]);
-    let Y = new Matrix([
+    const Y = new Matrix([
       [-1, 0, 1, 2, 3, 4, 5],
       [0, 3, 5, 6, 79, 3, 1],
       [10, 11, 2, 3, 4, 7, 8],
@@ -109,69 +116,65 @@ describe('myModule test', () => {
       [1000, 2, 56, 40, 1, 1, 3],
       [7, 6, 5, 4, 3, 2, 1],
     ]);
-    let solution = new Matrix([
+    solution = new Matrix([
       [39.0418, 1.3439, 2.2776, 1.6925, 0, 0, 0],
       [0, 2.121, 0, 0, 0, 0, 0],
       [0, 0, 0, 0, 1.0827, 0.3911, 0.4738],
     ]);
-    let result = Matrix.round(fcnnls(X, Y, false).mul(10000)).mul(0.0001);
-    expect(result.to2DArray()).toBeDeepCloseTo(solution.to2DArray(), 4);
+    result = Matrix.round(fcnnls(X, Y).mul(10000)).mul(0.0001);
   });
 
   it('Van Benthem - Keenan example', () => {
-    let X = new Matrix([
+    const X = new Matrix([
       [95, 89, 82],
       [23, 76, 44],
       [61, 46, 62],
       [42, 2, 79],
     ]);
-    let Y = new Matrix([
+    const Y = new Matrix([
       [92, 99, 80],
       [74, 19, 43],
       [18, 41, 51],
       [41, 61, 39],
     ]);
-    let solution = new Matrix([
+    solution = new Matrix([
       [0, 0.6873, 0.2836],
       [0.6272, 0, 0.2862],
       [0.3517, 0.2873, 0.335],
     ]);
-    let result = fcnnls(X, Y);
-    expect(result.to2DArray()).toMatchCloseTo(solution.to2DArray(), 4);
+    result = fcnnls(X, Y);
   });
 
   it('matrix/target', () => {
-    let X = matrix;
-    let Y = target;
-    let result = fcnnls(X, Y);
-    let solution = answer;
-    expect(result.to2DArray()).toBeDeepCloseTo(solution.to2DArray(), 0);
+    const X = matrix;
+    const Y = target;
+    result = fcnnls(X, Y);
+    solution = answer;
   });
 
   it('example documentation', () => {
-    let X = new Matrix([
+    const X = new Matrix([
       [1, 1, 2],
       [10, 11, -9],
       [-1, 0, 0],
       [-5, 6, -7],
     ]);
-    let Y = new Matrix([
+    const Y = new Matrix([
       [-1, 0, 0, 9],
       [11, -20, 103, 5],
       [0, 0, 0, 0],
       [1, 2, 3, 4],
     ]);
-    let solution = new Matrix([
+    solution = new Matrix([
       [0.461, 0, 4.9714, 0],
       [0.5611, 0, 4.7362, 2.2404],
       [0, 1.2388, 0, 1.9136],
     ]);
-    let result = fcnnls(X, Y);
-    expect(result.to2DArray()).toMatchCloseTo(solution.to2DArray(), 4);
+    result = fcnnls(X, Y);
   });
 
   it('debuggage random matrices', () => {
-    let X = new Matrix([
+    const X = new Matrix([
       [269, 134, 116, 940, 530],
       [899, 199, 207, 95, 533],
       [474, 817, 100000, 743, 991],
@@ -184,7 +187,7 @@ describe('myModule test', () => {
       [203, 763, 405, 179, 454],
     ]);
 
-    let Y = new Matrix([
+    const Y = new Matrix([
       [123, 521],
       [950, 21],
       [825, 657],
@@ -196,46 +199,42 @@ describe('myModule test', () => {
       [309, 163],
       [902, 629],
     ]);
-    let solution = new Matrix([
+    solution = new Matrix([
       [0.2066, 0.7494],
       [0.2479, 0.5763],
       [0.0004, 0],
       [0, 0],
       [0.492, 0],
     ]);
-    let result = fcnnls(X, Y);
-    expect(result.to2DArray()).toBeDeepCloseTo(solution.to2DArray(), 4);
+    result = fcnnls(X, Y);
   });
 
   it('identity X, negative Y 3x1', () => {
-    let X = Matrix.eye(3);
-    let Y = new Matrix([[-1], [-2], [-3]]);
-    let solution = new Matrix([[0], [0], [0]]);
-    let result = fcnnls(X, Y);
-    expect(result.to2DArray()).toMatchCloseTo(solution.to2DArray(), 4);
+    const X = Matrix.eye(3);
+    const Y = new Matrix([[-1], [-2], [-3]]);
+    solution = new Matrix([[0], [0], [0]]);
+    result = fcnnls(X, Y);
   });
 
   it('another simple test', () => {
-    let X = new Matrix([
+    const X = new Matrix([
       [1, 1, 0],
       [0, 1, 1],
       [0, 0, 1],
     ]);
-    let Y = new Matrix([[-2], [2], [0]]);
-    let solution = new Matrix([[0], [0], [1]]);
-    let result = fcnnls(X, Y);
-    expect(result.to2DArray()).toMatchCloseTo(solution.to2DArray(), 4);
+    const Y = new Matrix([[-2], [2], [0]]);
+    solution = new Matrix([[0], [0], [1]]);
+    result = fcnnls(X, Y);
   });
 
   it('non positive-definite matrix', () => {
-    let X = new Matrix([
+    const X = new Matrix([
       [1, 1, 1, 0],
       [0, 1, 1, 1],
       [1, 2, 2, 1],
     ]);
-    let Y = new Matrix([[-2], [2], [0]]);
-    let solution = new Matrix([[0], [0], [0], [1]]);
-    let result = fcnnls(X, Y);
-    expect(result.to2DArray()).toMatchCloseTo(solution.to2DArray(), 4);
+    const Y = new Matrix([[-2], [2], [0]]);
+    solution = new Matrix([[0], [0], [0], [1]]);
+    result = fcnnls(X, Y);
   });
 });
