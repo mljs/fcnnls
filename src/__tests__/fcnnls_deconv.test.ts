@@ -26,4 +26,10 @@ describe('fcnnls deconv-examples run', () => {
     expect(result).toBeDefined();
     expect(result).toBeDefined();
   });
+  it('example 4: X3 - 1', () => {
+    const X4 = new Matrix(X3).sub(1);
+    const Y4 = new Matrix(Y3).sub(1);
+    const result = fcnnls(X4, Y4);
+    expect(result).toBeDefined();
+  });
 });
