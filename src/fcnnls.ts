@@ -15,6 +15,7 @@ interface Options {
  * @param X
  * @param Y
  * @param options.maxIterations - if empty maxIterations is set at 3 times the number of columns of X
+ * @param options.gradientTolerance Control over the optimality of the solution; applied over the largest gradient value of all.
  * @returns K
  */
 

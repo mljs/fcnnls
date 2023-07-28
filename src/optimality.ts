@@ -50,7 +50,7 @@ type Optimality = (
  * @param l - Number of rows of X
  * @param p - Number of columns of X
  * @param D - K clone
- * @param [options.gradientTolerance] Control over the optimality of the solution; applied over the largest gradient value of all.
+ * @param gradientTolerance - Control over the optimality of the solution; applied over the largest gradient value of all.
  */
 export const optimality: Optimality = function optimality(
   iter,
