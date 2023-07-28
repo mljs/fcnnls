@@ -1,3 +1,5 @@
+import { Matrix } from 'ml-matrix';
+
 import fcnnls from '../fcnnls';
 
 import { X as X1, Y as Y1 } from './deconv-examples/data_example1';
@@ -15,6 +17,12 @@ describe('fcnnls deconv-examples run', () => {
   });
   it('example 3', () => {
     const result = fcnnls(X3, Y3, { gradientToleranceDecimals: 3 });
+    expect(result).toBeDefined();
+  });
+  it('example 4: X3 - 1', () => {
+    const X4 = new Matrix(X3).sub(1);
+    const Y4 = new Matrix(Y3).sub(1);
+    const result = fcnnls(X4, Y4);
     expect(result).toBeDefined();
   });
 });
