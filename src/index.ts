@@ -1,2 +1,5 @@
-export { default as fcnnls } from './fcnnls';
-export { default as fcnnlsVector } from './fcnnlsVector';
+export { default as fcnnls, type FcnnlsOptions } from './fcnnls';
+export {
+  default as fcnnlsVector,
+  type FcnnlsVectorOptions,
+} from './fcnnlsVector';

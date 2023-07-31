@@ -2,6 +2,7 @@ import { readFileSync } from 'fs';
 import { join } from 'path';
 
 import { Matrix } from 'ml-matrix';
+import { expect, it, describe } from 'vitest';
 
 import fcnnls from '../fcnnls';
 
@@ -35,27 +36,25 @@ for (const line of lines) {
 let target = new Matrix(b);
 
 target = target.transpose();
-let solution: Matrix;
-let result: Matrix;
 
-afterEach(() => {
+// used for most tests here and in fcnnlsVector.test.ts
+export function assertResult(result: Matrix, solution: Matrix, precision = 4) {
   for (let i = 0; i < result.rows; i++) {
     for (let j = 0; j < result.columns; j++) {
-      let nDigits = 4;
       const sol = solution.get(i, j);
-      if (sol > 10e2) {
-        nDigits = 0;
-      }
-      expect(result.get(i, j)).toBeCloseTo(sol, nDigits);
+      // for numbers > 1000 just match up to the decimal point.
+      if (sol > 10e2) precision = 0;
+      expect(result.get(i, j)).toBeCloseTo(sol, precision);
     }
   }
-});
-describe('myModule test', () => {
+}
+describe('Test Fast Combinatorial NNLS', () => {
   it('identity X, Y 4x1', () => {
     const X = Matrix.eye(4);
     const Y = new Matrix([[0], [1], [2], [3]]);
-    solution = new Matrix([[0], [1], [2], [3]]);
-    result = fcnnls(X, Y);
+    const solution = new Matrix([[0], [1], [2], [3]]);
+    const result = fcnnls(X, Y);
+    assertResult(result, solution);
   });
 
   it('identity X, Y 5x3', () => {
@@ -67,14 +66,15 @@ describe('myModule test', () => {
       [3, 8, 13],
       [4, 9, 14],
     ]);
-    solution = new Matrix([
+    const solution = new Matrix([
       [0, 5, 10],
       [1, 6, 11],
       [2, 7, 12],
       [3, 8, 13],
       [4, 9, 14],
     ]);
-    result = fcnnls(X, Y);
+    const result = fcnnls(X, Y);
+    assertResult(result, solution);
   });
 
   it('non-singular square X, Y 3x1', () => {
@@ -84,8 +84,9 @@ describe('myModule test', () => {
       [1, 1, 0],
     ]);
     const Y = new Matrix([[-1], [2], [-3]]);
-    solution = new Matrix([[0], [0], [0.5]]);
-    result = fcnnls(X, Y);
+    const solution = new Matrix([[0], [0], [0.5]]);
+    const result = fcnnls(X, Y);
+    assertResult(result, solution);
   });
 
   it('singular square X rank 2, Y 3x1', () => {
@@ -95,8 +96,9 @@ describe('myModule test', () => {
       [7, 8, 9],
     ]);
     const Y = new Matrix([[-1], [0], [10]]);
-    solution = new Matrix([[1.0455], [0], [0]]);
-    result = Matrix.round(fcnnls(X, Y).mul(10000)).mul(0.0001);
+    const solution = new Matrix([[1.0455], [0], [0]]);
+    const result = Matrix.round(fcnnls(X, Y).mul(10000)).mul(0.0001);
+    assertResult(result, solution);
   });
 
   it('6x3 X full-rank, Y 6x7', () => {
@@ -116,12 +118,13 @@ describe('myModule test', () => {
       [1000, 2, 56, 40, 1, 1, 3],
       [7, 6, 5, 4, 3, 2, 1],
     ]);
-    solution = new Matrix([
+    const solution = new Matrix([
       [39.0418, 1.3439, 2.2776, 1.6925, 0, 0, 0],
       [0, 2.121, 0, 0, 0, 0, 0],
       [0, 0, 0, 0, 1.0827, 0.3911, 0.4738],
     ]);
-    result = Matrix.round(fcnnls(X, Y).mul(10000)).mul(0.0001);
+    const result = Matrix.round(fcnnls(X, Y).mul(10000)).mul(0.0001);
+    assertResult(result, solution);
   });
 
   it('Van Benthem - Keenan example', () => {
@@ -137,19 +140,21 @@ describe('myModule test', () => {
       [18, 41, 51],
       [41, 61, 39],
     ]);
-    solution = new Matrix([
+    const solution = new Matrix([
       [0, 0.6873, 0.2836],
       [0.6272, 0, 0.2862],
       [0.3517, 0.2873, 0.335],
     ]);
-    result = fcnnls(X, Y);
+    const result = fcnnls(X, Y);
+    assertResult(result, solution);
   });
 
   it('matrix/target', () => {
     const X = matrix;
     const Y = target;
-    result = fcnnls(X, Y);
-    solution = answer;
+    const result = fcnnls(X, Y);
+    const solution = answer;
+    assertResult(result, solution);
   });
 
   it('example documentation', () => {
@@ -165,12 +170,13 @@ describe('myModule test', () => {
       [0, 0, 0, 0],
       [1, 2, 3, 4],
     ]);
-    solution = new Matrix([
+    const solution = new Matrix([
       [0.461, 0, 4.9714, 0],
       [0.5611, 0, 4.7362, 2.2404],
       [0, 1.2388, 0, 1.9136],
     ]);
-    result = fcnnls(X, Y);
+    const result = fcnnls(X, Y);
+    assertResult(result, solution);
   });
 
   it('debuggage random matrices', () => {
@@ -199,21 +205,23 @@ describe('myModule test', () => {
       [309, 163],
       [902, 629],
     ]);
-    solution = new Matrix([
+    const solution = new Matrix([
       [0.2066, 0.7494],
       [0.2479, 0.5763],
       [0.0004, 0],
       [0, 0],
       [0.492, 0],
     ]);
-    result = fcnnls(X, Y);
+    const result = fcnnls(X, Y);
+    assertResult(result, solution);
   });
 
   it('identity X, negative Y 3x1', () => {
     const X = Matrix.eye(3);
     const Y = new Matrix([[-1], [-2], [-3]]);
-    solution = new Matrix([[0], [0], [0]]);
-    result = fcnnls(X, Y);
+    const solution = new Matrix([[0], [0], [0]]);
+    const result = fcnnls(X, Y);
+    assertResult(result, solution);
   });
 
   it('another simple test', () => {
@@ -223,8 +231,9 @@ describe('myModule test', () => {
       [0, 0, 1],
     ]);
     const Y = new Matrix([[-2], [2], [0]]);
-    solution = new Matrix([[0], [0], [1]]);
-    result = fcnnls(X, Y);
+    const solution = new Matrix([[0], [0], [1]]);
+    const result = fcnnls(X, Y);
+    assertResult(result, solution);
   });
 
   it('non positive-definite matrix', () => {
@@ -234,7 +243,15 @@ describe('myModule test', () => {
       [1, 2, 2, 1],
     ]);
     const Y = new Matrix([[-2], [2], [0]]);
-    solution = new Matrix([[0], [0], [0], [1]]);
-    result = fcnnls(X, Y);
+    const solution = new Matrix([[0], [0], [0], [1]]);
+    const result = fcnnls(X, Y);
+    assertResult(result, solution);
+  });
+  it('identity X, Y 4x1', () => {
+    const X = Matrix.eye(4);
+    const Y = new Matrix([[0], [1], [2], [3]]);
+    const solution = new Matrix([[0], [1], [2], [3]]);
+    const result = fcnnls(X, Y);
+    assertResult(result, solution);
   });
 });

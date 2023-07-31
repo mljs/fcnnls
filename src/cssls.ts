@@ -7,25 +7,24 @@ import {
 
 import sortCollectionSet from './util/sortCollectionSet';
 
-type Cssls = (
-  XtX: Matrix,
-  XtY: Matrix,
-  Pset: number[][] | null,
-  l: number,
-  p: number,
-) => Matrix;
 /**
- * (Combinatorial Subspace Least Squares) - subfunction for the FC-NNLS
+ * Combinatorial Subspace Least Squares - subfunction for the FC-NNLS
  * Solves XtX*K = XtY for the variables in Pset
- * if XtX (or XtX(vars,vars)) is singular, performs the svd and find pseudoinverse, otherwise (even if ill-conditioned) finds inverse with LU decomposition and solves the set of equation
- * it is consistent with matlab results for ill-conditioned matrices (at least consistent with test 'ill-conditionned square X rank 2, Y 3x1' in cssls.test)
+ * if XtX (or XtX(vars,vars)) is singular, performs the svd and find pseudo-inverse, otherwise (even if ill-conditioned) finds inverse with LU decomposition and solves the set of equation
+ * it is consistent with matlab results for ill-conditioned matrices (at least consistent with test 'ill-conditioned square X rank 2, Y 3x1' in cssls.test)
  * @param XtX - Gram matrix
  * @param XtY
  * @param Pset - Subset of matrix K with positive values (indices)
  * @param l - number of rows of X
  * @param p - number of columns of Y
  */
-export const cssls: Cssls = function cssls(XtX, XtY, Pset, l, p) {
+export function cssls(
+  XtX: Matrix,
+  XtY: Matrix,
+  Pset: number[][] | null,
+  l: number,
+  p: number,
+): Matrix {
   let K = Matrix.zeros(l, p);
   if (Pset === null) {
     // used for initialisation where OLS is solved.
@@ -95,4 +94,4 @@ export const cssls: Cssls = function cssls(XtX, XtY, Pset, l, p) {
     }
   }
   return K;
-};
+}

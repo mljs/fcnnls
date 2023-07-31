@@ -1,6 +1,7 @@
 import { Matrix } from 'ml-matrix';
+import { expect, it, describe } from 'vitest';
 
-import initialisation from '../initialisation';
+import { initialisation } from '../initialisation';
 import { optimality } from '../optimality';
 
 describe('optimality test', () => {

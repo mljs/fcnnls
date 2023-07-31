@@ -1,4 +1,5 @@
 import { Matrix } from 'ml-matrix';
+import { expect, it, describe } from 'vitest';
 
 import fcnnls from '../fcnnls';
 

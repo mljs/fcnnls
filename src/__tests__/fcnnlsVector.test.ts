@@ -1,10 +1,11 @@
 import { Matrix } from 'ml-matrix';
+import { expect, it, describe } from 'vitest';
 
 import fcnnlsVector from '../fcnnlsVector';
 
 import { data } from './data/convergence';
 
-describe('myModule test', () => {
+describe('Test single right hand side convergence', () => {
   it('example documentation', () => {
     const X = new Matrix([
       [1, 1, 2],

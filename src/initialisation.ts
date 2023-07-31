@@ -10,7 +10,7 @@ import { cssls } from './cssls';
  * @param - Y output data matrix
  * @returns - initial values for the algorithm (including the solution K to least squares, overwriting of negative values with 0)
  */
-export default function initialisation(X: Matrix, Y: Matrix) {
+export function initialisation(X: Matrix, Y: Matrix) {
   // X = n x l
   // W = l x p, same as K
   // Y = n x p

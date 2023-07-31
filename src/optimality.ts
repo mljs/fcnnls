@@ -2,45 +2,10 @@ import { type Matrix } from 'ml-matrix';
 
 import setDifference from './util/setDifference';
 
-type Optimality = (
-  // current iterations
-  iter: number,
-  // maximum number of iterations
-  maxIter: number,
-  // Gram matrix
-  XtX: Matrix,
-  XtY: Matrix,
-  /* Columns to be optimized (active), it stores indices of columns with
-   * negative values
-   */
-  Fset: number[],
-  /* Columns not to be optimized (passive)
-   * Each subarray corresponds to col of K
-   * And stores indices of positive values of that column
-   */
-  Pset: number[][],
-  // Gradient Matrix
-  W: Matrix,
-  // Coefficients Matrix
-  K: Matrix,
-  // Number of rows of X
-  l: number,
-  // Number of columns of X
-  p: number,
-  // K clone
-  D: Matrix,
-  // Number of decimals to chop number
-  gradientTolerance: number,
-) => {
-  Pset: number[][];
-  Fset: number[];
-  W: Matrix;
-};
-
 /**
  * Checks whether the solution has converged
  * @param iter - current iteration
- * @param maxIter - maximum number of iterations
+ * @param maxIter - maximum number of iterations, @default 3 times the number of columns of X
  * @param XtX - Gram matrix
  * @param XtY
  * @param Fset - Columns to be optimized (active), it stores indices of columns with negative values
@@ -50,22 +15,28 @@ type Optimality = (
  * @param l - Number of rows of X
  * @param p - Number of columns of X
  * @param D - K clone
- * @param gradientTolerance - Control over the optimality of the solution; applied over the largest gradient value of all.
+ * @param gradientTolerance - Control over the optimality of the solution; applied over the largest gradient value of all. @default 1e-5.
+ * @returns - {Pset, Fset, W}
  */
-export const optimality: Optimality = function optimality(
-  iter,
-  maxIter,
-  XtX,
-  XtY,
-  Fset,
-  Pset,
-  W,
-  K,
-  l,
-  p,
-  D,
-  gradientTolerance,
-) {
+
+export function optimality(
+  iter: number,
+  maxIter: number,
+  XtX: Matrix,
+  XtY: Matrix,
+  Fset: number[],
+  Pset: number[][],
+  W: Matrix,
+  K: Matrix,
+  l: number,
+  p: number,
+  D: Matrix,
+  gradientTolerance: number,
+): {
+  Pset: number[][];
+  Fset: number[];
+  W: Matrix;
+} {
   if (iter === maxIter) {
     throw new Error('Maximum number of iterations exceeded');
   }
@@ -109,4 +80,4 @@ export const optimality: Optimality = function optimality(
     Pset[j].sort((a, b) => a - b);
   }
   return { Pset, Fset, W };
-};
+}

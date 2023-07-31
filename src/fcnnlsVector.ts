@@ -2,7 +2,7 @@ import { Matrix } from 'ml-matrix';
 
 import fcnnls from './fcnnls';
 
-interface Options {
+export interface FcnnlsVectorOptions {
   maxIterations?: number;
 }
 /**
@@ -15,7 +15,7 @@ interface Options {
 export default function fcnnlsVector(
   X: Matrix,
   y: number[],
-  options: Options = {},
+  options: FcnnlsVectorOptions = {},
 ) {
   if (!Array.isArray(y)) {
     throw new TypeError('y must be a 1D Array');

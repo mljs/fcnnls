@@ -1,12 +1,21 @@
 import { Matrix } from 'ml-matrix';
 
 import { cssls } from './cssls';
-import initialisation from './initialisation';
+import { initialisation } from './initialisation';
 import { optimality } from './optimality';
 import selection from './util/selection';
 
-interface Options {
+export interface FcnnlsOptions {
+  /**
+   * Number of iterations
+   * @default 3 times the number of columns of X
+   */
   maxIterations?: number;
+  /**
+   * Control over the optimality of the solution; applied over the largest gradient value of all.
+   * @default 1e-5
+   * Smaller values are less tolerant.
+   */
   gradientTolerance?: number;
 }
 
@@ -14,15 +23,14 @@ interface Options {
  * Fast Combinatorial Non-negative Least Squares with multiple Right Hand Side
  * @param X
  * @param Y
- * @param options.maxIterations - if empty maxIterations is set at 3 times the number of columns of X
- * @param options.gradientTolerance Control over the optimality of the solution; applied over the largest gradient value of all.
+ * @param options - {@link FcnnlsOptions}
  * @returns K
  */
 
 export default function fcnnls(
   X: Matrix | number[][],
   Y: Matrix | number[] | number[][],
-  options: Options = {},
+  options: FcnnlsOptions = {},
 ) {
   X = Matrix.checkMatrix(X);
   Y = Matrix.checkMatrix(Y);

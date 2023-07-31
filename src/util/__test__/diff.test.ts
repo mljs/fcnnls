@@ -1,3 +1,5 @@
+import { expect, it, describe } from 'vitest';
+
 import diff from '../diff';
 
 describe('diff test', () => {

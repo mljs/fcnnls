@@ -1,6 +1,7 @@
 import { Matrix } from 'ml-matrix';
+import { expect, it, describe } from 'vitest';
 
-import initialisation from '../initialisation';
+import { initialisation } from '../initialisation';
 
 describe('initialisation test', () => {
   it('identity X, Y 1-dimension', () => {
