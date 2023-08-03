@@ -2,9 +2,11 @@ import { readFileSync } from 'fs';
 import { join } from 'path';
 
 import { Matrix } from 'ml-matrix';
-import { expect, it, describe } from 'vitest';
+import { it, describe } from 'vitest';
 
 import fcnnls from '../fcnnls';
+
+import { assertResult } from './assertResult';
 
 const concentration = readFileSync(join(__dirname, 'data/matrix.txt'), 'utf-8');
 const linesA = concentration.split(/[\r\n]+/);
@@ -36,18 +38,6 @@ for (const line of lines) {
 let target = new Matrix(b);
 
 target = target.transpose();
-
-// used for most tests here and in fcnnlsVector.test.ts
-export function assertResult(result: Matrix, solution: Matrix, precision = 4) {
-  for (let i = 0; i < result.rows; i++) {
-    for (let j = 0; j < result.columns; j++) {
-      const sol = solution.get(i, j);
-      // for numbers > 1000 just match up to the decimal point.
-      if (sol > 10e2) precision = 0;
-      expect(result.get(i, j)).toBeCloseTo(sol, precision);
-    }
-  }
-}
 describe('Test Fast Combinatorial NNLS', () => {
   it('identity X, Y 4x1', () => {
     const X = Matrix.eye(4);

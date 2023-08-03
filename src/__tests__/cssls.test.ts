@@ -4,7 +4,7 @@ import { it, describe } from 'vitest';
 import { cssls } from '../cssls';
 import { initialisation } from '../initialisation';
 
-import { assertResult } from './fcnnls.test';
+import { assertResult } from './assertResult';
 
 describe('cssls test', () => {
   it('identity X, Y 4x1', () => {
