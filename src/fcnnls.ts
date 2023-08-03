@@ -12,7 +12,7 @@ export interface FcnnlsOptions {
    */
   maxIterations?: number;
   /**
-   * Control over the optimality of the solution; applied over the largest gradient value of all.
+   * Control over the optimality of the solution; applied to the largest gradient value.
    * @default 1e-5
    * Smaller values are less tolerant.
    */
@@ -23,7 +23,7 @@ export interface FcnnlsOptions {
  * Fast Combinatorial Non-negative Least Squares with multiple Right Hand Side
  * @param X
  * @param Y
- * @param options - see all the options here {@link FcnnlsOptions}
+ * @param options
  * @returns Solution Matrix.
  */
 
