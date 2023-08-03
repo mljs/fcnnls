@@ -1,21 +1,18 @@
 import { Matrix } from 'ml-matrix';
 
-import fcnnls from './fcnnls';
+import fcnnls, { type FcnnlsOptions } from './fcnnls';
 
-export interface FcnnlsVectorOptions {
-  maxIterations?: number;
-}
 /**
  * Fast Combinatorial Non-negative Least Squares with single Right Hand Side
  * @param X - input data matrix
  * @param y - output data vector
  * @param options - for maxIterations
- * @returns solution vector k
+ * @returns Solution vector.
  */
 export default function fcnnlsVector(
   X: Matrix,
   y: number[],
-  options: FcnnlsVectorOptions = {},
+  options: FcnnlsOptions = {},
 ) {
   if (!Array.isArray(y)) {
     throw new TypeError('y must be a 1D Array');

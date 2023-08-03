@@ -15,7 +15,10 @@ describe('Test single right hand side convergence', () => {
     ]);
     const y = [-1, 11, 0, 1];
     const solution = [0.461, 0.5611, 0];
-    const result = fcnnlsVector(X, y);
+    const result = fcnnlsVector(X, y, {
+      maxIterations: 1000,
+      gradientTolerance: 1e-10,
+    });
     for (const r of result) {
       expect(r).toBeCloseTo(solution.shift() as number, 4);
     }

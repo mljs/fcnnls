@@ -23,8 +23,8 @@ export interface FcnnlsOptions {
  * Fast Combinatorial Non-negative Least Squares with multiple Right Hand Side
  * @param X
  * @param Y
- * @param options - {@link FcnnlsOptions}
- * @returns K
+ * @param options - see all the options here {@link FcnnlsOptions}
+ * @returns Solution Matrix.
  */
 
 export default function fcnnls(
