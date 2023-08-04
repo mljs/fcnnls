@@ -1,5 +1,16 @@
 # Changelog
 
+## [2.0.0](https://github.com/mljs/fcnnls/compare/v1.1.4...v2.0.0) (2023-08-04)
+
+
+### ⚠ BREAKING CHANGES
+
+* migrate to typescript ([#15](https://github.com/mljs/fcnnls/issues/15))
+
+### Code Refactoring
+
+* migrate to typescript ([#15](https://github.com/mljs/fcnnls/issues/15)) ([f17b1a1](https://github.com/mljs/fcnnls/commit/f17b1a10b8b546a78242d6551c9225e7a2705c3e))
+
 ## [1.1.4](https://github.com/mljs/fcnnls/compare/v1.1.3...v1.1.4) (2023-07-27)
 
 
