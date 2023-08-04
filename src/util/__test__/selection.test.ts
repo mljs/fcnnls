@@ -1,4 +1,6 @@
-import selection from '../selection.js';
+import { expect, it, describe } from 'vitest';
+
+import selection from '../selection';
 
 describe('selection test', () => {
   it('simple', () => {
