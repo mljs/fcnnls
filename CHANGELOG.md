@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.0.1](https://github.com/mljs/fcnnls/compare/v2.0.0...v2.0.1) (2023-08-07)
+
+
+### Documentation
+
+* fix docs deployment ([ca6e0dc](https://github.com/mljs/fcnnls/commit/ca6e0dcccbcd0ea58a32d270a82da8b551e0e514))
+
 ## [2.0.0](https://github.com/mljs/fcnnls/compare/v1.1.4...v2.0.0) (2023-08-04)
 
 
