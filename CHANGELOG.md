@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.1.0](https://github.com/mljs/fcnnls/compare/v2.0.1...v2.1.0) (2023-08-10)
+
+
+### Features
+
+* add CITATION.cff ([a75058b](https://github.com/mljs/fcnnls/commit/a75058b1621438ae0208dd23fabf7600b7aae641))
+
 ## [2.0.1](https://github.com/mljs/fcnnls/compare/v2.0.0...v2.0.1) (2023-08-07)
 
 
