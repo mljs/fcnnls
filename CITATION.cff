@@ -1,7 +1,7 @@
 cff-version: 1.2.0
 title: 'Javascript library for Fast Combinatorial Non-negative Least Squares.'
-repository-artifact: http://cheminfo.github.io/jcampconverter/
-repository-code: https://github.com/cheminfo/jcampconverter
+repository-artifact: https://mljs.github.io/fcnnls/
+repository-code: https://github.com/mljs/fcnnls
 authors:
   - family-names: 'Zasso'
     given-names: 'Michaël'
@@ -17,3 +17,5 @@ license: MIT
 keywords:
   - FCNNLS
 doi: 10.5281/zenodo.5101777
+
+https://github.com/mljs/fcnnls
