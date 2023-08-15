@@ -13,6 +13,7 @@ authors:
   - family-names: 'Miranda'
     given-names: 'Santiago'
     affiliation: 'Zakodium Sàrl, Switzerland'
+    orcid: 'https://orcid.org/0009-0002-2276-0265'
 license: MIT
 keywords:
   - FCNNLS
