@@ -52,8 +52,5 @@
   },
   "dependencies": {
     "ml-matrix": "^6.10.5"
-  },
-  "overrides": {
-    "get-func-name": "2.0.0"
   }
 }

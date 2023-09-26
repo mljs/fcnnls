@@ -2,55 +2,56 @@ import { Matrix } from 'ml-matrix';
 
 import { cssls } from './cssls';
 
+interface Initialisation {
+  XtX: Matrix;
+  XtY: Matrix;
+  nRowsX: number;
+  nColsX: number;
+  nRowsY: number;
+  nColsY: number;
+}
 /**
- * Solves as std linear squares,
- * and overwrites the negative values of K with 0 as an initial guess for K,
- * It also precomputes part of the pseudoinverse used to solve Least Squares.
- * @param - X input data matrix
- * @param - Y output data matrix
- * @returns - initial values for the algorithm (including the solution K to least squares, overwriting of negative values with 0)
+ * Solves OLS problem,  overwriting the negative values of K with 0.
+ * It also pre-computes part of the pseudo-inverse used to solve Least Squares.
+ * @param XtX - input data matrix
+ * @param XtY - output data matrix
+ * @returns initial values for the algorithm (including the solution K to least squares, overwriting of negative values with 0)
  */
-export function initialisation(X: Matrix, Y: Matrix) {
-  // X = n x l
-  // W = l x p, same as K
-  // Y = n x p
-  const n = X.rows;
-  const l = X.columns;
-  const p = Y.columns;
+export function initialisation({
+  XtX,
+  XtY,
+  nRowsX,
+  nColsX,
+  nRowsY,
+  nColsY,
+}: Initialisation) {
   const iter = 0;
 
-  if (Y.rows !== n) throw new Error('ERROR: matrix size not compatible');
+  if (nRowsY !== nRowsX) throw new Error('ERROR: matrix size not compatible');
 
-  const W = Matrix.zeros(l, p);
-
-  const Xt = X.transpose();// transposeView takes longer.
-  // precomputes part of pseudoinverse
-  const XtX = Xt.mmul(X);
-  const XtY = Xt.mmul(Y);
-
-  const K = cssls(XtX, XtY, null, l, p); // K is lxp
-  /* Each subarray corresponds to col of K
+  const W = Matrix.zeros(nColsX, nColsY);
+  const K = cssls(XtX, XtY, null, nColsX, nColsY); //K same dim as W
+  /*
+   * Each subarray corresponds to col of K
    * And stores indices of positive values of that column
    */
   const Pset: number[][] = [];
-  for (let j = 0; j < p; j++) {
-    Pset[j] = [];
-    for (let i = 0; i < l; i++) {
+  for (let j = 0; j < nColsY; j++) {
+    Pset[j] = []; // An array of indices/column. These are of positive values.
+    for (let i = 0; i < nColsX; i++) {
       if (K.get(i, j) > 0) {
-        Pset[j].push(i); // [[1,2,3...,l],[1,2,4,7,..,l],[],..] p arrays, each length l or less
+        Pset[j].push(i);
       } else {
         K.set(i, j, 0);
-      } // This is our initial solution, it's the solution found by overwriting the unconstrained least square solution in K.
+      } // Initial solution K, overwriting OLS solution.
     }
   }
   const Fset: number[] = [];
-  for (let j = 0; j < p; j++) {
-    if (Pset[j].length !== l) {
+  for (let j = 0; j < nColsY; j++) {
+    if (Pset[j].length !== nColsX) {
       Fset.push(j); // If column j of K was not all positive, add it to the Fset. So Fset are the indices of columns with negative values
     }
   }
 
-  const D = K.clone();
-
-  return { n, l, p, iter, W, XtX, XtY, K, Pset, Fset, D };
+  return { iter, W, K, Pset, Fset };
 }

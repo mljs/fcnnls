@@ -4,11 +4,18 @@ import { expect, it, describe } from 'vitest';
 import { initialisation } from '../initialisation';
 import { optimality } from '../optimality';
 
+import { prepareInput } from './prepareInitInput';
+
 describe('optimality test', () => {
   it('identity X, Y 1-dimension', () => {
     const X = Matrix.eye(4);
     const Y = new Matrix([[0], [1], [2], [3]]);
-    const { l, iter, W, XtX, XtY, K, Pset, Fset, D, p } = initialisation(X, Y);
+    const input = prepareInput(X, Y);
+    const { XtX, XtY } = input;
+    const { iter, W, K, Pset, Fset } = initialisation(input);
+    const l = X.rows;
+    const p = Y.columns;
+    const D = K.clone();
     const result = optimality(
       iter,
       X.columns * 3,

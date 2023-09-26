@@ -17,6 +17,10 @@ export interface FcnnlsOptions {
    * Smaller values are less tolerant.
    */
   gradientTolerance?: number;
+  /**
+   * Whether to return the gradient matrix at every cycle and number of iterations.
+   */
+  info?: boolean;
 }
 
 /**
@@ -34,11 +38,21 @@ export default function fcnnls(
 ) {
   X = Matrix.checkMatrix(X);
   Y = Matrix.checkMatrix(Y);
-  const init = initialisation(X, Y);
-  const { l, p, XtX, XtY, K, D } = init;
-  let { iter, W, Pset, Fset } = init;
 
   const { maxIterations = X.columns * 3, gradientTolerance = 1e-5 } = options;
+
+  // pre-computes part of pseudo-inverse
+  const Xt = X.transpose();
+  const XtX = Xt.mmul(X);
+  const XtY = Xt.mmul(Y);
+
+  const { columns: nColsY, rows: nRowsY } = Y;
+  const { columns: nColsX, rows: nRowsX } = X;
+
+  const init = initialisation({ XtX, XtY, nRowsX, nColsX, nRowsY, nColsY });
+  let { iter, W, Pset, Fset } = init;
+  const K = init.K;
+  const D = K.clone();
 
   // Active set algorithm for NNLS main loop
   while (Fset.length > 0) {
@@ -47,10 +61,10 @@ export default function fcnnls(
       XtX,
       XtY.subMatrixColumn(Fset),
       selection(Pset, Fset),
-      l,
+      nColsX,
       Fset.length,
     );
-    for (let i = 0; i < l; i++) {
+    for (let i = 0; i < nColsX; i++) {
       for (let j = 0; j < Fset.length; j++) {
         K.set(i, Fset[j], L.get(i, j));
       }
@@ -59,7 +73,7 @@ export default function fcnnls(
     // Finds any infeasible solutions
     const infeasIndex: number[] = [];
     for (let j = 0; j < Fset.length; j++) {
-      for (let i = 0; i < l; i++) {
+      for (let i = 0; i < nColsX; i++) {
         if (L.get(i, j) < 0) {
           infeasIndex.push(j);
           break;
@@ -71,7 +85,7 @@ export default function fcnnls(
     // Makes infeasible solutions feasible (standard NNLS inner loop)
     if (Hset.length > 0) {
       let m = Hset.length;
-      const alpha = Matrix.ones(l, m);
+      const alpha = Matrix.ones(nColsX, m);
 
       while (m > 0 && iter < maxIterations) {
         iter++;
@@ -111,14 +125,14 @@ export default function fcnnls(
         }
 
         alphaMin = Matrix.rowVector(alphaMin);
-        for (let i = 0; i < l; i++) {
+        for (let i = 0; i < nColsX; i++) {
           alpha.setSubMatrix(alphaMin, i, 0);
         }
 
-        let E = new Matrix(l, m);
+        let E = new Matrix(nColsX, m);
         E = D.subMatrixColumn(Hset).subtract(
           alpha
-            .subMatrix(0, l - 1, 0, m - 1)
+            .subMatrix(0, nColsX - 1, 0, m - 1)
             .mul(D.subMatrixColumn(Hset).subtract(K.subMatrixColumn(Hset))),
         );
         for (let j = 0; j < m; j++) {
@@ -137,14 +151,20 @@ export default function fcnnls(
           );
         }
 
-        L = cssls(XtX, XtY.subMatrixColumn(Hset), selection(Pset, Hset), l, m);
+        L = cssls(
+          XtX,
+          XtY.subMatrixColumn(Hset),
+          selection(Pset, Hset),
+          nColsX,
+          m,
+        );
         for (let j = 0; j < m; j++) {
           K.setColumn(Hset[j], L.subMatrixColumn([j]));
         }
 
         Hset = [];
         for (let j = 0; j < K.columns; j++) {
-          for (let i = 0; i < l; i++) {
+          for (let i = 0; i < nColsX; i++) {
             if (K.get(i, j) < 0) {
               Hset.push(j);
 
@@ -165,8 +185,8 @@ export default function fcnnls(
       Pset,
       W,
       K,
-      l,
-      p,
+      nColsX,
+      nColsY,
       D,
       gradientTolerance,
     );

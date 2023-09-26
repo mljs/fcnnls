@@ -10,12 +10,12 @@ import sortCollectionSet from './util/sortCollectionSet';
 /**
  * Combinatorial Subspace Least Squares - subfunction for the FC-NNLS
  * Solves XtX*K = XtY for the variables in Pset
- * if XtX (or XtX(vars,vars)) is singular, performs the svd and find pseudo-inverse, otherwise (even if ill-conditioned) finds inverse with LU decomposition and solves the set of equation
+ * if XtX (or XtX(vars,vars)) is singular, performs the svd and find pseudo-inverse, otherwise (even if ill-conditioned) finds inverse with LU decomposition and solves the set of equations
  * it is consistent with matlab results for ill-conditioned matrices (at least consistent with test 'ill-conditioned square X rank 2, Y 3x1' in cssls.test)
  * @param XtX - Gram matrix
  * @param XtY
  * @param Pset - Subset of matrix K with positive values (indices)
- * @param l - number of rows of X
+ * @param l - number of columns of X
  * @param p - number of columns of Y
  */
 export function cssls(
