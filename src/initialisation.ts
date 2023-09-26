@@ -23,9 +23,10 @@ export function initialisation(X: Matrix, Y: Matrix) {
 
   const W = Matrix.zeros(l, p);
 
+  const Xt = X.transpose();// transposeView takes longer.
   // precomputes part of pseudoinverse
-  const XtX = X.transpose().mmul(X);
-  const XtY = X.transpose().mmul(Y);
+  const XtX = Xt.mmul(X);
+  const XtY = Xt.mmul(Y);
 
   const K = cssls(XtX, XtY, null, l, p); // K is lxp
   /* Each subarray corresponds to col of K
