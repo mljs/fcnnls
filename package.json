@@ -42,16 +42,18 @@
   },
   "homepage": "https://github.com/mljs/fcnnls#readme",
   "devDependencies": {
-    "@types/jest": "^29.5.3",
-    "@vitest/coverage-v8": "^0.33.0",
-    "eslint": "^8.45.0",
+    "@vitest/coverage-v8": "^0.34.1",
+    "eslint": "^8.50.0",
     "eslint-config-cheminfo-typescript": "^12.0.4",
-    "prettier": "^3.0.0",
-    "rimraf": "^5.0.1",
-    "typescript": "^5.1.6",
-    "vitest": "^0.33.0"
+    "prettier": "^3.0.3",
+    "rimraf": "^5.0.4",
+    "typescript": "5.1.6",
+    "vitest": "^0.34.1"
   },
   "dependencies": {
-    "ml-matrix": "^6.10.4"
+    "ml-matrix": "^6.10.5"
+  },
+  "overrides": {
+    "get-func-name": "2.0.0"
   }
 }
