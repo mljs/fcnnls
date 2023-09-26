@@ -15,17 +15,17 @@ import sortCollectionSet from './util/sortCollectionSet';
  * @param XtX - Gram matrix
  * @param XtY
  * @param Pset - Subset of matrix K with positive values (indices)
- * @param l - number of columns of X
- * @param p - number of columns of Y
+ * @param nColsX - number of columns of X
+ * @param nColsY - number of columns of Y
  */
 export function cssls(
   XtX: Matrix,
   XtY: Matrix,
   Pset: number[][] | null,
-  l: number,
-  p: number,
+  nColsX: number,
+  nColsY: number,
 ): Matrix {
-  let K = Matrix.zeros(l, p);
+  let K = Matrix.zeros(nColsX, nColsY);
   if (Pset === null) {
     // used for initialisation where OLS is solved.
     const choXtX = new CholeskyDecomposition(XtX);
@@ -34,7 +34,7 @@ export function cssls(
     } else {
       const luXtX = new LuDecomposition(XtX);
       if (!luXtX.isSingular()) {
-        K = luXtX.solve(Matrix.eye(l)).mmul(XtY);
+        K = luXtX.solve(Matrix.eye(nColsX)).mmul(XtY);
       } else {
         K = solve(XtX, XtY, true);
       }
@@ -44,13 +44,13 @@ export function cssls(
     if (
       sortedPset.length === 1 &&
       sortedPset[0].length === 0 &&
-      sortedEset[0].length === p
+      sortedEset[0].length === nColsY
     ) {
       return K;
     } else if (
       sortedPset.length === 1 &&
-      sortedPset[0].length === l &&
-      sortedEset[0].length === p
+      sortedPset[0].length === nColsX &&
+      sortedEset[0].length === nColsY
     ) {
       const choXtX = new CholeskyDecomposition(XtX);
       if (choXtX.isPositiveDefinite()) {
@@ -58,7 +58,7 @@ export function cssls(
       } else {
         const luXtX = new LuDecomposition(XtX);
         if (!luXtX.isSingular()) {
-          K = luXtX.solve(Matrix.eye(l)).mmul(XtY);
+          K = luXtX.solve(Matrix.eye(nColsX)).mmul(XtY);
         } else {
           K = solve(XtX, XtY, true);
         }
