@@ -1,8 +1,9 @@
-import { type Matrix } from 'ml-matrix';
+import { Matrix } from 'ml-matrix';
 import { expect } from 'vitest';
 
 // used for most tests here and in fcnnlsVector.test.ts
 export function assertResult(result: Matrix, solution: Matrix, precision = 4) {
+  solution = Matrix.checkMatrix(solution);
   for (let i = 0; i < result.rows; i++) {
     for (let j = 0; j < result.columns; j++) {
       const sol = solution.get(i, j);
