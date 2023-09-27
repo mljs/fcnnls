@@ -43,8 +43,13 @@ describe('Test single right hand side convergence', () => {
       maxIterations: 1000,
     });
     const result2 = fcnnlsVector(data1.X5, data1.Y, { interceptAtZero: true });
+    expect(result).toStrictEqual(result2);
+
     const scipyResult = [4.92128988, 0.34302285, 0.58189576];
     assertResult(result, Matrix.columnVector(scipyResult), 4);
-    expect(result).toStrictEqual(result2);
+
+    const scipyUnshiftedResult = [0, 0.93375969];
+    const resultUnshifted = fcnnlsVector(data1.X, data1.Y);
+    assertResult(resultUnshifted, Matrix.columnVector(scipyUnshiftedResult), 4);
   });
 });
