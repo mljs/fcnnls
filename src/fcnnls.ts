@@ -22,7 +22,7 @@ export interface FcnnlsOptions {
    */
   info?: boolean;
   /**
-   * @default true
+   * @default true. (The actual value is undefined.) `false` will add a column of ones to the left of X.
    */
   interceptAtZero?: boolean;
 }
