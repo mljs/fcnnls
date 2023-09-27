@@ -45,7 +45,7 @@ let Y = new Matrix([
 ]);
 
 let K = fcnnls(X, Y);
-
+// you can use `K.to2DArray()` to download the result.
 /*
 K = Matrix([
   [0.461, 0, 4.9714, 0],
@@ -68,7 +68,7 @@ let X = new Matrix([
 
 let y = [-1, 11, 0, 1];
 
-let k = fcnnlsVector(X, y);
+let k = fcnnlsVector(X, y).to1DArray();
 
 /*
 k = [0.461, 0.5611, 0]
