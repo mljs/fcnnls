@@ -21,6 +21,10 @@ export interface FcnnlsOptions {
    * Whether to return the gradient matrix at every cycle and number of iterations.
    */
   info?: boolean;
+  /**
+   * @default true
+   */
+  interceptAtZero?: boolean;
 }
 
 /**
@@ -38,6 +42,11 @@ export default function fcnnls(
 ) {
   X = Matrix.checkMatrix(X);
   Y = Matrix.checkMatrix(Y);
+
+  if (options.interceptAtZero === false) {
+    const extended = Matrix.ones(X.rows, X.columns + 1);
+    X = extended.setSubMatrix(X, 0, 1);
+  }
 
   const { maxIterations = X.columns * 3, gradientTolerance = 1e-5 } = options;
 
