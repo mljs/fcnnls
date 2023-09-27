@@ -10,7 +10,7 @@ import fcnnls, { type FcnnlsOptions } from './fcnnls';
  * @returns Solution vector.
  */
 export default function fcnnlsVector(
-  X: Matrix,
+  X: number[][] | Matrix,
   y: number[],
   options: FcnnlsOptions = {},
 ) {
@@ -19,6 +19,5 @@ export default function fcnnlsVector(
   }
   const Y = Matrix.columnVector(y);
   const K = fcnnls(X, Y, options);
-  const k = K.to1DArray();
-  return k;
+  return K;
 }
