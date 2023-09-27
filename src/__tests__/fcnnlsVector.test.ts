@@ -1,11 +1,11 @@
 import { Matrix } from 'ml-matrix';
-import { expect, it, describe, assert } from 'vitest';
-import { data as data1 } from './deconv-examples/single_shifted';
+import { expect, it, describe } from 'vitest';
 
 import fcnnlsVector from '../fcnnlsVector';
 
-import { data } from './data/convergence';
 import { assertResult } from './assertResult';
+import { data } from './data/convergence';
+import { data as data1 } from './deconv-examples/single_shifted';
 
 describe('Test single right hand side convergence', () => {
   it('example documentation', () => {
@@ -32,10 +32,7 @@ describe('Test single right hand side convergence', () => {
     expect(result).toEqual(solution);
   });
   it('Convergence for tricky case', () => {
-    const result = fcnnlsVector(
-      Matrix.checkMatrix(data.mC),
-      data.bf,
-    )
+    const result = fcnnlsVector(Matrix.checkMatrix(data.mC), data.bf);
     const solution = [0, 50, 10];
     assertResult(result, Matrix.columnVector(solution), 4);
   });
@@ -46,7 +43,7 @@ describe('Test single right hand side convergence', () => {
       maxIterations: 1000,
     });
     const result2 = fcnnlsVector(data1.X5, data1.Y, { interceptAtZero: true });
-    const scipyResult = [4.92128988, 0.34302285, 0.58189576]
+    const scipyResult = [4.92128988, 0.34302285, 0.58189576];
     assertResult(result, Matrix.columnVector(scipyResult), 4);
     expect(result).toStrictEqual(result2);
   });
