@@ -1,4 +1,4 @@
-//parabola shifted to the right
+//plane shifted 5 units
 
 const X = [
   [0, 0],
