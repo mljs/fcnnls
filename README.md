@@ -1,4 +1,4 @@
-cnnls
+# fcnnls
 
 [![NPM version][npm-image]][npm-url]
 [![build status][ci-image]][ci-url]
