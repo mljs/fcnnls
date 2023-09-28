@@ -23,7 +23,7 @@ export function optimality({
 }: OptimalityParams) {
   if (iter === maxIter) {
     throw new Error(
-      'Maximum number of iterations exceeded. You may try to gradually increase the option.gradientTolerance.'
+      'Maximum number of iterations exceeded. You may try to gradually increase the option.gradientTolerance.',
     );
   }
 
