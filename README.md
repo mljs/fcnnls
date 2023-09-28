@@ -25,7 +25,7 @@ https://en.wikipedia.org/wiki/Non-negative_least_squares
 
 ```js
 import { Matrix } from 'ml-matrix';
-import { fcnnls } from 'ml-fcnnls';
+import { fcnnl } from 'ml-fcnnls';
 
 // Example with multiple RHS
 

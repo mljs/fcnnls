@@ -11,7 +11,7 @@ export function getRSE({ X, K, Y, error }: GetRSEInput): Matrix {
   for (let i = 1; i < error.rows; i++) {
     sumRows.add(error.getRowVector(i));
   }
-  return error;
+  return sumRows.sqrt();
 }
 
 interface GetRSEInput {
