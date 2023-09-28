@@ -12,19 +12,9 @@ import sortCollectionSet from './util/sortCollectionSet';
  * Solves XtX*K = XtY for the variables in Pset
  * if XtX (or XtX(vars,vars)) is singular, performs the svd and find pseudo-inverse, otherwise (even if ill-conditioned) finds inverse with LU decomposition and solves the set of equations
  * it is consistent with matlab results for ill-conditioned matrices (at least consistent with test 'ill-conditioned square X rank 2, Y 3x1' in cssls.test)
- * @param XtX - Gram matrix
- * @param XtY
- * @param Pset - Subset of matrix K with positive values (indices)
- * @param nColsX - number of columns of X
- * @param nColsY - number of columns of Y
+ * @param Cssls object, @see {@link Cssls}
  */
-export function cssls(
-  XtX: Matrix,
-  XtY: Matrix,
-  Pset: number[][] | null,
-  nColsX: number,
-  nColsY: number,
-): Matrix {
+export function cssls({ XtX, XtY, Pset, nColsX, nColsY }: Cssls): Matrix {
   let K = Matrix.zeros(nColsX, nColsY);
   if (Pset === null) {
     // used for initialisation where OLS is solved.
@@ -94,4 +84,27 @@ export function cssls(
     }
   }
   return K;
+}
+
+interface Cssls {
+  /**
+   * XtX - Gram matrix
+   */
+  XtX: Matrix;
+  /**
+   * XtY
+   */
+  XtY: Matrix;
+  /**
+   * Pset - Subset of matrix K with positive values (indices)
+   */
+  Pset: number[][] | null;
+  /**
+   * nColsX - number of columns of X
+   */
+  nColsX: number;
+  /**
+   * nColsY - number of columns of Y
+   */
+  nColsY: number;
 }

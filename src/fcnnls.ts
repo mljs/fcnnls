@@ -3,52 +3,32 @@ import { Matrix } from 'ml-matrix';
 import { cssls } from './cssls';
 import { initialisation } from './initialisation';
 import { optimality } from './optimality';
-import selection from './util/selection';
-
-export interface FcnnlsOptions {
-  /**
-   * Number of iterations
-   * @default 3 times the number of columns of X
-   */
-  maxIterations?: number;
-  /**
-   * Control over the optimality of the solution; applied to the largest gradient value.
-   * @default 1e-5
-   * Smaller values are less tolerant.
-   */
-  gradientTolerance?: number;
-  /**
-   * Whether to return the gradient matrix at every cycle and number of iterations.
-   */
-  info?: boolean;
-  /**
-   * @default true. (The actual value is undefined.) `false` will add a column of ones to the left of X.
-   */
-  interceptAtZero?: boolean;
-}
-
+import { selection, getRSE } from './util';
 /**
  * Fast Combinatorial Non-negative Least Squares with multiple Right Hand Side
- * @param X
- * @param Y
- * @param options
- * @returns Solution Matrix.
+ * @param X - The data/input/predictors matrix
+ * @param Y - The response matrix
+ * @param options {@link FcnnlsOptions}
+ * @returns by default, the matrix of coefficients K.
+ * @see {@link FcnnlsOutput} for more information.
  */
-
-export default function fcnnls(
+export function fcnnls(
   X: Matrix | number[][],
   Y: Matrix | number[] | number[][],
   options: FcnnlsOptions = {},
-) {
+): FcnnlsOutput {
   X = Matrix.checkMatrix(X);
   Y = Matrix.checkMatrix(Y);
 
+  // only in the case they explicitly set it false.
   if (options.interceptAtZero === false) {
-    const extended = Matrix.ones(X.rows, X.columns + 1);
-    X = extended.setSubMatrix(X, 0, 1);
+    X = Matrix.ones(X.rows, X.columns + 1).setSubMatrix(X, 0, 1);
   }
-
-  const { maxIterations = X.columns * 3, gradientTolerance = 1e-5 } = options;
+  const {
+    maxIterations = X.columns * 3,
+    gradientTolerance = 1e-5,
+    info = false,
+  } = options;
 
   // pre-computes part of pseudo-inverse
   const Xt = X.transpose();
@@ -63,16 +43,23 @@ export default function fcnnls(
   const K = init.K;
   const D = K.clone();
 
+  // if the algorithm does not run, at least we return this error.
+  const error: Matrix = getRSE({ X, K, Y, error: new Matrix(1, nColsY) });
+  const errorLog: ErrorLog = {
+    mseRowVector: [error],
+    nCalculationsOfK: 0,
+  };
+
   // Active set algorithm for NNLS main loop
   while (Fset.length > 0) {
     // Solves for the passive variables (uses subroutine below)
-    let L = cssls(
+    let L = cssls({
       XtX,
-      XtY.subMatrixColumn(Fset),
-      selection(Pset, Fset),
+      XtY: XtY.subMatrixColumn(Fset),
+      Pset: selection(Pset, Fset),
       nColsX,
-      Fset.length,
-    );
+      nColsY: Fset.length,
+    });
     for (let i = 0; i < nColsX; i++) {
       for (let j = 0; j < Fset.length; j++) {
         K.set(i, Fset[j], L.get(i, j));
@@ -160,13 +147,13 @@ export default function fcnnls(
           );
         }
 
-        L = cssls(
+        L = cssls({
           XtX,
-          XtY.subMatrixColumn(Hset),
-          selection(Pset, Hset),
+          XtY: XtY.subMatrixColumn(Hset),
+          Pset: selection(Pset, Hset),
           nColsX,
-          m,
-        );
+          nColsY: m,
+        });
         for (let j = 0; j < m; j++) {
           K.setColumn(Hset[j], L.subMatrixColumn([j]));
         }
@@ -182,27 +169,83 @@ export default function fcnnls(
           }
         }
         m = Hset.length;
+
+        if (info) {
+          errorLog.mseRowVector.push(getRSE({ X, K, Y, error }));
+          ++errorLog.nCalculationsOfK;
+        }
       }
     }
+    if (Hset.length === 0 || (iter === maxIterations && info)) {
+      errorLog.mseRowVector.push(getRSE({ X, K, Y, error }));
+      ++errorLog.nCalculationsOfK;
+    }
 
-    const newParam = optimality(
+    const newParam = optimality({
       iter,
-      maxIterations,
+      maxIter: maxIterations,
       XtX,
       XtY,
       Fset,
       Pset,
       W,
       K,
-      nColsX,
-      nColsY,
+      l: nColsX,
+      p: nColsY,
       D,
       gradientTolerance,
-    );
+    });
     Pset = newParam.Pset;
     Fset = newParam.Fset;
     W = newParam.W;
   }
-
+  if (info) {
+    return { K, errorLog };
+  }
   return K;
 }
+
+export interface FcnnlsOptions {
+  /**
+   * Number of iterations
+   * @default 3 times the number of columns of X
+   */
+  maxIterations?: number;
+  /**
+   * Larger values (like 1e-4) could help if the number of iterations is exceeded. For most cases, lower values should also be fine.
+   * @default 1e-5
+   */
+  gradientTolerance?: number;
+  /**
+   * Whether to return the gradient matrix at every cycle and number of iterations.
+   */
+  info?: boolean;
+  /**
+   * @default true. (The actual value is undefined.) `false` will add a column of ones to the left of X.
+   */
+  interceptAtZero?: boolean;
+}
+export type FcnnlsOutput = OutMatrixK | OutMatrixAndLog;
+
+export interface ErrorLog {
+  /**
+   * The root square error of the solution. Because the solution is a matrix in general, the error is a row vector with as many columns as the number of columns of Y.
+   */
+  mseRowVector: Matrix[];
+  /**
+   * The number of times K was calculated.
+   */
+  nCalculationsOfK: number;
+}
+
+interface OutMatrixAndLog {
+  /**
+   * Our Megastar, the solution matrix K
+   */
+  K: Matrix;
+  /**
+   * see {@link ErrorLog}
+   */
+  errorLog: ErrorLog;
+}
+type OutMatrixK = Matrix;

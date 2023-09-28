@@ -3,7 +3,7 @@
  * @param collection or array
  * @param indices
  */
-export default function selection<T extends number[] | number[][]>(
+export function selection<T extends number[] | number[][]>(
   vector: T,
   indices: number[],
 ) {

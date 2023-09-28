@@ -1,7 +1,7 @@
 import { Matrix } from 'ml-matrix';
 import { expect, it, describe } from 'vitest';
 
-import fcnnls from '../fcnnls';
+import { fcnnls } from '../fcnnls';
 
 import { X as X1, Y as Y1 } from './deconv-examples/data_example1';
 import { X as X2, Y as Y2 } from './deconv-examples/data_example2';

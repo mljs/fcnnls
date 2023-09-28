@@ -1,7 +1,7 @@
 import { Matrix } from 'ml-matrix';
 import { expect, it, describe } from 'vitest';
 
-import fcnnlsVector from '../fcnnlsVector';
+import { fcnnlsVector } from '../fcnnlsVector';
 
 import { assertResult } from './assertResult';
 import { data } from './data/convergence';
@@ -28,8 +28,8 @@ describe('Test single right hand side convergence', () => {
     const X = Matrix.eye(3).mul(-1);
     const y = [1, 2, 3];
     const solution = [0, 0, 0];
-    const result = fcnnlsVector(X, y).to1DArray();
-    expect(result).toEqual(solution);
+    const result = fcnnlsVector(X, y);
+    assertResult(result, Matrix.columnVector(solution), 4);
   });
   it('Convergence for tricky case', () => {
     const result = fcnnlsVector(Matrix.checkMatrix(data.mC), data.bf);

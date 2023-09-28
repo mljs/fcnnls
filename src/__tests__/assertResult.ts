@@ -1,8 +1,15 @@
 import { Matrix } from 'ml-matrix';
 import { expect } from 'vitest';
 
+import { type FcnnlsOutput } from '../fcnnls';
+
 // used for most tests here and in fcnnlsVector.test.ts
-export function assertResult(result: Matrix, solution: Matrix, precision = 4) {
+export function assertResult(
+  result: FcnnlsOutput,
+  solution: Matrix,
+  precision = 4,
+) {
+  result = result instanceof Matrix ? result : result.K;
   solution = Matrix.checkMatrix(solution);
   for (let i = 0; i < result.rows; i++) {
     for (let j = 0; j < result.columns; j++) {

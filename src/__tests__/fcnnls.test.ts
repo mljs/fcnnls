@@ -4,7 +4,7 @@ import { join } from 'path';
 import { Matrix } from 'ml-matrix';
 import { it, describe } from 'vitest';
 
-import fcnnls from '../fcnnls';
+import { fcnnls } from '../fcnnls';
 
 import { assertResult } from './assertResult';
 
@@ -87,7 +87,7 @@ describe('Test Fast Combinatorial NNLS', () => {
     ]);
     const Y = new Matrix([[-1], [0], [10]]);
     const solution = new Matrix([[1.0455], [0], [0]]);
-    const result = Matrix.round(fcnnls(X, Y).mul(10000)).mul(0.0001);
+    const result = fcnnls(X, Y);
     assertResult(result, solution);
   });
 
@@ -113,7 +113,7 @@ describe('Test Fast Combinatorial NNLS', () => {
       [0, 2.121, 0, 0, 0, 0, 0],
       [0, 0, 0, 0, 1.0827, 0.3911, 0.4738],
     ]);
-    const result = Matrix.round(fcnnls(X, Y).mul(10000)).mul(0.0001);
+    const result = fcnnls(X, Y);
     assertResult(result, solution);
   });
 

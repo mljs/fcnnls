@@ -10,13 +10,13 @@ import { prepareInput } from './prepareInitInput';
 function csslsResult(X: Matrix, Y: Matrix, useNull?: boolean) {
   const input = prepareInput(X, Y);
   const init = initialisation(input);
-  return cssls(
-    input.XtX,
-    input.XtY,
-    useNull ? null : init.Pset,
-    X.columns,
-    Y.columns,
-  );
+  return cssls({
+    XtX: input.XtX,
+    XtY: input.XtY,
+    Pset: useNull ? null : init.Pset,
+    nColsX: X.columns,
+    nColsY: Y.columns,
+  });
 }
 describe('cssls test', () => {
   it('identity X, Y 4x1', () => {

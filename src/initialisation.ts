@@ -30,7 +30,7 @@ export function initialisation({
   if (nRowsY !== nRowsX) throw new Error('ERROR: matrix size not compatible');
 
   const W = Matrix.zeros(nColsX, nColsY);
-  const K = cssls(XtX, XtY, null, nColsX, nColsY); //K same dim as W
+  const K = cssls({ XtX, XtY, Pset: null, nColsX, nColsY }); //K same dim as W
   /*
    * Each subarray corresponds to col of K
    * And stores indices of positive values of that column

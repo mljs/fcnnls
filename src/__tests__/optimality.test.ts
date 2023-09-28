@@ -13,12 +13,12 @@ describe('optimality test', () => {
     const input = prepareInput(X, Y);
     const { XtX, XtY } = input;
     const { iter, W, K, Pset, Fset } = initialisation(input);
-    const l = X.rows;
+    const l = X.columns;
     const p = Y.columns;
     const D = K.clone();
-    const result = optimality(
+    const result = optimality({
       iter,
-      X.columns * 3,
+      maxIter: X.columns * 3,
       XtX,
       XtY,
       Fset,
@@ -28,8 +28,8 @@ describe('optimality test', () => {
       l,
       p,
       D,
-      10,
-    );
+      gradientTolerance: 10e-10,
+    });
 
     expect(result.Pset).toEqual([[1, 2, 3]]);
     expect(result.Fset).toEqual([]);
