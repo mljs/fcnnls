@@ -5,7 +5,7 @@ import {
   CholeskyDecomposition,
 } from 'ml-matrix';
 
-import sortCollectionSet from './util/sortCollectionSet';
+import { groupColumnsBySign as sortCollectionSet } from './util/sortCollectionSet';
 
 /**
  * Combinatorial Subspace Least Squares - subfunction for the FC-NNLS
