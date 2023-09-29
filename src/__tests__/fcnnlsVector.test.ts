@@ -36,7 +36,7 @@ describe('Test single right hand side convergence', () => {
     const solution = [0, 50, 10];
     assertResult(result, Matrix.columnVector(solution), 4);
   });
-  it('Convergence where intercept is not zero', () => {
+  it('intercept not forced to zero', () => {
     const result = fcnnlsVector(data1.X, data1.Y, {
       interceptAtZero: false,
       gradientTolerance: 1e-10,
@@ -49,7 +49,13 @@ describe('Test single right hand side convergence', () => {
     assertResult(result, Matrix.columnVector(scipyResult), 4);
 
     const scipyUnshiftedResult = [0, 0.93375969];
-    const resultUnshifted = fcnnlsVector(data1.X, data1.Y);
+    const scipyError = 11.562826502843999;
+    const resultUnshifted = fcnnlsVector(data1.X, data1.Y, {
+      info: true,
+    });
     assertResult(resultUnshifted, Matrix.columnVector(scipyUnshiftedResult), 4);
+    if (resultUnshifted.info) {
+      expect(resultUnshifted.info.rse[1][0]).toBeCloseTo(scipyError, 4);
+    }
   });
 });

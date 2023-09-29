@@ -23,7 +23,7 @@ describe('cssls test', () => {
     const X = Matrix.eye(4);
     const Y = new Matrix([[0], [1], [2], [3]]);
     const solution = new Matrix([[0], [1], [2], [3]]);
-    const result = csslsResult(X, Y);
+    const result = { K: csslsResult(X, Y) };
     assertResult(result, solution);
   });
   it('identity X, Y 5x3', () => {
@@ -42,7 +42,7 @@ describe('cssls test', () => {
       [3, 8, 13],
       [4, 9, 14],
     ]);
-    const result = csslsResult(X, Y);
+    const result = { K: csslsResult(X, Y) };
     assertResult(result, solution);
   });
   it('non-singular square X, Y 3x1', () => {
@@ -53,7 +53,7 @@ describe('cssls test', () => {
     ]);
     const Y = new Matrix([[-1], [2], [-3]]);
     const solution = new Matrix([[-1], [0], [1]]);
-    const result = csslsResult(X, Y);
+    const result = { K: csslsResult(X, Y) };
     assertResult(result, solution);
   });
   it('ill-conditioned square X rank 2, Y 3x1', () => {
@@ -65,7 +65,7 @@ describe('cssls test', () => {
 
     const Y = new Matrix([[-1], [0], [10]]);
     const solution = new Matrix([[1.0455], [0], [0]]);
-    const result = csslsResult(X, Y);
+    const result = { K: csslsResult(X, Y) };
     assertResult(result, solution);
   });
   it('6x3 X full-rank, Y 6x7', () => {
@@ -86,14 +86,13 @@ describe('cssls test', () => {
       [7, 6, 5, 4, 3, 2, 1],
     ]);
 
-    const result = csslsResult(X, Y);
+    const result = { K: csslsResult(X, Y) };
     const solution = new Matrix([
       [203.7567, 0, 0, 0, 0, 0, 0],
       [-149.1338, 3.3309, 2.0243, 1.5134, 0, 0, 0],
       [0, 0, 0, 0, 1.0827, 0.3911, 0.4738],
     ]);
-    const roundedResult = Matrix.round(result.mul(10000)).mul(0.0001);
-    assertResult(roundedResult, solution);
+    assertResult(result, solution);
   });
   it('Van Benthem - Keenan example', () => {
     const X = new Matrix([
@@ -109,20 +108,19 @@ describe('cssls test', () => {
       [41, 61, 39],
     ]);
 
-    const result = csslsResult(X, Y);
+    const result = { K: csslsResult(X, Y) };
     const solution = new Matrix([
       [0, 0.6873, 0.2836],
       [0.6272, 0, 0.2862],
       [0.3517, 0.2873, 0.335],
     ]);
-    const roundedResult = Matrix.round(result.mul(10000)).mul(0.0001);
-    assertResult(roundedResult, solution);
+    assertResult(result, solution);
   });
   it('negative identity X, positive Y', () => {
     const X = Matrix.eye(3).mul(-1);
     const Y = new Matrix([[1], [2], [3]]);
     const solution = new Matrix([[-1], [-2], [-3]]);
-    const result = csslsResult(X, Y, true);
+    const result = { K: csslsResult(X, Y, true) };
     assertResult(result, solution);
   });
 
@@ -134,7 +132,7 @@ describe('cssls test', () => {
     ]);
     const Y = new Matrix([[-2], [2], [0]]);
     const solution = new Matrix([[-2], [0], [0], [2]]);
-    const result = csslsResult(X, Y, true);
+    const result = { K: csslsResult(X, Y, true) };
     assertResult(result, solution);
   });
 
@@ -146,7 +144,7 @@ describe('cssls test', () => {
     ]);
     const Y = new Matrix([[-2], [2], [0]]);
     const solution = new Matrix([[0], [0], [0], [1]]);
-    const result = csslsResult(X, Y);
+    const result = { K: csslsResult(X, Y) };
     assertResult(result, solution);
   });
 
@@ -175,7 +173,7 @@ describe('cssls test', () => {
       [0.806154],
       [-4.54969],
     ]);
-    const result = csslsResult(X, Y, true);
+    const result = { K: csslsResult(X, Y, true) };
     assertResult(result, solution, 3);
   });
 });

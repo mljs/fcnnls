@@ -25,7 +25,7 @@ https://en.wikipedia.org/wiki/Non-negative_least_squares
 
 ```js
 import { Matrix } from 'ml-matrix';
-import { fcnnl } from 'ml-fcnnls';
+import { fcnnls } from 'ml-fcnnls';
 
 // Example with multiple RHS
 
@@ -44,7 +44,7 @@ let Y = new Matrix([
   [1, 2, 3, 4],
 ]);
 
-let K = fcnnls(X, Y);
+let K = fcnnls(X, Y).K;
 // you can use `K.to2DArray()` to download the result.
 /*
 K = Matrix([
@@ -68,7 +68,7 @@ let X = new Matrix([
 
 let y = [-1, 11, 0, 1];
 
-let k = fcnnlsVector(X, y).to1DArray();
+let k = fcnnlsVector(X, y).K.to1DArray();
 
 /*
 k = [0.461, 0.5611, 0]

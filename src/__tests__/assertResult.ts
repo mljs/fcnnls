@@ -3,13 +3,18 @@ import { expect } from 'vitest';
 
 import { type FcnnlsOutput } from '../fcnnls';
 
-// used for most tests here and in fcnnlsVector.test.ts
+/**
+ *  We only use the value K from the output.
+ * @param output - The output of the fcnnls function
+ * @param solution - The expected solution
+ * @param precision - Number of digits to match
+ */
 export function assertResult(
-  result: FcnnlsOutput,
+  output: FcnnlsOutput,
   solution: Matrix,
   precision = 4,
 ) {
-  result = result instanceof Matrix ? result : result.K;
+  const result = output.K;
   solution = Matrix.checkMatrix(solution);
   for (let i = 0; i < result.rows; i++) {
     for (let j = 0; j < result.columns; j++) {

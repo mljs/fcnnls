@@ -4,19 +4,34 @@ import { cssls } from './cssls';
 import { initialisation } from './initialisation';
 import { optimality } from './optimality';
 import { selection, getRSE } from './util';
+
 /**
  * Fast Combinatorial Non-negative Least Squares with multiple Right Hand Side
  * @param X - The data/input/predictors matrix
  * @param Y - The response matrix
  * @param options {@link FcnnlsOptions}
- * @returns by default, the matrix of coefficients K.
- * @see {@link FcnnlsOutput} for more information.
+ * @returns By default, the object with the matrix of coefficients K. Please see {@link FcnnlsOutput} for more information.
  */
 export function fcnnls(
   X: Matrix | number[][],
   Y: Matrix | number[] | number[][],
-  options: FcnnlsOptions = {},
-): FcnnlsOutput {
+  options?: FcnnlsOptions<false | undefined>,
+): KOnly;
+export function fcnnls(
+  X: Matrix | number[][],
+  Y: Matrix | number[] | number[][],
+  options?: FcnnlsOptions<true>,
+): KAndInfo;
+export function fcnnls<T extends boolean | undefined>(
+  X: Matrix | number[][],
+  Y: Matrix | number[] | number[][],
+  options?: FcnnlsOptions<T>,
+): KAndInfo | KOnly;
+export function fcnnls<T extends boolean | undefined>(
+  X: Matrix | number[][],
+  Y: Matrix | number[] | number[][],
+  options: FcnnlsOptions<T> = {},
+) {
   X = Matrix.checkMatrix(X);
   Y = Matrix.checkMatrix(Y);
 
@@ -43,11 +58,11 @@ export function fcnnls(
   const K = init.K;
   const D = K.clone();
 
-  // if the algorithm does not run, at least we return this error.
-  const error: Matrix = getRSE({ X, K, Y, error: new Matrix(1, nColsY) });
-  const errorLog: ErrorLog = {
-    mseRowVector: [error],
-    nCalculationsOfK: 0,
+  // first RSE is the result of overwriting OLS result in K.
+  const error = getRSE({ X, K, Y, error: new Matrix(1, nColsY) });
+  const infoLog: Info = {
+    rse: [error.to1DArray()],
+    nCalculationsOfK: 1,
   };
 
   // Active set algorithm for NNLS main loop
@@ -171,14 +186,14 @@ export function fcnnls(
         m = Hset.length;
 
         if (info) {
-          errorLog.mseRowVector.push(getRSE({ X, K, Y, error }));
-          ++errorLog.nCalculationsOfK;
+          infoLog.rse.push(getRSE({ X, K, Y, error }).to1DArray());
+          ++infoLog.nCalculationsOfK;
         }
       }
     }
     if (Hset.length === 0 || (iter === maxIterations && info)) {
-      errorLog.mseRowVector.push(getRSE({ X, K, Y, error }));
-      ++errorLog.nCalculationsOfK;
+      infoLog.rse.push(getRSE({ X, K, Y, error }).to1DArray());
+      ++infoLog.nCalculationsOfK;
     }
 
     const newParam = optimality({
@@ -200,12 +215,13 @@ export function fcnnls(
     W = newParam.W;
   }
   if (info) {
-    return { K, errorLog };
+    return { K, info: infoLog };
   }
-  return K;
+
+  return { K };
 }
 
-export interface FcnnlsOptions {
+export interface FcnnlsOptions<T extends boolean | undefined> {
   /**
    * Number of iterations
    * @default 3 times the number of columns of X
@@ -217,35 +233,32 @@ export interface FcnnlsOptions {
    */
   gradientTolerance?: number;
   /**
-   * Whether to return the gradient matrix at every cycle and number of iterations.
+   * Output the root squared error for each column of Y a well as the matrix K.
+   * @default false
    */
-  info?: boolean;
+  info?: T;
   /**
    * @default true. (The actual value is undefined.) `false` will add a column of ones to the left of X.
    */
   interceptAtZero?: boolean;
 }
-export type FcnnlsOutput = OutMatrixK | OutMatrixAndLog;
 
-export interface ErrorLog {
+export interface Info {
   /**
-   * The root square error of the solution. Because the solution is a matrix in general, the error is a row vector with as many columns as the number of columns of Y.
+   * Root Squared Error.
+   * This is a row vector, the RSE values for each column of Y.
    */
-  mseRowVector: Matrix[];
+  rse: number[][];
   /**
    * The number of times K was calculated.
    */
   nCalculationsOfK: number;
 }
-
-interface OutMatrixAndLog {
-  /**
-   * Our Megastar, the solution matrix K
-   */
+export type FcnnlsOutput = KAndInfo | KOnly;
+export interface KAndInfo {
   K: Matrix;
-  /**
-   * see {@link ErrorLog}
-   */
-  errorLog: ErrorLog;
+  info: Info;
 }
-type OutMatrixK = Matrix;
+export interface KOnly {
+  K: Matrix;
+}
