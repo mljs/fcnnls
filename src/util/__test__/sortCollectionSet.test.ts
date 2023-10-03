@@ -1,6 +1,6 @@
 import { expect, it, describe } from 'vitest';
 
-import { groupColumnsBySign as sortCollectionSet } from '../sortCollectionSet';
+import { sortCollectionSet } from '../sortCollectionSet';
 
 describe('sortCollectionSet test', () => {
   it('collection of 1 set', () => {

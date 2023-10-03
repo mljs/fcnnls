@@ -8,72 +8,83 @@
 
 Fast Combinatorial Non-negative Least Squares.
 
-Fast algorithm for the solution of large‐scale non‐negativity‐constrained least squares problems from Van Benthem and Keenan ([10.1002/cem.889](http://doi.org/10.1002/cem.889)), based on the active-set method algorithm published by Lawson and Hanson.
+As described in the publication by Van Benthem and Keenan ([10.1002/cem.889](http://doi.org/10.1002/cem.889)), which is in turn based on the active-set method algorithm previously published by Lawson and Hanson. The basic active-set method is implemented in the [nnls repository.](https://github.com/mljs/nnls)
 
-It solves the following optimisation problem.
-Given $\mathbf{X}$ an $n \times l$ matrix and $\mathbf{Y}$ an $n\times p$, find $$\mathrm{argmin}_K ||\mathbf{XK} -\mathbf{Y}||^2_F$$ subject to $\mathbf{K}\geq 0$, where $\mathbf{K}$ is an $l \times p$ matrix and $||\ldots||_F$ is the Frobenius norm. In fact, $\mathbf{K}$ is the best solution to the equation: $\mathbf{XK}=\mathbf{Y}$, where $\mathbf{K} \geq 0$, it performs the regular Non-negative Least Squares algorithm and finds a vector as a solution to the problem. Also, performing this algorithm when $\mathbf{Y}$ is a matrix is like running the algorithm on each column of $\mathbf{Y}$, it will give the same result but in a much more efficient way.
+Given the matrices $\mathbf{X}$ and $\mathbf{Y}$, the code finds the matrix $\mathbf{K}$ that minimises the squared Frobenius norm $$\mathrm{argmin}_K ||\mathbf{XK} -\mathbf{Y}||^2_F$$ subject to $\mathbf{K}\geq 0$.
 
 https://en.wikipedia.org/wiki/Non-negative_least_squares
 
 ## Installation
 
-`$ npm i ml-fcnnls`
+```bash
+npm i ml-fcnnls
+```
 
-## [API Documentation](https://mljs.github.io/fcnnls/)
+## Usage Example
 
-## Usage
+1. Single $y$, using arrays as inputs.
 
 ```js
-import { Matrix } from 'ml-matrix';
+import { fcnnlsVector } from 'ml-fcnnls';
+
+const X = [
+  [1, 1, 2],
+  [10, 11, -9],
+  [-1, 0, 0],
+  [-5, 6, -7],
+];
+const y = [-1, 11, 0, 1];
+
+const k = fcnnlsVector(X, y).K.to1DArray();
+/* k = [0.4610, 0.5611, 0] */
+```
+
+2. Multiple RHS, using `Matrix` instances as inputs.
+
+```js
 import { fcnnls } from 'ml-fcnnls';
+import { Matrix } from 'ml-matrix'; //npm i ml-matrix
 
 // Example with multiple RHS
 
-let X = new Matrix([
+const X = new Matrix([
   [1, 1, 2],
   [10, 11, -9],
   [-1, 0, 0],
   [-5, 6, -7],
 ]);
 
-// Y can either be a Matrix of an array of array
-let Y = new Matrix([
+// Y can either be a Matrix or an array of arrays
+const Y = new Matrix([
   [-1, 0, 0, 9],
   [11, -20, 103, 5],
   [0, 0, 0, 0],
   [1, 2, 3, 4],
 ]);
 
-let K = fcnnls(X, Y).K;
-// you can use `K.to2DArray()` to download the result.
+const K = fcnnls(X, Y).K;
+// `K.to2DArray()` converts the matrix to array.
 /*
 K = Matrix([
-  [0.461, 0, 4.9714, 0],
+  [0.4610, 0, 4.9714, 0],
   [0.5611, 0, 4.7362, 2.2404],
   [0, 1.2388, 0, 1.9136],
-    ])
-*/
-
-import { fcnnlsVector } from 'ml-fcnnls';
-
-// Example with single RHS and same X
-// Should be giving a vector with the element of the first column of K in the previous example, since y is the first column of Y
-
-let X = new Matrix([
-  [1, 1, 2],
-  [10, 11, -9],
-  [-1, 0, 0],
-  [-5, 6, -7],
-]);
-
-let y = [-1, 11, 0, 1];
-
-let k = fcnnlsVector(X, y).K.to1DArray();
-
-/*
-k = [0.461, 0.5611, 0]
+])
 */
 ```
+
+3. Using the options
+
+```js
+const K = fcnnls(X, Y, {
+  info: true, // returns the error/iteration.
+  maxIterations: 5,
+  gradientTolerance: 0,
+});
+/* same result than 2*/
+```
+
+## [API Documentation](https://mljs.github.io/fcnnls/)
 
 ## License
 
