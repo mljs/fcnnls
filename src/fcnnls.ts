@@ -60,10 +60,7 @@ export function fcnnls<T extends boolean | undefined>(
 
   // first RSE is the result of overwriting OLS result in K.
   const error = getRSE({ X, K, Y, error: new Matrix(1, nColsY) });
-  const infoLog: Info = {
-    rse: [error.to1DArray()],
-    nCalculationsOfK: 1,
-  };
+  const rse = [error.to1DArray()];
 
   // Active set algorithm for NNLS main loop
   while (Fset.length > 0) {
@@ -186,14 +183,12 @@ export function fcnnls<T extends boolean | undefined>(
         m = Hset.length;
 
         if (info) {
-          infoLog.rse.push(getRSE({ X, K, Y, error }).to1DArray());
-          ++infoLog.nCalculationsOfK;
+          rse.push(getRSE({ X, K, Y, error }).to1DArray());
         }
       }
     }
     if (Hset.length === 0 || (iter === maxIterations && info)) {
-      infoLog.rse.push(getRSE({ X, K, Y, error }).to1DArray());
-      ++infoLog.nCalculationsOfK;
+      rse.push(getRSE({ X, K, Y, error }).to1DArray());
     }
 
     const newParam = optimality({
@@ -215,7 +210,7 @@ export function fcnnls<T extends boolean | undefined>(
     W = newParam.W;
   }
   if (info) {
-    return { K, info: infoLog };
+    return { K, info: { nIterations: rse.length, rse } };
   }
 
   return { K };
@@ -250,9 +245,9 @@ export interface Info {
    */
   rse: number[][];
   /**
-   * The number of times K was calculated.
+   * The number of times K was calculated (nIterations.)
    */
-  nCalculationsOfK: number;
+  nIterations: number;
 }
 export type FcnnlsOutput = KAndInfo | KOnly;
 export interface KAndInfo {
