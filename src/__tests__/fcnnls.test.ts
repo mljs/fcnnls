@@ -113,10 +113,18 @@ describe('Test Fast Combinatorial NNLS', () => {
     const result = fcnnls(X, Y, { info: true });
     assertResult(result, answer);
   });
-  it('matrix/target', () => {
+  it('matrix/target should throw here', () => {
     const X = matrix;
     const Y = target;
     expect(() => fcnnls(X, Y, { info: true, maxIterations: 1 })).toThrow();
+  });
+  it('matrix/target with maxIterations exactly the same as it should be', () => {
+    const X = matrix;
+    const Y = target;
+    const maxIterations = 2;
+    const result = fcnnls(X, Y, { info: true, maxIterations: 2 });
+    // note the `+1` since there is a OLS calculation before the loops that is included here, and documented as well.
+    expect(result.info.iterations).toStrictEqual(maxIterations + 1);
   });
 
   it('example documentation', () => {

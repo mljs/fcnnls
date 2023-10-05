@@ -5,6 +5,28 @@ import { initialisation } from './initialisation';
 import { optimality } from './optimality';
 import { selection, getRSE } from './util';
 
+export interface FcnnlsOptions<T extends boolean | undefined> {
+  /**
+   * Number of iterations
+   * @default 3 times the number of columns of X
+   */
+  maxIterations?: number;
+  /**
+   * Larger values (like 1e-4) could help if the number of iterations is exceeded. For most cases, lower values should also be fine.
+   * @default 1e-5
+   */
+  gradientTolerance?: number;
+  /**
+   * Output the root squared error for each column of Y a well as the matrix K.
+   * @default false
+   */
+  info?: T;
+  /**
+   * @default true. (The actual value is undefined.) `false` will add a column of ones to the left of X.
+   */
+  interceptAtZero?: boolean;
+}
+
 /**
  * Fast Combinatorial Non-negative Least Squares with multiple Right Hand Side
  * @param X - The data/input/predictors matrix
@@ -210,32 +232,10 @@ export function fcnnls<T extends boolean | undefined>(
     W = newParam.W;
   }
   if (info) {
-    return { K, info: { nIterations: rse.length, rse } };
+    return { K, info: { iterations: rse.length, rse } };
   }
 
   return { K };
-}
-
-export interface FcnnlsOptions<T extends boolean | undefined> {
-  /**
-   * Number of iterations
-   * @default 3 times the number of columns of X
-   */
-  maxIterations?: number;
-  /**
-   * Larger values (like 1e-4) could help if the number of iterations is exceeded. For most cases, lower values should also be fine.
-   * @default 1e-5
-   */
-  gradientTolerance?: number;
-  /**
-   * Output the root squared error for each column of Y a well as the matrix K.
-   * @default false
-   */
-  info?: T;
-  /**
-   * @default true. (The actual value is undefined.) `false` will add a column of ones to the left of X.
-   */
-  interceptAtZero?: boolean;
 }
 
 export interface Info {
@@ -245,9 +245,9 @@ export interface Info {
    */
   rse: number[][];
   /**
-   * The number of times K was calculated (nIterations.)
+   * The number of times K was calculated (it accounts for the OLS guess of `K`, and will be `maxIterations + 1` when maxIterations is reached)
    */
-  nIterations: number;
+  iterations: number;
 }
 export type FcnnlsOutput = KAndInfo | KOnly;
 export interface KAndInfo {
