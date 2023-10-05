@@ -170,9 +170,13 @@ describe('Test Fast Combinatorial NNLS', () => {
   it('matrix/target', () => {
     const X = matrix;
     const Y = target;
-    const result = fcnnls(X, Y);
-    const solution = answer;
-    assertResult(result, solution);
+    const result = fcnnls(X, Y, { info: true });
+    assertResult(result, answer);
+  });
+  it('matrix/target', () => {
+    const X = matrix;
+    const Y = target;
+    expect(() => fcnnls(X, Y, { info: true, maxIterations: 1 })).toThrow();
   });
 
   it('example documentation', () => {
