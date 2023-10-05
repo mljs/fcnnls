@@ -2,7 +2,7 @@ import { readFileSync } from 'fs';
 import { join } from 'path';
 
 import { Matrix } from 'ml-matrix';
-import { it, describe } from 'vitest';
+import { it, describe, expect } from 'vitest';
 
 import { fcnnls } from '../fcnnls';
 
@@ -45,6 +45,34 @@ describe('Test Fast Combinatorial NNLS', () => {
     const solution = new Matrix([[0], [1], [2], [3]]);
     const result = fcnnls(X, Y);
     assertResult(result, solution);
+  });
+
+  it('simple case', () => {
+    const X = new Matrix([
+      [1, 0],
+      [2, 0],
+      [3, 0],
+      [0, 1],
+    ]);
+    const Y = new Matrix([[1], [2], [3], [4]]);
+    const solution = new Matrix([[1], [4]]);
+    const result = fcnnls(X, Y, { info: true });
+    assertResult(result, solution);
+    expect(result.info.rse).toStrictEqual([[0]]);
+  });
+
+  it('simple case that requires a negative coefficient', () => {
+    const X = new Matrix([
+      [1, 0],
+      [2, 0],
+      [3, 0],
+      [0, -1],
+    ]);
+    const Y = new Matrix([[1], [2], [3], [4]]);
+    const solution = new Matrix([[1], [0]]);
+    const result = fcnnls(X, Y, { info: true });
+    assertResult(result, solution);
+    expect(result.info.rse).toStrictEqual([[4], [4]]);
   });
 
   it('identity X, Y 5x3', () => {
