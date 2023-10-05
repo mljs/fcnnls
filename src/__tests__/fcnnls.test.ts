@@ -39,42 +39,6 @@ let target = new Matrix(b);
 
 target = target.transpose();
 describe('Test Fast Combinatorial NNLS', () => {
-  it('identity X, Y 4x1', () => {
-    const X = Matrix.eye(4);
-    const Y = new Matrix([[0], [1], [2], [3]]);
-    const solution = new Matrix([[0], [1], [2], [3]]);
-    const result = fcnnls(X, Y);
-    assertResult(result, solution);
-  });
-
-  it('simple case', () => {
-    const X = new Matrix([
-      [1, 0],
-      [2, 0],
-      [3, 0],
-      [0, 1],
-    ]);
-    const Y = new Matrix([[1], [2], [3], [4]]);
-    const solution = new Matrix([[1], [4]]);
-    const result = fcnnls(X, Y, { info: true });
-    assertResult(result, solution);
-    expect(result.info.rse).toStrictEqual([[0]]);
-  });
-
-  it('simple case that requires a negative coefficient', () => {
-    const X = new Matrix([
-      [1, 0],
-      [2, 0],
-      [3, 0],
-      [0, -1],
-    ]);
-    const Y = new Matrix([[1], [2], [3], [4]]);
-    const solution = new Matrix([[1], [0]]);
-    const result = fcnnls(X, Y, { info: true });
-    assertResult(result, solution);
-    expect(result.info.rse).toStrictEqual([[4], [4]]);
-  });
-
   it('identity X, Y 5x3', () => {
     const X = Matrix.eye(5);
     const Y = new Matrix([
@@ -91,30 +55,6 @@ describe('Test Fast Combinatorial NNLS', () => {
       [3, 8, 13],
       [4, 9, 14],
     ]);
-    const result = fcnnls(X, Y);
-    assertResult(result, solution);
-  });
-
-  it('non-singular square X, Y 3x1', () => {
-    const X = new Matrix([
-      [0, 1, 1],
-      [1, 0, 1],
-      [1, 1, 0],
-    ]);
-    const Y = new Matrix([[-1], [2], [-3]]);
-    const solution = new Matrix([[0], [0], [0.5]]);
-    const result = fcnnls(X, Y);
-    assertResult(result, solution);
-  });
-
-  it('singular square X rank 2, Y 3x1', () => {
-    const X = new Matrix([
-      [1, 2, 3],
-      [4, 5, 6],
-      [7, 8, 9],
-    ]);
-    const Y = new Matrix([[-1], [0], [10]]);
-    const solution = new Matrix([[1.0455], [0], [0]]);
     const result = fcnnls(X, Y);
     assertResult(result, solution);
   });
@@ -254,25 +194,6 @@ describe('Test Fast Combinatorial NNLS', () => {
     ]);
     const Y = new Matrix([[-2], [2], [0]]);
     const solution = new Matrix([[0], [0], [1]]);
-    const result = fcnnls(X, Y);
-    assertResult(result, solution);
-  });
-
-  it('non positive-definite matrix', () => {
-    const X = new Matrix([
-      [1, 1, 1, 0],
-      [0, 1, 1, 1],
-      [1, 2, 2, 1],
-    ]);
-    const Y = new Matrix([[-2], [2], [0]]);
-    const solution = new Matrix([[0], [0], [0], [1]]);
-    const result = fcnnls(X, Y);
-    assertResult(result, solution);
-  });
-  it('identity X, Y 4x1', () => {
-    const X = Matrix.eye(4);
-    const Y = new Matrix([[0], [1], [2], [3]]);
-    const solution = new Matrix([[0], [1], [2], [3]]);
     const result = fcnnls(X, Y);
     assertResult(result, solution);
   });

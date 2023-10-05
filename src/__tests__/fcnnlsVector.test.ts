@@ -40,7 +40,6 @@ describe('Test single right hand side convergence', () => {
     const result = fcnnlsVector(data1.X, data1.Y, {
       interceptAtZero: false,
       gradientTolerance: 1e-10,
-      maxIterations: 1000,
     });
     const result2 = fcnnlsVector(data1.X5, data1.Y, { interceptAtZero: true });
     expect(result).toStrictEqual(result2);
@@ -54,8 +53,85 @@ describe('Test single right hand side convergence', () => {
       info: true,
     });
     assertResult(resultUnshifted, Matrix.columnVector(scipyUnshiftedResult), 4);
-    if (resultUnshifted.info) {
-      expect(resultUnshifted.info.rse[1][0]).toBeCloseTo(scipyError, 4);
-    }
+    expect(resultUnshifted.info.rse[1][0]).toBeCloseTo(scipyError, 4);
+  });
+
+  it('identity X, Y 4x1', () => {
+    const X = Matrix.eye(4);
+    const Y = [0, 1, 2, 3];
+    const solution = new Matrix([[0], [1], [2], [3]]);
+    const result = fcnnlsVector(X, Y);
+    assertResult(result, solution);
+  });
+
+  it('simple case', () => {
+    const X = new Matrix([
+      [1, 0],
+      [2, 0],
+      [3, 0],
+      [0, 1],
+    ]);
+    const Y = [1, 2, 3, 4];
+    const solution = new Matrix([[1], [4]]);
+    const result = fcnnlsVector(X, Y, { info: true });
+    assertResult(result, solution);
+    expect(result.info.rse).toStrictEqual([[0]]);
+  });
+
+  it('simple case that requires a negative coefficient', () => {
+    const X = new Matrix([
+      [1, 0],
+      [2, 0],
+      [3, 0],
+      [0, -1],
+    ]);
+    const Y = [1, 2, 3, 4];
+    const solution = new Matrix([[1], [0]]);
+    const result = fcnnlsVector(X, Y, { info: true });
+    assertResult(result, solution);
+    expect(result.info.rse).toStrictEqual([[4], [4]]);
+  });
+
+  it('non-singular square X, Y 3x1', () => {
+    const X = new Matrix([
+      [0, 1, 1],
+      [1, 0, 1],
+      [1, 1, 0],
+    ]);
+    const Y = [-1, 2, -3];
+    const solution = new Matrix([[0], [0], [0.5]]);
+    const result = fcnnlsVector(X, Y);
+    assertResult(result, solution);
+  });
+
+  it('singular square X rank 2, Y 3x1', () => {
+    const X = new Matrix([
+      [1, 2, 3],
+      [4, 5, 6],
+      [7, 8, 9],
+    ]);
+    const Y = [-1, 0, 10];
+    const solution = new Matrix([[1.0455], [0], [0]]);
+    const result = fcnnlsVector(X, Y);
+    assertResult(result, solution);
+  });
+
+  it('non positive-definite matrix', () => {
+    const X = new Matrix([
+      [1, 1, 1, 0],
+      [0, 1, 1, 1],
+      [1, 2, 2, 1],
+    ]);
+    const Y = [-2, 2, 0];
+    const solution = new Matrix([[0], [0], [0], [1]]);
+    const result = fcnnlsVector(X, Y);
+    assertResult(result, solution);
+  });
+  it('identity X, Y 4x1', () => {
+    const X = Matrix.eye(4);
+    const Y = [0, 1, 2, 3];
+    const solution = new Matrix([[0], [1], [2], [3]]);
+    const result = fcnnlsVector(X, Y);
+    assertResult(result, solution);
   });
 });
