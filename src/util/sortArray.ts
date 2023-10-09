@@ -3,7 +3,7 @@
  * @param array
  * @returns {values, indices}
  */
-export default function sortArray(array: number[]) {
+export function sortArray(array: number[]) {
   const v = array.map((value, index) => {
     return { value, index };
   });

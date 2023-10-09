@@ -3,11 +3,13 @@ import { expect, it, describe } from 'vitest';
 
 import { initialisation } from '../initialisation';
 
+import { prepareInput } from './prepareInitInput';
+
 describe('initialisation test', () => {
   it('identity X, Y 1-dimension', () => {
     const X = Matrix.eye(4);
     const Y = new Matrix([[0], [1], [2], [3]]);
-    const result = initialisation(X, Y);
+    const result = initialisation(prepareInput(X, Y));
     const solution = [0];
     expect(result.Fset).toStrictEqual(solution);
   });
@@ -24,7 +26,7 @@ describe('initialisation test', () => {
       [18, 41, 51],
       [41, 61, 39],
     ]);
-    const { Pset } = initialisation(X, Y);
+    const { Pset } = initialisation(prepareInput(X, Y));
 
     const solutionPset = [
       [1, 2],
@@ -41,7 +43,7 @@ describe('initialisation test', () => {
       [1, 1, 0],
     ]);
     const Y = new Matrix([[-1], [2], [-3]]);
-    const result = initialisation(X, Y);
+    const result = initialisation(prepareInput(X, Y));
     const solution = [[0, 2]];
     expect(result.Pset).toStrictEqual(solution);
   });

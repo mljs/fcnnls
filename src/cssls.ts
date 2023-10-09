@@ -5,27 +5,17 @@ import {
   CholeskyDecomposition,
 } from 'ml-matrix';
 
-import sortCollectionSet from './util/sortCollectionSet';
+import { sortCollectionSet } from './util/sortCollectionSet';
 
 /**
  * Combinatorial Subspace Least Squares - subfunction for the FC-NNLS
  * Solves XtX*K = XtY for the variables in Pset
- * if XtX (or XtX(vars,vars)) is singular, performs the svd and find pseudo-inverse, otherwise (even if ill-conditioned) finds inverse with LU decomposition and solves the set of equation
+ * if XtX (or XtX(vars,vars)) is singular, performs the svd and find pseudo-inverse, otherwise (even if ill-conditioned) finds inverse with LU decomposition and solves the set of equations
  * it is consistent with matlab results for ill-conditioned matrices (at least consistent with test 'ill-conditioned square X rank 2, Y 3x1' in cssls.test)
- * @param XtX - Gram matrix
- * @param XtY
- * @param Pset - Subset of matrix K with positive values (indices)
- * @param l - number of rows of X
- * @param p - number of columns of Y
+ * @param Cssls object, @see {@link Cssls}
  */
-export function cssls(
-  XtX: Matrix,
-  XtY: Matrix,
-  Pset: number[][] | null,
-  l: number,
-  p: number,
-): Matrix {
-  let K = Matrix.zeros(l, p);
+export function cssls({ XtX, XtY, Pset, nColsX, nColsY }: Cssls): Matrix {
+  let K = Matrix.zeros(nColsX, nColsY);
   if (Pset === null) {
     // used for initialisation where OLS is solved.
     const choXtX = new CholeskyDecomposition(XtX);
@@ -34,7 +24,7 @@ export function cssls(
     } else {
       const luXtX = new LuDecomposition(XtX);
       if (!luXtX.isSingular()) {
-        K = luXtX.solve(Matrix.eye(l)).mmul(XtY);
+        K = luXtX.solve(Matrix.eye(nColsX)).mmul(XtY);
       } else {
         K = solve(XtX, XtY, true);
       }
@@ -44,13 +34,13 @@ export function cssls(
     if (
       sortedPset.length === 1 &&
       sortedPset[0].length === 0 &&
-      sortedEset[0].length === p
+      sortedEset[0].length === nColsY
     ) {
       return K;
     } else if (
       sortedPset.length === 1 &&
-      sortedPset[0].length === l &&
-      sortedEset[0].length === p
+      sortedPset[0].length === nColsX &&
+      sortedEset[0].length === nColsY
     ) {
       const choXtX = new CholeskyDecomposition(XtX);
       if (choXtX.isPositiveDefinite()) {
@@ -58,7 +48,7 @@ export function cssls(
       } else {
         const luXtX = new LuDecomposition(XtX);
         if (!luXtX.isSingular()) {
-          K = luXtX.solve(Matrix.eye(l)).mmul(XtY);
+          K = luXtX.solve(Matrix.eye(nColsX)).mmul(XtY);
         } else {
           K = solve(XtX, XtY, true);
         }
@@ -94,4 +84,27 @@ export function cssls(
     }
   }
   return K;
+}
+
+interface Cssls {
+  /**
+   * XtX - Gram matrix
+   */
+  XtX: Matrix;
+  /**
+   * XtY
+   */
+  XtY: Matrix;
+  /**
+   * Pset - Subset of matrix K with positive values (indices)
+   */
+  Pset: number[][] | null;
+  /**
+   * nColsX - number of columns of X
+   */
+  nColsX: number;
+  /**
+   * nColsY - number of columns of Y
+   */
+  nColsY: number;
 }

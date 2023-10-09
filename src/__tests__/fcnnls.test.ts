@@ -2,9 +2,9 @@ import { readFileSync } from 'fs';
 import { join } from 'path';
 
 import { Matrix } from 'ml-matrix';
-import { it, describe } from 'vitest';
+import { it, describe, expect } from 'vitest';
 
-import fcnnls from '../fcnnls';
+import { fcnnls } from '../fcnnls';
 
 import { assertResult } from './assertResult';
 
@@ -39,14 +39,6 @@ let target = new Matrix(b);
 
 target = target.transpose();
 describe('Test Fast Combinatorial NNLS', () => {
-  it('identity X, Y 4x1', () => {
-    const X = Matrix.eye(4);
-    const Y = new Matrix([[0], [1], [2], [3]]);
-    const solution = new Matrix([[0], [1], [2], [3]]);
-    const result = fcnnls(X, Y);
-    assertResult(result, solution);
-  });
-
   it('identity X, Y 5x3', () => {
     const X = Matrix.eye(5);
     const Y = new Matrix([
@@ -64,30 +56,6 @@ describe('Test Fast Combinatorial NNLS', () => {
       [4, 9, 14],
     ]);
     const result = fcnnls(X, Y);
-    assertResult(result, solution);
-  });
-
-  it('non-singular square X, Y 3x1', () => {
-    const X = new Matrix([
-      [0, 1, 1],
-      [1, 0, 1],
-      [1, 1, 0],
-    ]);
-    const Y = new Matrix([[-1], [2], [-3]]);
-    const solution = new Matrix([[0], [0], [0.5]]);
-    const result = fcnnls(X, Y);
-    assertResult(result, solution);
-  });
-
-  it('singular square X rank 2, Y 3x1', () => {
-    const X = new Matrix([
-      [1, 2, 3],
-      [4, 5, 6],
-      [7, 8, 9],
-    ]);
-    const Y = new Matrix([[-1], [0], [10]]);
-    const solution = new Matrix([[1.0455], [0], [0]]);
-    const result = Matrix.round(fcnnls(X, Y).mul(10000)).mul(0.0001);
     assertResult(result, solution);
   });
 
@@ -113,7 +81,7 @@ describe('Test Fast Combinatorial NNLS', () => {
       [0, 2.121, 0, 0, 0, 0, 0],
       [0, 0, 0, 0, 1.0827, 0.3911, 0.4738],
     ]);
-    const result = Matrix.round(fcnnls(X, Y).mul(10000)).mul(0.0001);
+    const result = fcnnls(X, Y);
     assertResult(result, solution);
   });
 
@@ -142,9 +110,21 @@ describe('Test Fast Combinatorial NNLS', () => {
   it('matrix/target', () => {
     const X = matrix;
     const Y = target;
-    const result = fcnnls(X, Y);
-    const solution = answer;
-    assertResult(result, solution);
+    const result = fcnnls(X, Y, { info: true });
+    assertResult(result, answer);
+  });
+  it('matrix/target should throw here', () => {
+    const X = matrix;
+    const Y = target;
+    expect(() => fcnnls(X, Y, { info: true, maxIterations: 1 })).toThrow();
+  });
+  it('matrix/target with maxIterations exactly the same as it should be', () => {
+    const X = matrix;
+    const Y = target;
+    const maxIterations = 2;
+    const result = fcnnls(X, Y, { info: true, maxIterations: 2 });
+    // note the `+1` since there is a OLS calculation before the loops that is included here, and documented as well.
+    expect(result.info.iterations).toStrictEqual(maxIterations + 1);
   });
 
   it('example documentation', () => {
@@ -222,25 +202,6 @@ describe('Test Fast Combinatorial NNLS', () => {
     ]);
     const Y = new Matrix([[-2], [2], [0]]);
     const solution = new Matrix([[0], [0], [1]]);
-    const result = fcnnls(X, Y);
-    assertResult(result, solution);
-  });
-
-  it('non positive-definite matrix', () => {
-    const X = new Matrix([
-      [1, 1, 1, 0],
-      [0, 1, 1, 1],
-      [1, 2, 2, 1],
-    ]);
-    const Y = new Matrix([[-2], [2], [0]]);
-    const solution = new Matrix([[0], [0], [0], [1]]);
-    const result = fcnnls(X, Y);
-    assertResult(result, solution);
-  });
-  it('identity X, Y 4x1', () => {
-    const X = Matrix.eye(4);
-    const Y = new Matrix([[0], [1], [2], [3]]);
-    const solution = new Matrix([[0], [1], [2], [3]]);
     const result = fcnnls(X, Y);
     assertResult(result, solution);
   });

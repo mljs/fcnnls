@@ -21,7 +21,7 @@ function addUniqueKeyToColumns(collection: number[][]) {
  * @param collection - Array of arrays
  * @returns Array of objects with the original array, its index and its key
  */
-export default function groupColumnsBySign(collection: number[][]) {
+export function sortCollectionSet(collection: number[][]) {
   const mapped = addUniqueKeyToColumns(collection);
   mapped.sort((a, b) => {
     if (a.key - b.key < 0) return -1;

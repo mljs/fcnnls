@@ -3,54 +3,98 @@ import { Matrix } from 'ml-matrix';
 import { cssls } from './cssls';
 import { initialisation } from './initialisation';
 import { optimality } from './optimality';
-import selection from './util/selection';
+import { selection, getRSE } from './util';
 
-export interface FcnnlsOptions {
+export interface FcnnlsOptions<T extends boolean | undefined> {
   /**
    * Number of iterations
    * @default 3 times the number of columns of X
    */
   maxIterations?: number;
   /**
-   * Control over the optimality of the solution; applied to the largest gradient value.
+   * Larger values (like 1e-4) could help if the number of iterations is exceeded. For most cases, lower values should also be fine.
    * @default 1e-5
-   * Smaller values are less tolerant.
    */
   gradientTolerance?: number;
+  /**
+   * Output the root squared error for each column of Y a well as the matrix K.
+   * @default false
+   */
+  info?: T;
+  /**
+   * @default true. (The actual value is undefined.) `false` will add a column of ones to the left of X.
+   */
+  interceptAtZero?: boolean;
 }
 
 /**
  * Fast Combinatorial Non-negative Least Squares with multiple Right Hand Side
- * @param X
- * @param Y
- * @param options
- * @returns Solution Matrix.
+ * @param X - The data/input/predictors matrix
+ * @param Y - The response matrix
+ * @param options {@link FcnnlsOptions}
+ * @returns By default, the object with the matrix of coefficients K. Please see {@link FcnnlsOutput} for more information.
  */
-
-export default function fcnnls(
+export function fcnnls(
   X: Matrix | number[][],
   Y: Matrix | number[] | number[][],
-  options: FcnnlsOptions = {},
+  options?: FcnnlsOptions<false | undefined>,
+): KOnly;
+export function fcnnls(
+  X: Matrix | number[][],
+  Y: Matrix | number[] | number[][],
+  options?: FcnnlsOptions<true>,
+): KAndInfo;
+export function fcnnls<T extends boolean | undefined>(
+  X: Matrix | number[][],
+  Y: Matrix | number[] | number[][],
+  options?: FcnnlsOptions<T>,
+): KAndInfo | KOnly;
+export function fcnnls<T extends boolean | undefined>(
+  X: Matrix | number[][],
+  Y: Matrix | number[] | number[][],
+  options: FcnnlsOptions<T> = {},
 ) {
   X = Matrix.checkMatrix(X);
   Y = Matrix.checkMatrix(Y);
-  const init = initialisation(X, Y);
-  const { l, p, XtX, XtY, K, D } = init;
-  let { iter, W, Pset, Fset } = init;
 
-  const { maxIterations = X.columns * 3, gradientTolerance = 1e-5 } = options;
+  // only in the case they explicitly set it false.
+  if (options.interceptAtZero === false) {
+    X = Matrix.ones(X.rows, X.columns + 1).setSubMatrix(X, 0, 1);
+  }
+  const {
+    maxIterations = X.columns * 3,
+    gradientTolerance = 1e-5,
+    info = false,
+  } = options;
+
+  // pre-computes part of pseudo-inverse
+  const Xt = X.transpose();
+  const XtX = Xt.mmul(X);
+  const XtY = Xt.mmul(Y);
+
+  const { columns: nColsY, rows: nRowsY } = Y;
+  const { columns: nColsX, rows: nRowsX } = X;
+
+  const init = initialisation({ XtX, XtY, nRowsX, nColsX, nRowsY, nColsY });
+  let { iter, W, Pset, Fset } = init;
+  const K = init.K;
+  const D = K.clone();
+
+  // first RSE is the result of overwriting OLS result in K.
+  const error = getRSE({ X, K, Y, error: new Matrix(1, nColsY) });
+  const rse = [error.to1DArray()];
 
   // Active set algorithm for NNLS main loop
   while (Fset.length > 0) {
     // Solves for the passive variables (uses subroutine below)
-    let L = cssls(
+    let L = cssls({
       XtX,
-      XtY.subMatrixColumn(Fset),
-      selection(Pset, Fset),
-      l,
-      Fset.length,
-    );
-    for (let i = 0; i < l; i++) {
+      XtY: XtY.subMatrixColumn(Fset),
+      Pset: selection(Pset, Fset),
+      nColsX,
+      nColsY: Fset.length,
+    });
+    for (let i = 0; i < nColsX; i++) {
       for (let j = 0; j < Fset.length; j++) {
         K.set(i, Fset[j], L.get(i, j));
       }
@@ -59,7 +103,7 @@ export default function fcnnls(
     // Finds any infeasible solutions
     const infeasIndex: number[] = [];
     for (let j = 0; j < Fset.length; j++) {
-      for (let i = 0; i < l; i++) {
+      for (let i = 0; i < nColsX; i++) {
         if (L.get(i, j) < 0) {
           infeasIndex.push(j);
           break;
@@ -71,7 +115,7 @@ export default function fcnnls(
     // Makes infeasible solutions feasible (standard NNLS inner loop)
     if (Hset.length > 0) {
       let m = Hset.length;
-      const alpha = Matrix.ones(l, m);
+      const alpha = Matrix.ones(nColsX, m);
 
       while (m > 0 && iter < maxIterations) {
         iter++;
@@ -111,14 +155,14 @@ export default function fcnnls(
         }
 
         alphaMin = Matrix.rowVector(alphaMin);
-        for (let i = 0; i < l; i++) {
+        for (let i = 0; i < nColsX; i++) {
           alpha.setSubMatrix(alphaMin, i, 0);
         }
 
-        let E = new Matrix(l, m);
+        let E = new Matrix(nColsX, m);
         E = D.subMatrixColumn(Hset).subtract(
           alpha
-            .subMatrix(0, l - 1, 0, m - 1)
+            .subMatrix(0, nColsX - 1, 0, m - 1)
             .mul(D.subMatrixColumn(Hset).subtract(K.subMatrixColumn(Hset))),
         );
         for (let j = 0; j < m; j++) {
@@ -137,14 +181,20 @@ export default function fcnnls(
           );
         }
 
-        L = cssls(XtX, XtY.subMatrixColumn(Hset), selection(Pset, Hset), l, m);
+        L = cssls({
+          XtX,
+          XtY: XtY.subMatrixColumn(Hset),
+          Pset: selection(Pset, Hset),
+          nColsX,
+          nColsY: m,
+        });
         for (let j = 0; j < m; j++) {
           K.setColumn(Hset[j], L.subMatrixColumn([j]));
         }
 
         Hset = [];
         for (let j = 0; j < K.columns; j++) {
-          for (let i = 0; i < l; i++) {
+          for (let i = 0; i < nColsX; i++) {
             if (K.get(i, j) < 0) {
               Hset.push(j);
 
@@ -153,27 +203,57 @@ export default function fcnnls(
           }
         }
         m = Hset.length;
+
+        if (info) {
+          rse.push(getRSE({ X, K, Y, error }).to1DArray());
+        }
       }
     }
+    if (Hset.length === 0 || (iter === maxIterations && info)) {
+      rse.push(getRSE({ X, K, Y, error }).to1DArray());
+    }
 
-    const newParam = optimality(
+    const newParam = optimality({
       iter,
-      maxIterations,
+      maxIter: maxIterations,
       XtX,
       XtY,
       Fset,
       Pset,
       W,
       K,
-      l,
-      p,
+      l: nColsX,
+      p: nColsY,
       D,
       gradientTolerance,
-    );
+    });
     Pset = newParam.Pset;
     Fset = newParam.Fset;
     W = newParam.W;
   }
+  if (info) {
+    return { K, info: { iterations: rse.length, rse } };
+  }
 
-  return K;
+  return { K };
+}
+
+export interface Info {
+  /**
+   * Root Squared Error.
+   * This is a row vector, the RSE values for each column of Y.
+   */
+  rse: number[][];
+  /**
+   * The number of times K was calculated (it accounts for the OLS guess of `K`, and will be `maxIterations + 1` when maxIterations is reached)
+   */
+  iterations: number;
+}
+export type FcnnlsOutput = KAndInfo | KOnly;
+export interface KAndInfo {
+  K: Matrix;
+  info: Info;
+}
+export interface KOnly {
+  K: Matrix;
 }

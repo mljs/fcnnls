@@ -1,6 +1,6 @@
 import { expect, it, describe } from 'vitest';
 
-import sortArray from '../sortArray';
+import { sortArray } from '../sortArray';
 
 describe('sortArray test', () => {
   it('simple 3 elements array', () => {

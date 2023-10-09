@@ -1,44 +1,30 @@
 import { type Matrix } from 'ml-matrix';
 
-import setDifference from './util/setDifference';
+import { setDifference } from './util/setDifference';
 
 /**
  * Checks whether the solution has converged
- * @param iter - current iteration
- * @param maxIter - maximum number of iterations, @default 3 times the number of columns of X
- * @param XtX - Gram matrix
- * @param XtY
- * @param Fset - Columns to be optimized (active), it stores indices of columns with negative values
- * @param Pset - Subset of matrix K with positive values (indices)
- * @param W - Gradient Matrix
- * @param K - Coefficients Matrix
- * @param l - Number of rows of X
- * @param p - Number of columns of X
- * @param D - K clone
- * @param gradientTolerance - Control over the optimality of the solution; applied over the largest gradient value of all. @default 1e-5.
- * @returns - {Pset, Fset, W}
+ * @param see {@link OptimalityParams} for a description.
+ * @returns Pset, Fset, W
  */
-
-export function optimality(
-  iter: number,
-  maxIter: number,
-  XtX: Matrix,
-  XtY: Matrix,
-  Fset: number[],
-  Pset: number[][],
-  W: Matrix,
-  K: Matrix,
-  l: number,
-  p: number,
-  D: Matrix,
-  gradientTolerance: number,
-): {
-  Pset: number[][];
-  Fset: number[];
-  W: Matrix;
-} {
+export function optimality({
+  iter,
+  maxIter,
+  XtX,
+  XtY,
+  Fset,
+  Pset,
+  W,
+  K,
+  l,
+  p,
+  D,
+  gradientTolerance,
+}: OptimalityParams) {
   if (iter === maxIter) {
-    throw new Error('Maximum number of iterations exceeded');
+    throw new Error(
+      'Maximum number of iterations exceeded. You may try to gradually increase the option.gradientTolerance.',
+    );
   }
 
   // Check solution for optimality
@@ -80,4 +66,33 @@ export function optimality(
     Pset[j].sort((a, b) => a - b);
   }
   return { Pset, Fset, W };
+}
+
+/**
+ * @param iter - current iteration
+ * @param maxIter - maximum number of iterations, @default 3 times the number of columns of X
+ * @param XtX - Gram matrix
+ * @param XtY
+ * @param Fset - Columns to be optimized (active), it stores indices of columns with negative values
+ * @param Pset - Subset of matrix K with positive values (indices)
+ * @param W - Gradient Matrix
+ * @param K - Coefficients Matrix
+ * @param l - Number of columns of X
+ * @param p - Number of columns of X
+ * @param D - K clone
+ * @param gradientTolerance - Control over the optimality of the solution; applied over the largest gradient value of all. @default 1e-5.
+ */
+interface OptimalityParams {
+  iter: number;
+  Pset: number[][];
+  Fset: number[];
+  W: Matrix;
+  XtX: Matrix;
+  XtY: Matrix;
+  K: Matrix;
+  D: Matrix;
+  p: number;
+  l: number;
+  maxIter: number;
+  gradientTolerance: number;
 }

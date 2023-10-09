@@ -1,6 +1,6 @@
 import { expect, it, describe } from 'vitest';
 
-import setDifference from '../setDifference';
+import { setDifference } from '../setDifference';
 
 describe('setDifference test', () => {
   it('simple', () => {

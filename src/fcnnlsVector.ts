@@ -1,6 +1,6 @@
 import { Matrix } from 'ml-matrix';
 
-import fcnnls, { type FcnnlsOptions } from './fcnnls';
+import { KAndInfo, KOnly, FcnnlsOptions, fcnnls } from './fcnnls';
 
 /**
  * Fast Combinatorial Non-negative Least Squares with single Right Hand Side
@@ -9,16 +9,29 @@ import fcnnls, { type FcnnlsOptions } from './fcnnls';
  * @param options - for maxIterations
  * @returns Solution vector.
  */
-export default function fcnnlsVector(
-  X: Matrix,
+export function fcnnlsVector(
+  X: number[][] | Matrix,
   y: number[],
-  options: FcnnlsOptions = {},
+  options?: FcnnlsOptions<false | undefined>,
+): KOnly;
+export function fcnnlsVector(
+  X: number[][] | Matrix,
+  y: number[],
+  options?: FcnnlsOptions<true>,
+): KAndInfo;
+export function fcnnlsVector<T extends boolean | undefined>(
+  X: number[][] | Matrix,
+  y: number[],
+  options?: FcnnlsOptions<T>,
+): KAndInfo | KOnly;
+export function fcnnlsVector<T extends boolean | undefined>(
+  X: number[][] | Matrix,
+  y: number[],
+  options: FcnnlsOptions<T> = {},
 ) {
   if (!Array.isArray(y)) {
     throw new TypeError('y must be a 1D Array');
   }
   const Y = Matrix.columnVector(y);
-  const K = fcnnls(X, Y, options);
-  const k = K.to1DArray();
-  return k;
+  return fcnnls(X, Y, options);
 }
