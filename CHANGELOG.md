@@ -1,5 +1,37 @@
 # Changelog
 
+## [3.0.0](https://github.com/mljs/fcnnls/compare/v2.1.0...v3.0.0) (2023-10-09)
+
+
+### ⚠ BREAKING CHANGES
+
+* main functions return the same type
+* use named exports in functions
+* new output and a few features ([#21](https://github.com/mljs/fcnnls/issues/21))
+
+### Features
+
+* intercepting at other than zero ([1ec8a91](https://github.com/mljs/fcnnls/commit/1ec8a91d2f56790cef072ade17679573db50788c))
+* log some execution information ([1ec8a91](https://github.com/mljs/fcnnls/commit/1ec8a91d2f56790cef072ade17679573db50788c))
+* new output and a few features ([#21](https://github.com/mljs/fcnnls/issues/21)) ([1ec8a91](https://github.com/mljs/fcnnls/commit/1ec8a91d2f56790cef072ade17679573db50788c))
+
+
+### Bug Fixes
+
+* citation links ([66723d9](https://github.com/mljs/fcnnls/commit/66723d967a5a9d1502cea9d69465fdd7f6ab251a))
+
+
+### Documentation
+
+* add Michael orcid ([16fb211](https://github.com/mljs/fcnnls/commit/16fb211224659051fe7f45d98a5a383d06a8c1a5))
+* add orcid ([45f0c57](https://github.com/mljs/fcnnls/commit/45f0c57b24a00dfbeaec752ca9fb62212f7eaba4))
+
+
+### Code Refactoring
+
+* main functions return the same type ([1ec8a91](https://github.com/mljs/fcnnls/commit/1ec8a91d2f56790cef072ade17679573db50788c))
+* use named exports in functions ([1ec8a91](https://github.com/mljs/fcnnls/commit/1ec8a91d2f56790cef072ade17679573db50788c))
+
 ## [2.1.0](https://github.com/mljs/fcnnls/compare/v2.0.1...v2.1.0) (2023-08-10)
 
 
