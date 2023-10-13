@@ -22,7 +22,7 @@ npm i ml-fcnnls
 
 ## Usage Example
 
-1. Single $y$, using arrays as inputs.
+1. Single `y`, using arrays as inputs.
 
 ```js
 import { fcnnlsVector } from 'ml-fcnnls';
