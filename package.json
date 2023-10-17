@@ -12,6 +12,7 @@
     "lib-esm"
   ],
   "scripts": {
+    "benchmark": "npm run tsc-cjs && node --cpu-prof benchmark/index.mjs",
     "check-types": "tsc --noEmit",
     "clean": "rimraf lib lib-esm",
     "eslint": "eslint src",

@@ -1,15 +1,15 @@
 /*
-Can be executed using `node -r esm --inspect-brk benchmark/index.js`
-And debug from chrome using `chrome://inspect`
-*/
+ * node --cpu-prof benchmark/index.mjs
+ */
 
 import { readFileSync } from 'fs';
 import { join } from 'path';
 
 import { Matrix } from 'ml-matrix';
 
-import fcnnls from '../src/fcnnls';
+import { fcnnls } from '../lib/index.js';
 
+const __dirname = new URL('.', import.meta.url).pathname;
 const concentration = readFileSync(
   join(__dirname, '../src/__tests__/data/matrix.txt'),
   'utf-8',
