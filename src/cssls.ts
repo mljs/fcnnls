@@ -1,12 +1,52 @@
 import {
   Matrix,
+  CholeskyDecomposition,
   LuDecomposition,
   solve,
-  CholeskyDecomposition,
 } from 'ml-matrix';
 
 import { sortCollectionSet } from './util/sortCollectionSet';
 
+interface SolveByMethod {
+  /**
+   * LHS of the equation to solve
+   */
+  XtX: Matrix;
+  /**
+   * RHS of the equation to solve
+   */
+  XtY: Matrix;
+  /**
+   * where to put the result
+   * only undefined when we pass `L`.
+   */
+  K?: Matrix;
+  /**
+   * number of columns of X
+   */
+  nColsX: number;
+}
+/**
+ * This function just removes code repetition.
+ * For specific variables, just pass the selection i.e XtX.selection(vars, vars) and XtY.selection(vars, cols2Solve)
+ * @param  see {@link SolveByMethod}
+ * @returns K -  matrix of coefficients (is not mutated, but reassigned.)
+ */
+function solveByMethod({ XtX, XtY, K, nColsX }: SolveByMethod) {
+  // used for initialization where OLS is solved.
+  const choXtX = new CholeskyDecomposition(XtX);
+  if (choXtX.isPositiveDefinite()) {
+    return choXtX.solve(XtY);
+  } else {
+    const luXtX = new LuDecomposition(XtX);
+    if (!luXtX.isSingular()) {
+      K = luXtX.solve(Matrix.eye(nColsX)).mmul(XtY);
+    } else {
+      K = solve(XtX, XtY, true);
+    }
+  }
+  return K;
+}
 /**
  * Combinatorial Subspace Least Squares - subfunction for the FC-NNLS
  * Solves XtX*K = XtY for the variables in Pset
@@ -17,18 +57,7 @@ import { sortCollectionSet } from './util/sortCollectionSet';
 export function cssls({ XtX, XtY, Pset, nColsX, nColsY }: Cssls): Matrix {
   let K = Matrix.zeros(nColsX, nColsY);
   if (Pset === null) {
-    // used for initialisation where OLS is solved.
-    const choXtX = new CholeskyDecomposition(XtX);
-    if (choXtX.isPositiveDefinite()) {
-      K = choXtX.solve(XtY);
-    } else {
-      const luXtX = new LuDecomposition(XtX);
-      if (!luXtX.isSingular()) {
-        K = luXtX.solve(Matrix.eye(nColsX)).mmul(XtY);
-      } else {
-        K = solve(XtX, XtY, true);
-      }
-    }
+    K = solveByMethod({ XtX, XtY, K, nColsX });
   } else {
     const { values: sortedPset, indices: sortedEset } = sortCollectionSet(Pset);
     if (
@@ -42,39 +71,16 @@ export function cssls({ XtX, XtY, Pset, nColsX, nColsY }: Cssls): Matrix {
       sortedPset[0].length === nColsX &&
       sortedEset[0].length === nColsY
     ) {
-      const choXtX = new CholeskyDecomposition(XtX);
-      if (choXtX.isPositiveDefinite()) {
-        K = choXtX.solve(XtY);
-      } else {
-        const luXtX = new LuDecomposition(XtX);
-        if (!luXtX.isSingular()) {
-          K = luXtX.solve(Matrix.eye(nColsX)).mmul(XtY);
-        } else {
-          K = solve(XtX, XtY, true);
-        }
-      }
+      K = solveByMethod({ XtX, XtY, K, nColsX });
     } else {
       for (let k = 0; k < sortedPset.length; k++) {
         const cols2Solve = sortedEset[k];
         const vars = sortedPset[k];
-        let L;
-        const choXtX = new CholeskyDecomposition(XtX.selection(vars, vars));
-        if (choXtX.isPositiveDefinite()) {
-          L = choXtX.solve(XtY.selection(vars, cols2Solve));
-        } else {
-          const luXtX = new LuDecomposition(XtX.selection(vars, vars));
-          if (!luXtX.isSingular()) {
-            L = luXtX
-              .solve(Matrix.eye(vars.length))
-              .mmul(XtY.selection(vars, cols2Solve));
-          } else {
-            L = solve(
-              XtX.selection(vars, vars),
-              XtY.selection(vars, cols2Solve),
-              true,
-            );
-          }
-        }
+        const L = solveByMethod({
+          XtX: XtX.selection(vars, vars),
+          XtY: XtY.selection(vars, cols2Solve),
+          nColsX: vars.length,
+        });
         for (let i = 0; i < L.rows; i++) {
           for (let j = 0; j < L.columns; j++) {
             K.set(vars[i], cols2Solve[j], L.get(i, j));
