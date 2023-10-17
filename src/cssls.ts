@@ -76,6 +76,7 @@ export function cssls({ XtX, XtY, Pset, nColsX, nColsY }: Cssls): Matrix {
       for (let k = 0; k < sortedPset.length; k++) {
         const cols2Solve = sortedEset[k];
         const vars = sortedPset[k];
+        if (cols2Solve.length === 0 || vars.length === 0) continue;
         const L = solveByMethod({
           XtX: XtX.selection(vars, vars),
           XtY: XtY.selection(vars, cols2Solve),
