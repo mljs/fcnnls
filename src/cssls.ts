@@ -2,7 +2,7 @@ import {
   Matrix,
   CholeskyDecomposition,
   LuDecomposition,
-  solve,
+  SingularValueDecomposition,
 } from 'ml-matrix';
 
 import { sortCollectionSet } from './util/sortCollectionSet';
@@ -42,7 +42,7 @@ function solveByMethod({ XtX, XtY, K, nColsX }: SolveByMethod) {
     if (!luXtX.isSingular()) {
       K = luXtX.solve(Matrix.eye(nColsX)).mmul(XtY);
     } else {
-      K = solve(XtX, XtY, true);
+      K = new SingularValueDecomposition(XtX).solve(XtY);
     }
   }
   return K;
