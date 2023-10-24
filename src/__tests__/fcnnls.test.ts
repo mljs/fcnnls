@@ -123,7 +123,6 @@ describe('Test Fast Combinatorial NNLS', () => {
     const Y = target;
     const maxIterations = 2;
     const result = fcnnls(X, Y, { info: true, maxIterations: 2 });
-    // note the `+1` since there is a OLS calculation before the loops that is included here, and documented as well.
     expect(result.info.iterations).toStrictEqual(maxIterations + 1);
   });
 
@@ -204,5 +203,29 @@ describe('Test Fast Combinatorial NNLS', () => {
     const solution = new Matrix([[0], [0], [1]]);
     const result = fcnnls(X, Y);
     assertResult(result, solution);
+  });
+
+  it('example documentation', () => {
+    const X = new Matrix([
+      [1, 1, 2],
+      [10, 11, -9],
+      [-1, 0, 0],
+      [-5, 6, -7],
+    ]);
+    const y = [-1, 11, 0, 1];
+    const solution = [0.461, 0.5611, 0];
+    const result = fcnnls(X, y, {
+      maxIterations: 1000,
+      gradientTolerance: 1e-10,
+    });
+    assertResult(result, Matrix.columnVector(solution), 4);
+  });
+
+  it('negative identity X and positive RHS', () => {
+    const X = Matrix.eye(3).mul(-1);
+    const y = [1, 2, 3];
+    const solution = [0, 0, 0];
+    const result = fcnnls(X, y);
+    assertResult(result, Matrix.columnVector(solution), 4);
   });
 });

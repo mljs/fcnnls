@@ -55,7 +55,10 @@ export function fcnnls<T extends boolean | undefined>(
   options: FcnnlsOptions<T> = {},
 ) {
   X = Matrix.checkMatrix(X);
-  Y = Matrix.checkMatrix(Y);
+  Y =
+    Array.isArray(Y) && typeof Y[0] === 'number'
+      ? Matrix.columnVector(Y as number[])
+      : Matrix.checkMatrix(Y);
 
   // only in the case they explicitly set it false.
   if (options.interceptAtZero === false) {

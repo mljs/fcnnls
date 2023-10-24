@@ -8,6 +8,7 @@ import { KAndInfo, KOnly, FcnnlsOptions, fcnnls } from './fcnnls';
  * @param y - output data vector
  * @param options - for maxIterations
  * @returns Solution vector.
+ * @deprecated in favour of {@link fcnnls}
  */
 export function fcnnlsVector(
   X: number[][] | Matrix,

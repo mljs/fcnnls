@@ -20,12 +20,19 @@ https://en.wikipedia.org/wiki/Non-negative_least_squares
 npm i ml-fcnnls
 ```
 
+## Deprecation of `fcnnlsVector`
+
+The previous vector version still works but it's deprecated in favour of `fcnnls`.
+
+- If `Y` is a flat array use `K.to1DArray();` to get the coefficients array.
+- If `Y` is a matrix use `K.to2DArray();` instead.
+
 ## Usage Example
 
-1. Single `y`, using arrays as inputs.
+1. Single `y` array (flat array).
 
 ```js
-import { fcnnlsVector } from 'ml-fcnnls';
+import { fcnnls } from 'ml-fcnnls';
 
 const X = [
   [1, 1, 2],
@@ -35,7 +42,7 @@ const X = [
 ];
 const y = [-1, 11, 0, 1];
 
-const k = fcnnlsVector(X, y).K.to1DArray();
+const k = fcnnls(X, y).K.to1DArray();
 /* k = [0.4610, 0.5611, 0] */
 ```
 
