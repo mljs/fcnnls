@@ -1,6 +1,7 @@
 /**
  * Returns a new array based on extraction of specific indices of an array
- * @param collection or array
+ * @param collection - or array
+ * @param vector
  * @param indices
  */
 export function selection<T extends number[] | number[][]>(

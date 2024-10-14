@@ -1,5 +1,5 @@
-import { readFileSync } from 'fs';
-import { join } from 'path';
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 
 import { Matrix } from 'ml-matrix';
 import { it, describe, expect } from 'vitest';
@@ -8,31 +8,31 @@ import { fcnnls } from '../fcnnls';
 
 import { assertResult } from './assertResult';
 
-const concentration = readFileSync(join(__dirname, 'data/matrix.txt'), 'utf-8');
+const concentration = readFileSync(join(__dirname, 'data/matrix.txt'), 'utf8');
 const linesA = concentration.split(/[\r\n]+/);
 const A: number[][] = [];
 for (const line of linesA) {
-  A.push(line.split(',').map((value) => Number(value)));
+  A.push(line.split(',').map(Number));
 }
 
 let matrix = new Matrix(A);
 
 matrix = matrix.transpose();
 
-const proportion = readFileSync(join(__dirname, 'data/x_fcnnls.txt'), 'utf-8');
+const proportion = readFileSync(join(__dirname, 'data/x_fcnnls.txt'), 'utf8');
 const linesk = proportion.split(/[\r\n]+/);
 const k: number[][] = [];
 for (const line of linesk) {
-  k.push(line.split(',').map((value) => Number(value)));
+  k.push(line.split(',').map(Number));
 }
 k.splice(133, 1);
 const answer = new Matrix(k);
 
-const observation = readFileSync(join(__dirname, 'data/target.txt'), 'utf-8');
+const observation = readFileSync(join(__dirname, 'data/target.txt'), 'utf8');
 const lines = observation.split(/[\r\n]+/);
 const b: number[][] = [];
 for (const line of lines) {
-  b.push(line.split(',').map((value) => Number(value)));
+  b.push(line.split(',').map(Number));
 }
 
 let target = new Matrix(b);

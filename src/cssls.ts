@@ -12,7 +12,12 @@ import { sortCollectionSet } from './util/sortCollectionSet';
  * Solves XtX*K = XtY for the variables in Pset
  * if XtX (or XtX(vars,vars)) is singular, performs the svd and find pseudo-inverse, otherwise (even if ill-conditioned) finds inverse with LU decomposition and solves the set of equations
  * it is consistent with matlab results for ill-conditioned matrices (at least consistent with test 'ill-conditioned square X rank 2, Y 3x1' in cssls.test)
- * @param Cssls object, @see {@link Cssls}
+ * @param options - @see {@link Cssls}
+ * @param options.XtX
+ * @param options.XtY
+ * @param options.Pset
+ * @param options.nColsX
+ * @param options.nColsY
  */
 export function cssls({ XtX, XtY, Pset, nColsX, nColsY }: Cssls): Matrix {
   let K = Matrix.zeros(nColsX, nColsY);

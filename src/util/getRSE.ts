@@ -2,7 +2,11 @@ import { Matrix } from 'ml-matrix';
 
 /**
  * Return the root square error of the solution.
- * @param object with X, K, Y, and error @see {@link GetRSEInput}
+ * @param object - with X, K, Y, and error @see {@link GetRSEInput}
+ * @param object.X
+ * @param object.K
+ * @param object.Y
+ * @param object.error
  * @returns the root squared error array.
  */
 export function getRSE({ X, K, Y, error }: GetRSEInput) {

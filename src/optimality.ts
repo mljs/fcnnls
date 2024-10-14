@@ -4,7 +4,20 @@ import { setDifference } from './util/setDifference';
 
 /**
  * Checks whether the solution has converged
- * @param see {@link OptimalityParams} for a description.
+ * {@link OptimalityParams} for a description.
+ * @param options
+ * @param options.iter
+ * @param options.maxIter
+ * @param options.XtX
+ * @param options.XtY
+ * @param options.Fset
+ * @param options.Pset
+ * @param options.W
+ * @param options.K
+ * @param options.l
+ * @param options.p
+ * @param options.D
+ * @param options.gradientTolerance
  * @returns Pset, Fset, W
  */
 export function optimality({
@@ -51,7 +64,7 @@ export function optimality({
   Fset = setDifference(Fset, Jset);
 
   // For non-optimal solutions, add the appropriate variables to Pset
-  if (Fset.length !== 0) {
+  if (Fset.length > 0) {
     for (let j = 0; j < Fset.length; j++) {
       for (let i = 0; i < l; i++) {
         if (Pset[Fset[j]].includes(i)) W.set(i, Fset[j], -Infinity);

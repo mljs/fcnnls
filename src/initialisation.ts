@@ -13,8 +13,13 @@ interface Initialisation {
 /**
  * Solves OLS problem,  overwriting the negative values of K with 0.
  * It also pre-computes part of the pseudo-inverse used to solve Least Squares.
- * @param XtX - input data matrix
- * @param XtY - output data matrix
+ * @param options
+ * @param options.XtX - input data matrix
+ * @param options.XtY - output data matrix
+ * @param options.nRowsX
+ * @param options.nColsX
+ * @param options.nRowsY
+ * @param options.nColsY
  * @returns initial values for the algorithm (including the solution K to least squares, overwriting of negative values with 0)
  */
 export function initialisation({

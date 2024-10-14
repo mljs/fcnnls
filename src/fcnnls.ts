@@ -31,7 +31,7 @@ export interface FcnnlsOptions<T extends boolean | undefined> {
  * Fast Combinatorial Non-negative Least Squares with multiple Right Hand Side
  * @param X - The data/input/predictors matrix
  * @param Y - The response matrix
- * @param options {@link FcnnlsOptions}
+ * @param options - {@link FcnnlsOptions}
  * @returns By default, the object with the matrix of coefficients K. Please see {@link FcnnlsOutput} for more information.
  */
 export function fcnnls(
@@ -175,10 +175,7 @@ export function fcnnls<T extends boolean | undefined>(
         }
 
         for (let j = 0; j < m; j++) {
-          Pset[Hset[j]].splice(
-            Pset[Hset[j]].findIndex((item) => item === minIdx[j]),
-            1,
-          );
+          Pset[Hset[j]].splice(Pset[Hset[j]].indexOf(minIdx[j]), 1);
         }
 
         L = cssls({

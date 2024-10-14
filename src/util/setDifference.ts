@@ -1,7 +1,7 @@
 /**
  * Computes the set difference A\B
- * @param set A as an array
- * @param set B as an array
+ * @param A - First array of numbers
+ * @param B - Second array of numbers
  * @returns Elements of A that are not in B
  */
 export function setDifference(A: number[], B: number[]) {

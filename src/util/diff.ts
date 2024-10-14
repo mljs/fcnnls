@@ -1,6 +1,6 @@
 /**
  * Computes an array containing the difference of consecutive numbers
- * @param Array v from which it computes the difference
+ * @param v - v from which it computes the difference
  * @returns - Array of consecutive differences
  */
 export function diff(v: number[]) {

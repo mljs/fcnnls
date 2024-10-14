@@ -1,7 +1,7 @@
 /**
  * Sorts an array and returns an object with the sorted array and the corresponding indices.
  * @param array
- * @returns {values, indices}
+ * @returns
  */
 export function sortArray(array: number[]) {
   const v = array.map((value, index) => {

@@ -1,7 +1,6 @@
 /**
  * From an array of arrays it constructs a unique key for each array,
  * given by its values, such that same arrays have same keys.
- *
  * @param collection - Array of arrays
  * @returns - Array of objects with the original array, its index and its key
  */
@@ -10,7 +9,9 @@ function addUniqueKeyToColumns(collection: number[][]) {
     //indices of positive values within the column. (Pset)
     let key = BigInt(0);
     // items will be the indexes of Pset, so it's always an integer.
-    positiveRows.forEach((item) => (key |= BigInt(1) << BigInt(item)));
+    for (const item of positiveRows) {
+      key |= BigInt(1) << BigInt(item);
+    }
     return { positiveRows, columnIndexInK, key };
   });
 }
@@ -38,7 +39,7 @@ export function sortCollectionSet(collection: number[][]) {
       indices.push([]);
       sorted.push(set.positiveRows);
     }
-    indices[indices.length - 1].push(set.columnIndexInK);
+    indices.at(-1).push(set.columnIndexInK);
   }
 
   const result = {
