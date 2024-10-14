@@ -9,5 +9,4 @@ coverage
 lib
 lib-esm
 docs
-
-
+CPU.*
