@@ -1,4 +1,4 @@
-import { Matrix } from 'ml-matrix';
+import type { Matrix } from 'ml-matrix';
 
 export function prepareInput(X: Matrix, Y: Matrix) {
   const Xt = X.transpose();

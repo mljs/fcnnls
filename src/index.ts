@@ -1,2 +1,2 @@
-export * from './fcnnls';
-export * from './fcnnlsVector';
+export * from './fcnnls.ts';
+export * from './fcnnlsVector.ts';

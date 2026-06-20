@@ -7,10 +7,10 @@
 function addUniqueKeyToColumns(collection: number[][]) {
   return collection.map((positiveRows, columnIndexInK) => {
     //indices of positive values within the column. (Pset)
-    let key = BigInt(0);
+    let key = 0n;
     // items will be the indexes of Pset, so it's always an integer.
     for (const item of positiveRows) {
-      key |= BigInt(1) << BigInt(item);
+      key |= 1n << BigInt(item);
     }
     return { positiveRows, columnIndexInK, key };
   });
@@ -33,13 +33,15 @@ export function sortCollectionSet(collection: number[][]) {
   const indices: number[][] = [];
 
   let key;
+  let currentIndices: number[] = [];
   for (const set of mapped) {
     if (set.key !== key) {
       key = set.key;
-      indices.push([]);
+      currentIndices = [];
+      indices.push(currentIndices);
       sorted.push(set.positiveRows);
     }
-    indices.at(-1).push(set.columnIndexInK);
+    currentIndices.push(set.columnIndexInK);
   }
 
   const result = {

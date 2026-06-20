@@ -1,4 +1,4 @@
-import { Matrix } from 'ml-matrix';
+import type { Matrix } from 'ml-matrix';
 
 /**
  * Return the root square error of the solution.

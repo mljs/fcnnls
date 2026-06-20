@@ -1,6 +1,6 @@
-import { type Matrix } from 'ml-matrix';
+import type { Matrix } from 'ml-matrix';
 
-import { setDifference } from './util/setDifference';
+import { setDifference } from './util/setDifference.ts';
 
 /**
  * Checks whether the solution has converged

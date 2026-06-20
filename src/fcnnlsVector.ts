@@ -1,6 +1,7 @@
 import { Matrix } from 'ml-matrix';
 
-import { KAndInfo, KOnly, FcnnlsOptions, fcnnls } from './fcnnls';
+import type { FcnnlsOptions, KAndInfo, KOnly } from './fcnnls.ts';
+import { fcnnls } from './fcnnls.ts';
 
 /**
  * Fast Combinatorial Non-negative Least Squares with single Right Hand Side

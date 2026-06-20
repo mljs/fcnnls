@@ -1,6 +1,3 @@
-coverage
-images
-node_modules
-History.md
 CHANGELOG.md
-/fcnnls.js
+coverage
+lib

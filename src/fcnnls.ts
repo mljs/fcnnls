@@ -1,9 +1,9 @@
 import { Matrix } from 'ml-matrix';
 
-import { cssls } from './cssls';
-import { initialisation } from './initialisation';
-import { optimality } from './optimality';
-import { selection, getRSE } from './util';
+import { cssls } from './cssls.ts';
+import { initialisation } from './initialisation.ts';
+import { optimality } from './optimality.ts';
+import { getRSE, selection } from './util/index.ts';
 
 export interface FcnnlsOptions<T extends boolean | undefined> {
   /**

@@ -1,11 +1,11 @@
 import {
-  Matrix,
-  LuDecomposition,
-  solve,
   CholeskyDecomposition,
+  LuDecomposition,
+  Matrix,
+  solve,
 } from 'ml-matrix';
 
-import { sortCollectionSet } from './util/sortCollectionSet';
+import { sortCollectionSet } from './util/sortCollectionSet.ts';
 
 /**
  * Combinatorial Subspace Least Squares - subfunction for the FC-NNLS

@@ -9,12 +9,10 @@ import { join } from 'node:path';
 
 import { Matrix } from 'ml-matrix';
 
-import { fcnnls } from '../src/fcnnls';
-
-const __dirname = join(new URL(import.meta.url).pathname, '..');
+import { fcnnls } from '../src/fcnnls.ts';
 
 const concentration = readFileSync(
-  join(__dirname, '../src/__tests__/data/matrix.txt'),
+  join(import.meta.dirname, '../src/__tests__/data/matrix.txt'),
   'utf8',
 );
 let linesA = concentration.split(/[\r\n]+/);
@@ -26,7 +24,7 @@ let matrix = new Matrix(A);
 matrix = matrix.transpose();
 
 const observation = readFileSync(
-  join(__dirname, '../src/__tests__/data/target.txt'),
+  join(import.meta.dirname, '../src/__tests__/data/target.txt'),
   'utf8',
 );
 let lines = observation.split(/[\r\n]+/);
@@ -40,7 +38,7 @@ target = target.transpose();
 console.profile('start');
 console.time('flag');
 for (let i = 0; i < 20; i++) {
-  let result = fcnnls(matrix, target);
+  fcnnls(matrix, target);
 }
 console.timeEnd('flag');
 console.profileEnd();

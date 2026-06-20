@@ -1,7 +1,7 @@
 import { Matrix } from 'ml-matrix';
 import { expect } from 'vitest';
 
-import { type FcnnlsOutput } from '../fcnnls';
+import type { FcnnlsOutput } from '../fcnnls.ts';
 
 /**
  *  We only use the value K from the output.

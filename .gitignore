@@ -6,7 +6,7 @@ npm-debug.log*
 coverage
 .DS_Store
 .vscode
+.claude
 lib
-lib-esm
 docs
 CPU.*

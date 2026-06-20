@@ -1,6 +1,6 @@
 import { Matrix } from 'ml-matrix';
 
-import { cssls } from './cssls';
+import { cssls } from './cssls.ts';
 
 interface Initialisation {
   XtX: Matrix;
