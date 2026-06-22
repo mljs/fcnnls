@@ -2,15 +2,9 @@ import { defineConfig, globalIgnores } from 'eslint/config';
 import ts from 'eslint-config-cheminfo-typescript';
 
 export default defineConfig(
-  globalIgnores(['coverage', 'lib']),
+  // `benchmark` is gitignored local scratch (profiling scripts + vendored code).
+  globalIgnores(['coverage', 'lib', 'benchmark']),
   ts,
-  {
-    // The benchmark is a profiling script; console output is its purpose.
-    files: ['benchmark/**'],
-    rules: {
-      'no-console': 'off',
-    },
-  },
   {
     // `assertResult` wraps the `expect` calls shared across these tests.
     files: ['**/*.test.ts'],
