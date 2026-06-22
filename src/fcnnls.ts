@@ -3,7 +3,7 @@ import { Matrix } from 'ml-matrix';
 import { cssls } from './cssls.ts';
 import { initialisation } from './initialisation.ts';
 import { optimality } from './optimality.ts';
-import { getRSE, selection } from './util/index.ts';
+import { computeGram, getRSE, selection } from './util/index.ts';
 
 export interface FcnnlsOptions<T extends boolean | undefined> {
   /**
@@ -67,9 +67,10 @@ export function fcnnls<T extends boolean | undefined>(
     info = false,
   } = options;
 
-  // pre-computes part of pseudo-inverse
+  // pre-computes part of pseudo-inverse. XtX is the Gram matrix XᵀX; computeGram
+  // produces it bit-identically to Xt.mmul(X) but far faster on sparse X.
   const Xt = X.transpose();
-  const XtX = Xt.mmul(X);
+  const XtX = computeGram(X);
   const XtY = Xt.mmul(Y);
 
   const { columns: nColsY, rows: nRowsY } = Y;
@@ -80,9 +81,14 @@ export function fcnnls<T extends boolean | undefined>(
   const K = init.K;
   const D = K.clone();
 
-  // first RSE is the result of overwriting OLS result in K.
-  const error = getRSE({ X, K, Y, error: new Matrix(1, nColsY) });
-  const rse = [error.to1DArray()];
+  // RSE diagnostics are only produced when `info` is requested. Each getRSE
+  // call runs a full X·K matmul, so building `rse` on the default path only to
+  // discard it is wasted work.
+  const rse: number[][] = [];
+  if (info) {
+    // first RSE is the result of overwriting the OLS result in K.
+    rse.push(getRSE({ X, K, Y }).to1DArray());
+  }
 
   // Active set algorithm for NNLS main loop
   while (Fset.length > 0) {
@@ -202,12 +208,12 @@ export function fcnnls<T extends boolean | undefined>(
         m = Hset.length;
 
         if (info) {
-          rse.push(getRSE({ X, K, Y, error }).to1DArray());
+          rse.push(getRSE({ X, K, Y }).to1DArray());
         }
       }
     }
-    if (Hset.length === 0 || (iter === maxIterations && info)) {
-      rse.push(getRSE({ X, K, Y, error }).to1DArray());
+    if (info && (Hset.length === 0 || iter === maxIterations)) {
+      rse.push(getRSE({ X, K, Y }).to1DArray());
     }
 
     const newParam = optimality({
