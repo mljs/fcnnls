@@ -10,3 +10,4 @@ coverage
 lib
 docs
 CPU.*
+benchmark
