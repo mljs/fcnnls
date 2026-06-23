@@ -67,13 +67,12 @@ export function fcnnls<T extends boolean | undefined>(
     info = false,
   } = options;
 
-  // pre-computes part of pseudo-inverse. XtX is the Gram matrix XᵀX.
-  // TODO: replace `Xt.mmul(X)` with `X.gram()` once ml-matrix is released with
-  // the gram() method (mljs/matrix, branch `add-gram`). gram() computes this XᵀX
-  // bit-identically, ~2.8x faster on dense and far faster on the sparse predictor
-  // matrices common here (it skips zeros and never materializes the transpose).
+  // pre-computes part of pseudo-inverse. XtX is the symmetric Gram matrix XᵀX;
+  // gram() computes this bit-identically to Xt.mmul(X) but only fills the upper
+  // triangle, skips zeros and never materializes the transpose, so it is much
+  // faster on the sparse predictor matrices common here.
   const Xt = X.transpose();
-  const XtX = Xt.mmul(X);
+  const XtX = X.gram();
   const XtY = Xt.mmul(Y);
 
   const { columns: nColsY, rows: nRowsY } = Y;
