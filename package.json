@@ -40,7 +40,7 @@
   },
   "homepage": "https://github.com/mljs/fcnnls#readme",
   "dependencies": {
-    "ml-matrix": "^6.12.2"
+    "ml-matrix": "^6.13.0"
   },
   "devDependencies": {
     "@types/node": "^26.0.0",
