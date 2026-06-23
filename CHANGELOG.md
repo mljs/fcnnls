@@ -1,5 +1,17 @@
 # Changelog
 
+## [3.1.0](https://github.com/mljs/fcnnls/compare/v3.0.0...v3.1.0) (2026-06-23)
+
+
+### Features
+
+* migrate package to ESM and align with current tooling ([4282e28](https://github.com/mljs/fcnnls/commit/4282e28240993e845744e6afa2b3d982a729a25e))
+
+
+### Performance Improvements
+
+* use Matrix.gram() for XtX ([#28](https://github.com/mljs/fcnnls/issues/28)) ([36f1705](https://github.com/mljs/fcnnls/commit/36f1705912f59c1a7e49b4762b3768e01624d016))
+
 ## [3.0.0](https://github.com/mljs/fcnnls/compare/v2.1.0...v3.0.0) (2023-10-09)
 
 
